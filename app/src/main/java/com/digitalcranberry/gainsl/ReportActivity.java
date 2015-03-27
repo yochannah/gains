@@ -1,5 +1,7 @@
 package com.digitalcranberry.gainsl;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -10,6 +12,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
+import android.widget.Button;
+import android.widget.ImageButton;
 
 
 public class ReportActivity extends ActionBarActivity {
@@ -24,7 +28,6 @@ public class ReportActivity extends ActionBarActivity {
                     .commit();
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -48,19 +51,43 @@ public class ReportActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+
+
     /**
-     * A placeholder fragment containing a simple view.
+     * Main map fragment
      */
     public static class PlaceholderFragment extends Fragment {
 
         public PlaceholderFragment() {
         }
 
+        private ImageButton newReport;
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_report, container, false);
+            newReport = (ImageButton) rootView.findViewById(R.id.new_report_button);
+            addListenerOnButton();
             return rootView;
         }
+        public void addListenerOnButton() {
+
+            newReport.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View arg0) {
+
+                    Intent browserIntent =
+                            new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.mkyong.com"));
+                    startActivity(browserIntent);
+
+                }
+
+            });
+
+        }
+
     }
 }

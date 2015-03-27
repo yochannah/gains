@@ -13,13 +13,13 @@
 <GridView
     android:layout_width="fill_parent"
     android:layout_height="50dp"
-    android:layout_toLeftOf="@id/input_report_picture"
+    android:layout_toLeftOf="@+id/input_report_picture"
     android:layout_alignTop="@id/input_report_picture"
     android:layout_below="@id/input_report_description"/>
 
     <ImageButton
         android:src="@drawable/ic_action_camera"
-        android:id="@+id/input_report_picture"
+        android:id="@id/input_report_picture"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:background="@drawable/round_button"

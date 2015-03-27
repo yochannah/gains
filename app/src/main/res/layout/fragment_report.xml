@@ -12,7 +12,7 @@
 
     <ImageButton
         android:src="@drawable/ic_action_new"
-        android:id="@+id/input_report_picture"
+        android:id="@+id/new_report_button"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:background="@drawable/round_button"
