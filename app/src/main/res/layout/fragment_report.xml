@@ -8,5 +8,6 @@
 
     <TextView android:text="@string/hint_new_report" android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+    <!-- //TODO http://developer.android.com/training/location/retrieve-current.html how to retrieve current location -->
 
 </RelativeLayout>

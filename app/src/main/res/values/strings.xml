@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Gains </string>
 
-    <string name="hint_new_report"></string>
+    <string name="hint_new_report">Type a description here, and/or add a photo.</string>
 
 
     <string name="filter_all_reports">All Reports</string>
