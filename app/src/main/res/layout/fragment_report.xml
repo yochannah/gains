@@ -6,8 +6,21 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context=".ReportActivity$PlaceholderFragment">
 
-    <TextView android:text="@string/hint_new_report" android:layout_width="wrap_content"
+    <TextView android:text="//TODO: Add map here" android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     <!-- //TODO http://developer.android.com/training/location/retrieve-current.html how to retrieve current location -->
+
+    <ImageButton
+        android:src="@drawable/ic_action_new"
+        android:id="@+id/input_report_picture"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/round_button"
+        android:gravity="center_vertical|center_horizontal"
+        android:hint="@string/hint_report_add_photo"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:textColor="#fff" />
+
 
 </RelativeLayout>
