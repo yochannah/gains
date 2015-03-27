@@ -57,7 +57,7 @@ public class ReportActivity extends ActionBarActivity {
     /**
      * Main map fragment
      */
-    public static class PlaceholderFragment extends Fragment {
+    public class PlaceholderFragment extends Fragment {
 
         public PlaceholderFragment() {
         }
@@ -78,10 +78,8 @@ public class ReportActivity extends ActionBarActivity {
 
                 @Override
                 public void onClick(View arg0) {
-
-                    Intent browserIntent =
-                            new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.mkyong.com"));
-                    startActivity(browserIntent);
+                NewReportDialog d = new NewReportDialog();
+                    d.show(getSupportFragmentManager(), "new_report");
 
                 }
 
