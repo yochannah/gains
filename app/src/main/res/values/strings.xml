@@ -2,7 +2,7 @@
     <string name="app_name">Gains </string>
 
     <string name="hint_new_report">Type a description here, and/or add a photo.</string>
-
+    <string name="hint_report_add_photo">Add a photo</string>
 
     <string name="filter_all_reports">All Reports</string>
     <string name="filter_pending">Pending / Unsent</string>
@@ -12,4 +12,5 @@
     <string name="filter_status_closed">Closed</string>
 
     <string name="action_settings">Settings</string>
+
 </resources>
