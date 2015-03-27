@@ -1,5 +1,15 @@
 <resources>
-    <string name="app_name">GAINSL</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="app_name">Gains </string>
+
+    <string name="hint_new_report"></string>
+
+
+    <string name="filter_all_reports">All Reports</string>
+    <string name="filter_pending">Pending / Unsent</string>
+
+    <string name="filter_status_new">New / Needs Attention</string>
+    <string name="filter_status_in_progress">In Progress</string>
+    <string name="filter_status_closed">Closed</string>
+
     <string name="action_settings">Settings</string>
 </resources>
