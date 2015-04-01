@@ -69,11 +69,11 @@ public class ReportActivity extends ActionBarActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_report, container, false);
             newReport = (ImageButton) rootView.findViewById(R.id.new_report_button);
-            addListenerOnButton();
+            addNewReportClickListener();
             return rootView;
         }
-        public void addListenerOnButton() {
-
+        
+        public void addNewReportClickListener() {
             newReport.setOnClickListener(new View.OnClickListener() {
 
                 @Override
