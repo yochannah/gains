@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -64,6 +65,8 @@ public class NewReportDialog extends DialogFragment {
         //start listening for location.
         geo = new GeoLocator();
         geo.startListening(fragView.getContext());
+
+
         //TODO: WHY THIS LINE NO WORKY? cameraButton = (ImageButton) findViewById(R.id.new_report_button);
         // Create the AlertDialog object and return it
         return builder.create();

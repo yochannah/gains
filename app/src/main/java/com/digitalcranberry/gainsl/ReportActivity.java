@@ -79,7 +79,7 @@ public class ReportActivity extends ActionBarActivity {
                 @Override
                 public void onClick(View arg0) {
                 NewReportDialog d = new NewReportDialog();
-                    d.show(getSupportFragmentManager(), "new_report");
+                d.show(getSupportFragmentManager(), "new_report");
 
                 }
 
