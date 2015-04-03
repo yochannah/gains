@@ -32,9 +32,11 @@ public class NewReportDialog extends DialogFragment {
     private ImageButton cameraButton;
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int REQUEST_TAKE_PHOTO = 1;
-    String mCurrentPhotoPath;
-    ImageView mImageView;
+    private String mCurrentPhotoPath;
+    private ImageView mImageView;
     private Report report;
+    private GeoLocator geo;
+
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -46,7 +48,12 @@ public class NewReportDialog extends DialogFragment {
                 .setPositiveButton(R.string.send, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         generateReportDetails(fragView);
-                        SendReport.uploadReport(report);
+                        geo.stopListening();
+                        try {
+                            new SendReport().execute(report);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -54,8 +61,11 @@ public class NewReportDialog extends DialogFragment {
                         // User cancelled the dialog
                     }
                 });
+        //start listening for location.
+        geo = new GeoLocator();
+        geo.startListening(fragView.getContext());
+        //TODO: WHY THIS LINE NO WORKY? cameraButton = (ImageButton) findViewById(R.id.new_report_button);
         // Create the AlertDialog object and return it
-       //TODO: WHY THIS LINE NO WORKY? cameraButton = (ImageButton) findViewById(R.id.new_report_button);
         return builder.create();
     }
 
@@ -72,9 +82,10 @@ public class NewReportDialog extends DialogFragment {
     }
 
     private void generateReportDetails(View view) {
-
         EditText content = (EditText) view.findViewById(R.id.input_report_description);
         report = new Report(content.getText().toString());
+        report.setLocation(geo.getCurrentLocation());
+        report.setOrgName("Android");
     }
 
     private void dispatchTakePictureIntent() {
