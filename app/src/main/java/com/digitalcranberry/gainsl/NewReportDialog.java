@@ -42,7 +42,7 @@ public class NewReportDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),android.R.style.Theme_Holo_Light_Panel);
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View fragView = inflater.inflate(R.layout.fragment_new_report_dialog, null);
         builder.setView(fragView)
