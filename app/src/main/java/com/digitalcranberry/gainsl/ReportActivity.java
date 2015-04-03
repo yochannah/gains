@@ -24,7 +24,7 @@ public class ReportActivity extends ActionBarActivity {
         setContentView(R.layout.activity_report);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
+                    .add(R.id.container, new ReportFragment())
                     .commit();
         }
     }
@@ -57,9 +57,9 @@ public class ReportActivity extends ActionBarActivity {
     /**
      * Main map fragment
      */
-    public class PlaceholderFragment extends Fragment {
+    public class ReportFragment extends Fragment {
 
-        public PlaceholderFragment() {
+        public ReportFragment() {
         }
 
         private ImageButton newReport;

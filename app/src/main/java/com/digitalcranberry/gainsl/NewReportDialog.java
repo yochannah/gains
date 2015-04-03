@@ -31,10 +31,6 @@ import java.util.Date;
 
 public class NewReportDialog extends DialogFragment {
     private ImageButton cameraButton;
-    static final int REQUEST_IMAGE_CAPTURE = 1;
-    static final int REQUEST_TAKE_PHOTO = 1;
-    private String mCurrentPhotoPath;
-    private ImageView mImageView;
     private Report report;
     private GeoLocator geo;
 
@@ -45,6 +41,7 @@ public class NewReportDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),android.R.style.Theme_Holo_Light_Panel);
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View fragView = inflater.inflate(R.layout.fragment_new_report_dialog, null);
+
         builder.setView(fragView)
                 .setPositiveButton(R.string.send, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
@@ -66,8 +63,9 @@ public class NewReportDialog extends DialogFragment {
         geo = new GeoLocator();
         geo.startListening(fragView.getContext());
 
+        cameraButton = (ImageButton) fragView.findViewById(R.id.input_report_take_picture);
+        addPhotoClickListener();
 
-        //TODO: WHY THIS LINE NO WORKY? cameraButton = (ImageButton) findViewById(R.id.new_report_button);
         // Create the AlertDialog object and return it
         return builder.create();
     }
@@ -92,50 +90,17 @@ public class NewReportDialog extends DialogFragment {
     }
 
     private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-            // Create the File where the photo should go
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                Log.wtf("Oh no", "problem creating image file");
-            }
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
-                        Uri.fromFile(photoFile));
-                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-            }
-        }
+
+        Intent imageIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        File imagesFolder = new File(Environment.getExternalStorageDirectory(), "gainsl");
+        imagesFolder.mkdirs();
+        String fileName = "gainsl_" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".jpg";
+        File image = new File(imagesFolder, fileName);
+        Uri uriSavedImage = Uri.fromFile(image);
+        imageIntent.putExtra(MediaStore.EXTRA_OUTPUT, uriSavedImage);
+        startActivityForResult(imageIntent,0);
+
     }
-
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "Gains_" + timeStamp + "_";
-        File storageDir = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-
-        // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
-        return image;
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            mImageView.setImageBitmap(imageBitmap);
-        }
-    }
-
 
 }
