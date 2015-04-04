@@ -1,22 +1,22 @@
 package com.digitalcranberry.gainsl;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.os.Build;
-import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 
 public class ReportActivity extends ActionBarActivity {
+    private String TAG = "gainslDebug";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,4 +88,35 @@ public class ReportActivity extends ActionBarActivity {
         }
 
     }
+
+    private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        Log.i(TAG, data + ", result: " + resultCode + ", request: " + requestCode);
+
+//        super.onActivityResult(requestCode,resultCode, data);
+
+
+        if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+            Fragment reportFrag = getSupportFragmentManager().findFragmentById(R.id.new_report_dialog_fragment);
+            Toast toast = Toast.makeText(getApplicationContext(), "Image saved to:\n" + data.getData(), Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
+            toast.show();
+
+            Log.i(TAG, data.toString() + " " + resultCode);
+
+            reportFrag.onActivityResult(requestCode, resultCode, data);
+
+        } else {
+            Toast toast = Toast.makeText(getApplicationContext(), "What is the story, bob?" + data, Toast.LENGTH_LONG);
+            Log.i(TAG, Integer.toString(requestCode) + " " + resultCode);
+            toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
+            toast.show();
+            super.onActivityResult(requestCode,resultCode, data);
+        }
+
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.digitalcranberry.gainsl.model;
 
 import android.location.Location;
+import android.net.Uri;
 
 import java.util.Date;
 
@@ -11,6 +12,16 @@ public class Report {
     private String status;
     private Double latitude;
     private Double longitude;
+
+    public Uri getImage() {
+        return image;
+    }
+
+    public void setImage(Uri image) {
+        this.image = image;
+    }
+
+    private Uri image;
 
     public String getOrgName() {
         return orgName;

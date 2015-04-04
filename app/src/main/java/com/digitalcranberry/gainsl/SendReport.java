@@ -23,10 +23,8 @@ import javax.net.ssl.HttpsURLConnection;
  * Created by yo on 01/04/15.
  */
 public class SendReport extends AsyncTask<Report, Void, Void> {
-    //Upload image method
+    //Upload report method
 
-    private static Gson gson = new Gson();
-    private static final String USER_AGENT = "Mozilla/5.0";
     private static String reportUrl = "http://192.168.1.86:8888/report";
 
     @Override

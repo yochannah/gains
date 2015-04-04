@@ -21,6 +21,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.digitalcranberry.gainsl.model.Report;
 
@@ -33,7 +34,8 @@ public class NewReportDialog extends DialogFragment {
     private ImageButton cameraButton;
     private Report report;
     private GeoLocator geo;
-
+    private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
+    private Uri imageUri;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -87,6 +89,8 @@ public class NewReportDialog extends DialogFragment {
         report = new Report(content.getText().toString());
         report.setLocation(geo.getCurrentLocation());
         report.setOrgName("Android");
+        report.setImage(imageUri); // save uri to the report
+
     }
 
     private void dispatchTakePictureIntent() {
@@ -98,9 +102,23 @@ public class NewReportDialog extends DialogFragment {
         String fileName = "gainsl_" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".jpg";
         File image = new File(imagesFolder, fileName);
         Uri uriSavedImage = Uri.fromFile(image);
+        imageUri = uriSavedImage;
         imageIntent.putExtra(MediaStore.EXTRA_OUTPUT, uriSavedImage);
-        startActivityForResult(imageIntent,0);
-
+        startActivityForResult(imageIntent,CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                // Image captured and saved to fileUri specified in the Intent
+                Toast.makeText(this.getActivity(), "Image saved successfully", Toast.LENGTH_LONG).show();
+
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                // User cancelled the image capture
+            } else {
+                Toast.makeText(this.getActivity(), "Image problem, please try again.", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
 }
