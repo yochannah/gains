@@ -1,23 +1,15 @@
-package com.digitalcranberry.gainsl;
+package com.digitalcranberry.gainsl.comms;
 
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.digitalcranberry.gainsl.model.Report;
-import com.google.gson.Gson;
-
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
-
-
-import javax.net.ssl.HttpsURLConnection;
 
 /**
  * Created by yo on 01/04/15.
@@ -42,7 +34,7 @@ public class SendReport extends AsyncTask<Report, Void, Void> {
             os.flush();
             int responseCode = conn.getResponseCode();
 
-//get result if there is one
+            //get result if there is one
             if(responseCode == 200) //HTTP 200: Response OK
             {
                 String result = "";
@@ -53,20 +45,10 @@ public class SendReport extends AsyncTask<Report, Void, Void> {
                     result += output;
                 }
                 System.out.println("Response message: " + result);
-            }       } catch (Exception e) {
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
-    }
-
-
-    public static String uploadImage() {
-        return ""; //will eventually return the blobstore id
-    }
-    //upload report method
-    public static String uploadReport(Report report) {
-        String reportString = gson.toJson(report);
-        Log.i("GAINSL",reportString);
-        return reportString;
     }
 }

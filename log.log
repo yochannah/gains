@@ -1,0 +1,15 @@
+40b61f1: Sat, 4 Apr 2015 18:05:38 +0100, message: image is saved and the intent is passed to the correct activity once successful
+f03962d: Fri, 3 Apr 2015 22:26:48 +0100, message: appears to be taking images
+b7ebbce: Fri, 3 Apr 2015 21:54:08 +0100, message: themed the report popup
+ff197d9: Fri, 3 Apr 2015 21:37:47 +0100, message: keyboard no longer hides the submit button
+bc09251: Fri, 3 Apr 2015 18:00:36 +0100, message: Added geolocation and server comms code
+d2fa7e7: Wed, 1 Apr 2015 20:36:07 +0100, message: Uses GSON to convert message to json, and grabs content text from the dialog
+e083387: Wed, 1 Apr 2015 17:26:24 +0100, message: added report model and skeleton for sending reports. Should it be static?
+22949f7: Fri, 27 Mar 2015 23:31:38 +0000, message: dialog for a new report pops up now, need to add photo functions and send / get location functions. Also, it's ugly as heck right now. Styling needed badly
+5b2cf2f: Fri, 27 Mar 2015 23:14:34 +0000, message: add report button does something. it's the wrong something, but we'll fix that next
+23cd740: Fri, 27 Mar 2015 20:19:28 +0000, message: added new report button to main screen
+4a117c8: Fri, 27 Mar 2015 18:51:58 +0000, message: Built visual layout of report fragment
+a624f09: Fri, 27 Mar 2015 14:13:30 +0000, message: Added Google Play Services dependency
+63ad055: Fri, 27 Mar 2015 13:56:42 +0000, message: added OSMdroid dependecy
+0250d55: Fri, 27 Mar 2015 13:46:42 +0000, message: added some default strings
+08be7ad: Fri, 27 Mar 2015 13:40:22 +0000, message: initial commit

@@ -5,28 +5,24 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.digitalcranberry.gainsl.comms.SendGet;
+import com.digitalcranberry.gainsl.comms.SendReport;
+import com.digitalcranberry.gainsl.comms.UploadImage;
 import com.digitalcranberry.gainsl.model.Report;
 
 import java.io.File;
-import java.io.IOException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -50,6 +46,11 @@ public class NewReportDialog extends DialogFragment {
                         generateReportDetails(fragView);
                         geo.stopListening();
                         try {
+                            if (imageUri != null) {
+                                UploadImage ui = new UploadImage();
+                                String url = ui.getUploadURL();
+                                ui.upload(url, report.getImage());
+                            }
                             new SendReport().execute(report);
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -89,8 +90,9 @@ public class NewReportDialog extends DialogFragment {
         report = new Report(content.getText().toString());
         report.setLocation(geo.getCurrentLocation());
         report.setOrgName("Android");
-        report.setImage(imageUri); // save uri to the report
-
+        if(imageUri != null) {
+            report.setImage(imageUri); // save uri to the report
+        }
     }
 
     private void dispatchTakePictureIntent() {
