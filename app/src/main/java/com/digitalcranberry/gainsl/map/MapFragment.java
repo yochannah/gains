@@ -38,7 +38,6 @@ public class MapFragment extends Fragment implements Constants {
     private ResourceProxyImpl mResourceProxy;
     private MapView mMapView;
     private SharedPreferences mPrefs;
-    private MinimapOverlay mMinimapOverlay;
     private CompassOverlay mCompassOverlay;
     private MyLocationNewOverlay mLocationOverlay;
     private ScaleBarOverlay mScaleBarOverlay;
@@ -73,10 +72,6 @@ public class MapFragment extends Fragment implements Constants {
         this.mLocationOverlay = new MyLocationNewOverlay(context, new GpsMyLocationProvider(context),
                 mMapView);
 
-        mMinimapOverlay = new MinimapOverlay(getActivity(), mMapView.getTileRequestCompleteHandler());
-        mMinimapOverlay.setWidth(dm.widthPixels / 5);
-        mMinimapOverlay.setHeight(dm.heightPixels / 5);
-
         mScaleBarOverlay = new ScaleBarOverlay(context);
         mScaleBarOverlay.setCentred(true);
         mScaleBarOverlay.setScaleBarOffset(dm.widthPixels / 2, 10);
@@ -86,7 +81,6 @@ public class MapFragment extends Fragment implements Constants {
         mMapView.setMultiTouchControls(true);
         mMapView.getOverlays().add(this.mLocationOverlay);
         mMapView.getOverlays().add(this.mCompassOverlay);
-        mMapView.getOverlays().add(this.mMinimapOverlay);
         mMapView.getOverlays().add(this.mScaleBarOverlay);
 
         mMapView.getController().setZoom(mPrefs.getInt(PREFS_ZOOM_LEVEL, 1));
@@ -142,11 +136,5 @@ public class MapFragment extends Fragment implements Constants {
         mMapView.getOverlayManager().onCreateOptionsMenu(menu, MENU_LAST_ID, mMapView);
 
         super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    protected void startSampleFragment(Fragment fragment) {
-        FragmentManager fm = getFragmentManager();
-        fm.beginTransaction().hide(this).add(android.R.id.content, fragment, "SampleFragment")
-                .addToBackStack(null).commit();
     }
 }
