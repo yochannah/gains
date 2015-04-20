@@ -14,6 +14,8 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.digitalcranberry.gainsl.map.MapFragment;
+
 
 public class ReportActivity extends ActionBarActivity {
     private String TAG = "gainslDebug";
@@ -24,7 +26,7 @@ public class ReportActivity extends ActionBarActivity {
         setContentView(R.layout.activity_report);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new ReportFragment())
+                    .add(R.id.container, new MapFragment())
                     .commit();
         }
     }
