@@ -5,17 +5,14 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.tileprovider.util.CloudmadeUtil;
 import org.osmdroid.util.ResourceProxyImpl;
 import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.MinimapOverlay;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
 import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -23,12 +20,12 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.MenuItem.OnMenuItemClickListener;
-import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
+import com.digitalcranberry.gainsl.NewReportDialog;
+import com.digitalcranberry.gainsl.R;
 import com.digitalcranberry.gainsl.constants.Constants;
 
 /**
@@ -43,12 +40,31 @@ public class MapFragment extends Fragment implements Constants {
     private ScaleBarOverlay mScaleBarOverlay;
     private static int MENU_LAST_ID = 1;
 
+    private ImageButton newReport;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         mResourceProxy = new ResourceProxyImpl(inflater.getContext().getApplicationContext());
         mMapView = new MapView(inflater.getContext(), 256, mResourceProxy);
+        newReport = (ImageButton) mMapView.findViewById(R.id.new_report_button);
+       // addNewReportClickListener();
         return mMapView;
+    }
+
+    public void addNewReportClickListener() {
+        getFragmentManager();
+        newReport.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                NewReportDialog d = new NewReportDialog();
+                d.show(getFragmentManager(), "new_report");
+
+            }
+
+        });
+
     }
 
     @Override

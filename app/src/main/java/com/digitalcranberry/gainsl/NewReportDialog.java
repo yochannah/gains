@@ -51,6 +51,7 @@ public class NewReportDialog extends DialogFragment {
                                 String url = ui.getUploadURL();
                                 ui.upload(url, report.getImage());
                             }
+                            
                             new SendReport().execute(report);
                         } catch (Exception e) {
                             e.printStackTrace();
