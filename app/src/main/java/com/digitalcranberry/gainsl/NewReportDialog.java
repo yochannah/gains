@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.digitalcranberry.gainsl.cache.SaveReport;
 import com.digitalcranberry.gainsl.comms.SendGet;
 import com.digitalcranberry.gainsl.comms.SendReport;
 import com.digitalcranberry.gainsl.comms.UploadImage;
@@ -32,6 +33,7 @@ public class NewReportDialog extends DialogFragment {
     private GeoLocator geo;
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
     private Uri imageUri;
+    private SaveReport saveReport;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -45,17 +47,8 @@ public class NewReportDialog extends DialogFragment {
                     public void onClick(DialogInterface dialog, int id) {
                         generateReportDetails(fragView);
                         geo.stopListening();
-                        try {
-                            if (imageUri != null) {
-                                UploadImage ui = new UploadImage();
-                                String url = ui.getUploadURL();
-                                ui.upload(url, report.getImage());
-                            }
-                            
-                            new SendReport().execute(report);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                        saveReport = new SaveReport(report, fragView.getContext());
+                        saveReport.save();
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {

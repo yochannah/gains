@@ -11,7 +11,7 @@ public class CacheDbConstants {
 
     public static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + ReportEntry.TABLE_NAME + " (" +
-                    ReportEntry._ID + " INTEGER PRIMARY KEY," +
+                    ReportEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     ReportEntry.COL_NAME_CONTENT + TEXT_TYPE + COMMA_SEP +
                     ReportEntry.COL_NAME_DATE + TEXT_TYPE + COMMA_SEP +
                     ReportEntry.COL_NAME_STATUS + TEXT_TYPE + COMMA_SEP +
@@ -23,6 +23,7 @@ public class CacheDbConstants {
     public static abstract class ReportEntry implements BaseColumns {
         public static final String TABLE_NAME = "REPORTS";
 
+        public static final String COL_NAME_REPORT_ID = "ID";
         public static final String COL_NAME_CONTENT = "CONTENT";
         public static final String COL_NAME_DATE = "DATE";
         public static final String COL_NAME_STATUS = "STATUS";
