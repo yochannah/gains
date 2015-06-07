@@ -40,7 +40,6 @@ public class MapFragment extends Fragment implements Constants {
     private ScaleBarOverlay mScaleBarOverlay;
     private static int MENU_LAST_ID = 1;
 
-    private ImageButton newReport;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -48,29 +47,7 @@ public class MapFragment extends Fragment implements Constants {
         mResourceProxy = new ResourceProxyImpl(inflater.getContext().getApplicationContext());
         mMapView = new MapView(inflater.getContext(), 256, mResourceProxy);
 
-        newReport = new ImageButton(inflater.getContext());
-        newReport.setImageResource(R.drawable.ic_action_new);
-        newReport.setBackgroundResource(R.drawable.round_button);
-
-        mMapView.addView(newReport);
-
-        addNewReportClickListener();
         return mMapView;
-    }
-
-    public void addNewReportClickListener() {
-        getFragmentManager();
-        newReport.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-                NewReportDialog d = new NewReportDialog();
-                d.show(getFragmentManager(), "new_report");
-
-            }
-
-        });
-
     }
 
     @Override
