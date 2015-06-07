@@ -1,9 +1,8 @@
-package com.digitalcranberry.gainsl.cache;
+package com.digitalcranberry.gainsl.comms;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import com.digitalcranberry.gainsl.cache.CacheDbConstants;
 
 /**
  * Created by yo on 05/06/15.

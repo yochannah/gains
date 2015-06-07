@@ -1,13 +1,14 @@
-package com.digitalcranberry.gainsl.cache;
+package com.digitalcranberry.gainsl.comms;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 
-import com.digitalcranberry.gainsl.comms.SendReport;
-import com.digitalcranberry.gainsl.comms.UploadImage;
 import com.digitalcranberry.gainsl.model.Report;
-import com.digitalcranberry.gainsl.cache.CacheDbConstants.ReportEntry;
+import com.digitalcranberry.gainsl.comms.CacheDbConstants.ReportEntry;
+
+import java.net.URI;
 
 
 /**
@@ -33,7 +34,13 @@ public class SaveReport {
         ContentValues values = new ContentValues();
         values.put(ReportEntry.COL_NAME_CONTENT, report.getContent());
         values.put(ReportEntry.COL_NAME_DATE, report.getDateCreated().toString());
-        values.put(ReportEntry.COL_NAME_IMAGEURI, report.getImage().toString());
+
+        //let's prevent the nullpointers
+        Uri image = report.getImage();
+        if(image != null) {
+            values.put(ReportEntry.COL_NAME_IMAGEURI, image.toString());
+        }
+
         values.put(ReportEntry.COL_NAME_LATITUDE, report.getLatitude());
         values.put(ReportEntry.COL_NAME_LONGITUDE, report.getLongitude());
         values.put(ReportEntry.COL_NAME_STATUS, report.getStatus());

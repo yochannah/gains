@@ -1,4 +1,4 @@
-package com.digitalcranberry.gainsl.cache;
+package com.digitalcranberry.gainsl.comms;
 
 import android.provider.BaseColumns;
 
@@ -17,7 +17,7 @@ public class CacheDbConstants {
                     ReportEntry.COL_NAME_STATUS + TEXT_TYPE + COMMA_SEP +
                     ReportEntry.COL_NAME_LATITUDE + TEXT_TYPE + COMMA_SEP +
                     ReportEntry.COL_NAME_LONGITUDE + TEXT_TYPE + COMMA_SEP +
-                    ReportEntry.COL_NAME_IMAGEURI + TEXT_TYPE + COMMA_SEP +
+                    ReportEntry.COL_NAME_IMAGEURI + TEXT_TYPE +
                     " )";
 
     public static abstract class ReportEntry implements BaseColumns {

@@ -16,14 +16,10 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.digitalcranberry.gainsl.cache.SaveReport;
-import com.digitalcranberry.gainsl.comms.SendGet;
-import com.digitalcranberry.gainsl.comms.SendReport;
-import com.digitalcranberry.gainsl.comms.UploadImage;
+import com.digitalcranberry.gainsl.comms.SaveReport;
 import com.digitalcranberry.gainsl.model.Report;
 
 import java.io.File;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
