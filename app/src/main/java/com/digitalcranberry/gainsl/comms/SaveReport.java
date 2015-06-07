@@ -50,6 +50,7 @@ public class SaveReport {
                 ReportEntry.TABLE_NAME,
                 null,
                 values);
+        send();
     }
 
     public void send() {
