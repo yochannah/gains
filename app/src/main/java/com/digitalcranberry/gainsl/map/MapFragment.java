@@ -47,8 +47,14 @@ public class MapFragment extends Fragment implements Constants {
     {
         mResourceProxy = new ResourceProxyImpl(inflater.getContext().getApplicationContext());
         mMapView = new MapView(inflater.getContext(), 256, mResourceProxy);
-        newReport = (ImageButton) mMapView.findViewById(R.id.new_report_button);
-       // addNewReportClickListener();
+
+        newReport = new ImageButton(inflater.getContext());
+        newReport.setImageResource(R.drawable.ic_action_new);
+        newReport.setBackgroundResource(R.drawable.round_button);
+
+        mMapView.addView(newReport);
+
+        addNewReportClickListener();
         return mMapView;
     }
 
