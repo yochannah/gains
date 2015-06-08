@@ -63,8 +63,7 @@ public class ReportManager implements Constants {
         values.put(ReportEntry.COL_NAME_LONGITUDE, report.getLongitude());
         values.put(ReportEntry.COL_NAME_STATUS, report.getStatus());
 
-        long newRowId;
-        newRowId = cacher.insert(
+        cacher.insert(
                 ReportEntry.TABLE_NAME,
                 null,
                 values);
@@ -116,7 +115,7 @@ public class ReportManager implements Constants {
 
     /**
      * Sends the report every interval based on user preferences.
-     * This method peiodically sends anything that has been stored previously,
+     * This method periodically sends anything that has been stored previously,
      * and removes successfully sent items.
      **/
     public void send() {
@@ -131,11 +130,9 @@ public class ReportManager implements Constants {
                 cachedReports = getCachedReports();
 
                 for (Report rep : cachedReports) {
-                    Log.i(DEBUGTAG, "Report:" + rep.getContent());
-                    if(!rep.getStatus().equals("sent")) {
-                        sendReport(rep);// sends the report.
+                    Log.i(DEBUGTAG, "Sending: " + rep.getContent());
+                        sendReport(rep);      // sends the report.
                         sentReports.add(rep); //logs it as one of the items to remove.
-                    }
                 }
                 deleteReportList(sentReports);
                 Log.w(DEBUGTAG, "Done Sending");
@@ -159,6 +156,7 @@ public class ReportManager implements Constants {
 
             new SendReport().execute(report);
             report.setStatus("sent");
+            Log.w(DEBUGTAG,"sent report" + report.getContent());
         } catch (Exception e) {
             e.printStackTrace();
         }
