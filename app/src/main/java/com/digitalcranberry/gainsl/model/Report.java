@@ -13,6 +13,28 @@ public class Report {
     private Double latitude;
     private Double longitude;
 
+    public Report() {}
+
+    public Report(int id, String content, Date date, String status, Double latitude, Double longitude, Uri image) {
+        this.content = content;
+        this.date = date;
+        this.status = status;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.id = id;
+        this.image = image;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    private int id;
+
     public Uri getImage() {
         return image;
     }
@@ -91,4 +113,6 @@ public class Report {
         sb.append("&longitude=" + longitude);
         return sb.toString();
     }
+
+
 }
