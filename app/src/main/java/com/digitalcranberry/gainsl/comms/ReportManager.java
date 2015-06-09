@@ -126,8 +126,8 @@ public class ReportManager implements Constants {
             List<Report> sentReports = new ArrayList<Report>();
 
             public void run() {
-              //  Log.i(DEBUGTAG, "Sending " + cachedReports.size() + " stored reports");
                 cachedReports = getCachedReports();
+                Log.i(DEBUGTAG, "Sending " + cachedReports.size() + " stored reports");
 
                 for (Report rep : cachedReports) {
                     Log.i(DEBUGTAG, "Sending: " + rep.getContent());
@@ -135,7 +135,6 @@ public class ReportManager implements Constants {
                         sentReports.add(rep); //logs it as one of the items to remove.
                 }
                 deleteReportList(sentReports);
-                Log.i(DEBUGTAG, "Done sending, deleted sent reports");
             }
         };
 
@@ -163,7 +162,7 @@ public class ReportManager implements Constants {
     }
 
     public void deleteReportList(List<Report> reportsList){
-      //  Log.w(DEBUGTAG,"Deleting " + reportsList.size() + " sent reports from cache");
+        Log.i(DEBUGTAG,"Deleting " + reportsList.size() + " sent reports from cache");
         String selection = ReportEntry._ID + " LIKE ?";
         cacheDbHelper = new CacheDbHelper(context);
         SQLiteDatabase cacheKiller = cacheDbHelper.getWritableDatabase();
