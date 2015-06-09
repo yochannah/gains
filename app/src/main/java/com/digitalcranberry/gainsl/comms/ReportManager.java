@@ -126,7 +126,7 @@ public class ReportManager implements Constants {
             List<Report> sentReports = new ArrayList<Report>();
 
             public void run() {
-                Log.i(DEBUGTAG, "Sending stored reports");
+              //  Log.i(DEBUGTAG, "Sending " + cachedReports.size() + " stored reports");
                 cachedReports = getCachedReports();
 
                 for (Report rep : cachedReports) {
@@ -135,7 +135,7 @@ public class ReportManager implements Constants {
                         sentReports.add(rep); //logs it as one of the items to remove.
                 }
                 deleteReportList(sentReports);
-                Log.w(DEBUGTAG, "Done Sending");
+                Log.i(DEBUGTAG, "Done sending, deleted sent reports");
             }
         };
 
@@ -148,6 +148,7 @@ public class ReportManager implements Constants {
 
     public void sendReport(Report report) {
         try {
+            //todo: fix image uploads
            /* if (report.getImage() != null) {
                 UploadImage ui = new UploadImage();
                 String url = ui.getUploadURL();
@@ -156,24 +157,20 @@ public class ReportManager implements Constants {
 
             new SendReport().execute(report);
             report.setStatus("sent");
-            Log.w(DEBUGTAG,"sent report" + report.getContent());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public void deleteReportList(List<Report> reportsList){
-        Log.w(DEBUGTAG,"deleting");
-        // Define 'where' part of query.
+      //  Log.w(DEBUGTAG,"Deleting " + reportsList.size() + " sent reports from cache");
         String selection = ReportEntry._ID + " LIKE ?";
-        // Specify arguments in placeholder order.
-            cacheDbHelper = new CacheDbHelper(context);
-            SQLiteDatabase cacheKiller = cacheDbHelper.getWritableDatabase();
-            for (Report rep : reportsList) {
-                String[] selectionArgs = { String.valueOf(rep.getId()) };
-                cacheKiller.delete(ReportEntry.TABLE_NAME, selection, selectionArgs);
-            }
-
+        cacheDbHelper = new CacheDbHelper(context);
+        SQLiteDatabase cacheKiller = cacheDbHelper.getWritableDatabase();
+        for (Report rep : reportsList) {
+            String[] selectionArgs = { String.valueOf(rep.getId()) };
+            cacheKiller.delete(ReportEntry.TABLE_NAME, selection, selectionArgs);
+        }
     }
 
 }
