@@ -43,8 +43,7 @@ public class NewReportDialog extends DialogFragment {
                     public void onClick(DialogInterface dialog, int id) {
                         generateReportDetails(fragView);
                         geo.stopListening();
-                        saveReport = new ReportManager(report, fragView.getContext());
-                        saveReport.save();
+                        saveReport.save(report);
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {

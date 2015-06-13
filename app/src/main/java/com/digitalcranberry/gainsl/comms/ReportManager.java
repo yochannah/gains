@@ -29,20 +29,18 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 public class ReportManager implements Constants, SendReportResult {
 
     private final Context context;
-    private final Report report;
     private final ScheduledExecutorService scheduler =
             Executors.newScheduledThreadPool(1);
     private CacheDbHelper cacheDbHelper;// = new CacheDbHelper(context);
     private List<Report> sentReports;
 
-    public ReportManager(Report report, Context context) {
-        this.report = report;
+    public ReportManager(Context context) {
         this.context = context;
         this.sentReports = new ArrayList<>();
         cacheDbHelper = new CacheDbHelper(context);
     }
 
-    public void save() {
+    public void save(Report report) {
         SQLiteDatabase cacher = cacheDbHelper.getWritableDatabase();
 
         // Create a new map of values, where column names are the keys
