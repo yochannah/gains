@@ -8,16 +8,13 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.digitalcranberry.gainsl.constants.Constants;
+import static com.digitalcranberry.gainsl.constants.ReportStatuses.*;
 import com.digitalcranberry.gainsl.model.Report;
 import com.digitalcranberry.gainsl.comms.CacheDbConstants.ReportEntry;
 import com.digitalcranberry.gainsl.settings.Settings;
 
-import java.net.URI;
-import java.security.spec.ECField;
-import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -29,17 +26,19 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 /**
  * Created by yo on 05/06/15.
  */
-public class ReportManager implements Constants {
+public class ReportManager implements Constants, SendReportResult {
 
     private final Context context;
     private final Report report;
     private final ScheduledExecutorService scheduler =
             Executors.newScheduledThreadPool(1);
     private CacheDbHelper cacheDbHelper;// = new CacheDbHelper(context);
+    private List<Report> sentReports;
 
     public ReportManager(Report report, Context context) {
         this.report = report;
         this.context = context;
+        this.sentReports = new ArrayList<>();
         cacheDbHelper = new CacheDbHelper(context);
     }
 
@@ -67,7 +66,7 @@ public class ReportManager implements Constants {
                 ReportEntry.TABLE_NAME,
                 null,
                 values);
-        send();
+        activateReportMonitor();
     }
 
     public List<Report> getCachedReports(){
@@ -118,23 +117,24 @@ public class ReportManager implements Constants {
      * This method periodically sends anything that has been stored previously,
      * and removes successfully sent items.
      **/
-    public void send() {
+    public void activateReportMonitor() {
         int interval = Settings.getNetworkSendInterval();
 
         final Runnable saver = new Runnable() {
             List<Report> cachedReports;
-            List<Report> sentReports = new ArrayList<Report>();
 
             public void run() {
+                //clear out successfully sent reports.
+                deleteReportList(sentReports);
+
+                //send any new ones.
                 cachedReports = getCachedReports();
                 Log.i(DEBUGTAG, "Sending " + cachedReports.size() + " stored reports");
 
                 for (Report rep : cachedReports) {
                     Log.i(DEBUGTAG, "Sending: " + rep.getContent());
-                        sendReport(rep);      // sends the report.
-                        sentReports.add(rep); //logs it as one of the items to remove.
+                    sendReport(rep);      // sends the report.
                 }
-                deleteReportList(sentReports);
             }
         };
 
@@ -147,15 +147,16 @@ public class ReportManager implements Constants {
 
     public void sendReport(Report report) {
         try {
+
+
+            new SendReportTask(this).execute(report);
+
             //todo: fix image uploads
            /* if (report.getImage() != null) {
                 UploadImage ui = new UploadImage();
                 String url = ui.getUploadURL();
                 ui.upload(url, report.getImage());
             }*/
-
-            new SendReport().execute(report);
-            report.setStatus("sent");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -170,6 +171,12 @@ public class ReportManager implements Constants {
             String[] selectionArgs = { String.valueOf(rep.getId()) };
             cacheKiller.delete(ReportEntry.TABLE_NAME, selection, selectionArgs);
         }
+        reportsList.clear();
     }
 
+    @Override
+    public void updateReportList(Report report) {
+        report.setStatus(REPORT_SENT);
+        sentReports.add(report);
+    }
 }

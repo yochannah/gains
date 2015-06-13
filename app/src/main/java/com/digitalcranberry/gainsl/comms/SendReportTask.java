@@ -7,29 +7,33 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.digitalcranberry.gainsl.model.Report;
-import com.digitalcranberry.gainsl.settings.Settings;
+
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
+
 
 /**
  * Created by yo on 01/04/15.
  */
-public class SendReport extends AsyncTask<Report, Void, Void> {
+public class SendReportTask extends AsyncTask<Report, Void, Void> {
     //Upload report method
 
     private static String reportUrl = "http://192.168.1.86:8888/report";
+    private Report report;
+    private SendReportResult result = null;
 
+    public SendReportTask(SendReportResult result) {
+        this.result = result;
+    }
 
     @Override
     protected Void doInBackground(Report... reports) {
-        String json = reports[0].toQueryParam();
+        report = reports[0];
+        String json = report.toQueryParam();
         Log.w(DEBUGTAG,"Sending...");
         try {
             URL url = new URL(reportUrl);
@@ -62,5 +66,8 @@ public class SendReport extends AsyncTask<Report, Void, Void> {
         return null;
     }
 
-
+    @Override
+    protected void onPostExecute(Void aVoid) {
+        result.updateReportList(report);
+    }
 }
