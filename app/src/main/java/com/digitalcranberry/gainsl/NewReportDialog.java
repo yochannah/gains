@@ -43,6 +43,7 @@ public class NewReportDialog extends DialogFragment {
                     public void onClick(DialogInterface dialog, int id) {
                         generateReportDetails(fragView);
                         geo.stopListening();
+                        saveReport = new ReportManager(fragView.getContext());
                         saveReport.save(report);
                     }
                 })
