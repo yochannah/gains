@@ -3,7 +3,6 @@ package com.digitalcranberry.gainsl;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v4.app.DialogFragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -13,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.digitalcranberry.gainsl.comms.ReportCommsService;
 import com.digitalcranberry.gainsl.map.MapFragment;
 
 
@@ -29,6 +29,8 @@ public class ReportActivity extends ActionBarActivity {
                     .add(R.id.map_container, mapFrag = new MapFragment())
                     .commit();
         }
+        Intent intent = new Intent(this, ReportCommsService.class);
+        startService(intent);
     }
 
     public void addNewReportClickListener(View view) {

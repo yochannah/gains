@@ -18,7 +18,7 @@
             </intent-filter>
         </activity>
 
-
+        <service android:name=".comms.ReportCommsService" />
 
     </application>
     <uses-feature android:name="android.hardware.camera"

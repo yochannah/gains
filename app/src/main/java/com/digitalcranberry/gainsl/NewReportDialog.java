@@ -3,6 +3,7 @@ package com.digitalcranberry.gainsl;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -16,7 +17,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.digitalcranberry.gainsl.comms.ReportManager;
+import com.digitalcranberry.gainsl.comms.ReportCacheManager;
+import com.digitalcranberry.gainsl.comms.ReportCommsService;
 import com.digitalcranberry.gainsl.model.Report;
 
 import java.io.File;
@@ -29,7 +31,7 @@ public class NewReportDialog extends DialogFragment {
     private GeoLocator geo;
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
     private Uri imageUri;
-    private ReportManager saveReport;
+    private ReportCacheManager saveReport;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -37,14 +39,14 @@ public class NewReportDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),android.R.style.Theme_Holo_Light_Panel);
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View fragView = inflater.inflate(R.layout.fragment_new_report_dialog, null);
-
+        final Context context = fragView.getContext();
         builder.setView(fragView)
                 .setPositiveButton(R.string.send, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         generateReportDetails(fragView);
                         geo.stopListening();
-                        saveReport = new ReportManager(fragView.getContext());
-                        saveReport.save(report);
+                        saveReport = new ReportCacheManager();
+                        saveReport.save(context,report);
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -54,7 +56,7 @@ public class NewReportDialog extends DialogFragment {
                 });
         //start listening for location.
         geo = new GeoLocator();
-        geo.startListening(fragView.getContext());
+        geo.startListening(context);
 
         cameraButton = (ImageButton) fragView.findViewById(R.id.input_report_take_picture);
         addPhotoClickListener();
