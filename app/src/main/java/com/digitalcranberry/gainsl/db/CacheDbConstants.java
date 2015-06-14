@@ -1,4 +1,4 @@
-package com.digitalcranberry.gainsl.comms;
+package com.digitalcranberry.gainsl.db;
 
 import android.provider.BaseColumns;
 

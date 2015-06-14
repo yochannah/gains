@@ -1,4 +1,4 @@
-package com.digitalcranberry.gainsl.comms;
+package com.digitalcranberry.gainsl.db;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -8,6 +8,8 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.digitalcranberry.gainsl.constants.Constants;
+import com.digitalcranberry.gainsl.db.CacheDbConstants;
+import com.digitalcranberry.gainsl.db.CacheDbHelper;
 import com.digitalcranberry.gainsl.model.Report;
 
 import java.text.SimpleDateFormat;

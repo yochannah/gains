@@ -17,8 +17,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.digitalcranberry.gainsl.comms.ReportCacheManager;
-import com.digitalcranberry.gainsl.comms.ReportCommsService;
+import com.digitalcranberry.gainsl.db.ReportCacheManager;
 import com.digitalcranberry.gainsl.model.Report;
 
 import java.io.File;
