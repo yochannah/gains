@@ -54,9 +54,9 @@ public class ReportCacheManager implements Constants {
     public List<Report> getCachedReports(Context context){
         List<Report> reports = new ArrayList<>();
         CacheDbHelper cacheDbHelper = new CacheDbHelper(context);
+        SQLiteDatabase cacheReader = cacheDbHelper.getReadableDatabase();
         try {
             SimpleDateFormat dateparse = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
-            SQLiteDatabase cacheReader = cacheDbHelper.getReadableDatabase();
             String[] projection = {
                     CacheDbConstants.ReportEntry._ID,
                     CacheDbConstants.ReportEntry.COL_NAME_CONTENT,
@@ -90,8 +90,10 @@ public class ReportCacheManager implements Constants {
                 reports.add(rep);
             }
             cursor.close();
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            cacheReader.close();
         }
         return reports;
     }
@@ -101,10 +103,14 @@ public class ReportCacheManager implements Constants {
         String selection = CacheDbConstants.ReportEntry._ID + " LIKE ?";
         CacheDbHelper cacheDbHelper = new CacheDbHelper(context);
         SQLiteDatabase cacheKiller = cacheDbHelper.getWritableDatabase();
+
         for (Report rep : reportsList) {
             String[] selectionArgs = { String.valueOf(rep.getId()) };
             cacheKiller.delete(CacheDbConstants.ReportEntry.TABLE_NAME, selection, selectionArgs);
         }
+
         reportsList.clear();
+
+        cacheKiller.close();
     }
 }
