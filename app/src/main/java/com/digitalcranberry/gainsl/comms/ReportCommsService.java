@@ -1,27 +1,21 @@
 package com.digitalcranberry.gainsl.comms;
 
 import android.app.IntentService;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.util.Log;
 
 import com.digitalcranberry.gainsl.constants.Constants;
-import static com.digitalcranberry.gainsl.constants.ReportStatuses.*;
 import com.digitalcranberry.gainsl.model.Report;
-import com.digitalcranberry.gainsl.comms.CacheDbConstants.ReportEntry;
 import com.digitalcranberry.gainsl.settings.Settings;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 
+import static com.digitalcranberry.gainsl.constants.ReportStatuses.REPORT_SENT;
 import static java.util.concurrent.TimeUnit.MINUTES;
 
 
@@ -61,12 +55,7 @@ public class ReportCommsService extends IntentService implements Constants, Send
 
                 //send any new ones.
                 cachedReports = cacheManager.getCachedReports(context);
-                Log.i(DEBUGTAG, "Sending " + cachedReports.size() + " stored reports");
-
-                for (Report rep : cachedReports) {
-                    Log.i(DEBUGTAG, "Sending: " + rep.getContent());
-                    sendReport(rep);      // sends the report.
-                }
+                sendAllReports(cachedReports);
             }
         };
 
@@ -79,8 +68,6 @@ public class ReportCommsService extends IntentService implements Constants, Send
 
     public void sendReport(Report report) {
         try {
-
-
             new SendReportTask(this).execute(report);
 
             //todo: fix image uploads
@@ -94,8 +81,21 @@ public class ReportCommsService extends IntentService implements Constants, Send
         }
     }
 
+    private void sendAllReports(List<Report> reports) {
+        Log.i(DEBUGTAG, "Sending " + reports.size() + " stored reports");
+
+        for (Report rep : reports) {
+            Log.i(DEBUGTAG, "Sending: " + rep.getContent());
+            sendReport(rep);      // sends the report.
+        }
+    }
 
 
+    /**
+     * Callback from the asynctask that sendsreports, adding
+     * the attached report argument to a list to be deleted
+     * @param report The report that has been successfully sent
+     */
     @Override
     public void updateReportList(Report report) {
         report.setStatus(REPORT_SENT);
