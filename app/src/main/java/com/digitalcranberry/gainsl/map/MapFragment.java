@@ -40,11 +40,22 @@ public class MapFragment extends Fragment implements Constants {
     private ScaleBarOverlay mScaleBarOverlay;
     private static int MENU_LAST_ID = 1;
 
+    //to be refactored to preference UI later
+    private void setPrefs() {
+        Context context = getActivity();
+        mPrefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = mPrefs.edit();
+        editor.putInt(PREFS_ZOOM_LEVEL, 10);
+        editor.putInt(PREFS_SCROLL_Y, -1);
+        editor.putInt(PREFS_SCROLL_X, 53);
+        editor.commit();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         mResourceProxy = new ResourceProxyImpl(inflater.getContext().getApplicationContext());
+        setPrefs();
         mMapView = new MapView(inflater.getContext(), 256, mResourceProxy);
 
         return mMapView;
@@ -83,9 +94,11 @@ public class MapFragment extends Fragment implements Constants {
         mMapView.getOverlays().add(this.mScaleBarOverlay);
 
         mMapView.getController().setZoom(mPrefs.getInt(PREFS_ZOOM_LEVEL, 1));
-        mMapView.scrollTo(mPrefs.getInt(PREFS_SCROLL_X, 0), mPrefs.getInt(PREFS_SCROLL_Y, 0));
+        //mMapView.scrollTo(mPrefs.getInt(PREFS_SCROLL_X, 0), mPrefs.getInt(PREFS_SCROLL_Y, 0));
+
 
         mLocationOverlay.enableMyLocation();
+        mLocationOverlay.enableFollowLocation();
         mCompassOverlay.enableCompass();
 
         setHasOptionsMenu(true);

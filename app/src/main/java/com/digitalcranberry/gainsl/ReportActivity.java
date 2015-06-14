@@ -24,11 +24,13 @@ public class ReportActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
+        //setup map
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.map_container, mapFrag = new MapFragment())
                     .commit();
         }
+        //start service to monitor reports and send if network is present
         Intent intent = new Intent(this, ReportCommsService.class);
         startService(intent);
     }
