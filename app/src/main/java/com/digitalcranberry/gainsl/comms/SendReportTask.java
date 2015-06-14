@@ -25,6 +25,7 @@ public class SendReportTask extends AsyncTask<Report, Void, Void> {
     private static String reportUrl = "http://192.168.1.86:8888/report";
     private Report report;
     private SendReportResult result = null;
+    private boolean success = false;
 
     public SendReportTask(SendReportResult result) {
         this.result = result;
@@ -48,7 +49,7 @@ public class SendReportTask extends AsyncTask<Report, Void, Void> {
 
             //get result if there is one
             if(responseCode == 200) //HTTP 200: Response OK
-            { //TODO: Handle errors, e.g. incomplete sends.
+            {
                 String result = "";
                 BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 String output;
@@ -56,18 +57,29 @@ public class SendReportTask extends AsyncTask<Report, Void, Void> {
                 {
                     result += output;
                 }
-                System.out.println("Response message: " + result);
+                Log.i(DEBUGTAG, "Response message: " + result);
+                success = true;
             } else {
                 Log.w(DEBUGTAG, String.valueOf(responseCode));
             }
         } catch (Exception e) {
+            Log.w(DEBUGTAG,"Unable to connect to server!");
             e.printStackTrace();
+            cancel(true);
         }
         return null;
     }
 
+    /**
+     * Passes a result back to the Service that initiated this report send.
+     * At the current time this results in it being deleted from the cache
+     * but only if it was sent successfully if we get a 200 response back)
+     * @param aVoid ignore this param
+     */
     @Override
     protected void onPostExecute(Void aVoid) {
-        result.updateReportList(report);
+        if(success) {
+            result.updateReportList(report);
+        }
     }
 }
