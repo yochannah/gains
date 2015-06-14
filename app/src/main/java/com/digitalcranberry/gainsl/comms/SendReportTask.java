@@ -6,6 +6,7 @@ import static com.digitalcranberry.gainsl.constants.Constants.DEBUGTAG;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.digitalcranberry.gainsl.exception.ServerUnavailableException;
 import com.digitalcranberry.gainsl.model.Report;
 
 
@@ -63,9 +64,9 @@ public class SendReportTask extends AsyncTask<Report, Void, Void> {
                 Log.w(DEBUGTAG, String.valueOf(responseCode));
             }
         } catch (Exception e) {
-            Log.w(DEBUGTAG,"Unable to connect to server!");
+            Log.w(DEBUGTAG, "Unable to connect to server!");
             e.printStackTrace();
-            cancel(true);
+            cancel(false);
         }
         return null;
     }

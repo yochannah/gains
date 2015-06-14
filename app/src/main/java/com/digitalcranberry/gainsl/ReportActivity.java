@@ -1,6 +1,10 @@
 package com.digitalcranberry.gainsl;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.LocationManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -14,6 +18,7 @@ import android.widget.Toast;
 
 import com.digitalcranberry.gainsl.comms.ReportCommsService;
 import com.digitalcranberry.gainsl.map.MapFragment;
+import static com.digitalcranberry.gainsl.constants.Constants.DEBUGTAG;
 
 
 public class ReportActivity extends ActionBarActivity {
@@ -24,20 +29,27 @@ public class ReportActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
+
         //setup map
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.map_container, mapFrag = new MapFragment())
                     .commit();
         }
+
         //start service to monitor reports and send if network is present
         Intent intent = new Intent(this, ReportCommsService.class);
         startService(intent);
+
+        //check for gps and ask user to enable it if it is not.
+        if(!isGPSEnabled()) {
+            buildAlertMessageNoGps();
+        }
     }
 
     public void addNewReportClickListener(View view) {
-                NewReportDialog d = new NewReportDialog();
-                d.show(getSupportFragmentManager(), "new_report");
+        NewReportDialog d = new NewReportDialog();
+        d.show(getSupportFragmentManager(), "new_report");
     }
 
 
@@ -93,4 +105,28 @@ public class ReportActivity extends ActionBarActivity {
 
     }
 
+    private boolean isGPSEnabled() {
+        final LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
+        boolean isEnabled = manager.isProviderEnabled( LocationManager.GPS_PROVIDER );
+        Log.i(DEBUGTAG, "Gps enabled: " + String.valueOf(isEnabled));
+        return isEnabled;
+    }
+
+    private void buildAlertMessageNoGps() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
 }

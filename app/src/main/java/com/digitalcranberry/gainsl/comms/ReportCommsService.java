@@ -109,6 +109,8 @@ public class ReportCommsService extends IntentService implements Constants, Send
 
     @Override
     protected void onHandleIntent(Intent intent) {
+
+        Log.d(DEBUGTAG,"Activated ReportsCommsService");
         activateReportMonitor();
     }
 }
