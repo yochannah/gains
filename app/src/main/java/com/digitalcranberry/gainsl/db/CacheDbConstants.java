@@ -23,7 +23,6 @@ public class CacheDbConstants {
     public static abstract class ReportEntry implements BaseColumns {
         public static final String TABLE_NAME = "REPORTS";
 
-        public static final String COL_NAME_REPORT_ID = "ID";
         public static final String COL_NAME_CONTENT = "CONTENT";
         public static final String COL_NAME_DATE = "DATE";
         public static final String COL_NAME_STATUS = "STATUS";

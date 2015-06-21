@@ -12,6 +12,11 @@ public class Report {
     private String status;
     private Double latitude;
     private Double longitude;
+    private int id;
+    private Uri image;
+    private String orgName;
+    private String reporter;
+
 
     public Report() {}
 
@@ -23,6 +28,8 @@ public class Report {
         this.longitude = longitude;
         this.id = id;
         this.image = image;
+        this.orgName = "OU";
+        this.reporter = "April";
     }
 
     public int getId() {
@@ -33,7 +40,6 @@ public class Report {
         this.id = id;
     }
 
-    private int id;
 
     public Uri getImage() {
         return image;
@@ -43,7 +49,6 @@ public class Report {
         this.image = image;
     }
 
-    private Uri image;
 
     public String getOrgName() {
         return orgName;
@@ -53,7 +58,6 @@ public class Report {
         this.orgName = orgName;
     }
 
-    private String orgName;
 
     public Double getLatitude() {
         return latitude;
@@ -111,6 +115,7 @@ public class Report {
         sb.append("&content=" + content);
         sb.append("&latitude=" + latitude);
         sb.append("&longitude=" + longitude);
+        sb.append("&id=" + id);
         return sb.toString();
     }
 

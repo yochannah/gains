@@ -24,7 +24,7 @@ import java.net.URL;
 public class SendReportTask extends AsyncTask<Report, Void, Void> {
     //Upload report method
 
-    private static String reportUrl = "http://192.168.1.86:8888/report";
+    private static String reportUrl = "http://gainsl-offline.appspot.com/report";
     private Report report;
     private SendReportResult result = null;
     private boolean success = false;
