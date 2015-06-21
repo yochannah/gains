@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.digitalcranberry.gainsl.exception.ServerUnavailableException;
 import com.digitalcranberry.gainsl.model.Report;
+import com.google.gson.Gson;
 
 
 import java.io.BufferedReader;
