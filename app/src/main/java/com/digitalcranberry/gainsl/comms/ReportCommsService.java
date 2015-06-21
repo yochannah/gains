@@ -52,10 +52,11 @@ public class ReportCommsService extends IntentService implements Constants, Send
 
             public void run() {
                 //clear out successfully sent reports.
-                cacheManager.deleteReportList(sentReports, context);
+                cacheManager.moveToSentDb(sentReports, context);
 
                 //send any new ones, if we can see the intertubes.
                 cachedReports = cacheManager.getCachedReports(context);
+
                 if (NetworkStatus.isConnected(context)) {
                     sendAllReports(cachedReports);
                 } else {

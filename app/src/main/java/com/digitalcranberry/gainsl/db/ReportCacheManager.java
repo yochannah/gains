@@ -8,8 +8,6 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.digitalcranberry.gainsl.constants.Constants;
-import com.digitalcranberry.gainsl.db.CacheDbConstants;
-import com.digitalcranberry.gainsl.db.CacheDbHelper;
 import com.digitalcranberry.gainsl.model.Report;
 
 import java.text.SimpleDateFormat;
@@ -25,7 +23,7 @@ public class ReportCacheManager implements Constants {
     public ReportCacheManager() {
     }
 
-    public void save(Context context, Report report) {
+    public void save(Context context, Report report, String tableName) {
         CacheDbHelper cacheDbHelper = new CacheDbHelper(context);
         SQLiteDatabase cacher = cacheDbHelper.getWritableDatabase();
 
@@ -47,7 +45,7 @@ public class ReportCacheManager implements Constants {
         values.put(CacheDbConstants.ReportEntry.COL_NAME_STATUS, report.getStatus());
 
         cacher.insert(
-                CacheDbConstants.ReportEntry.TABLE_NAME,
+                tableName,
                 null,
                 values);
         cacher.close();
@@ -69,7 +67,7 @@ public class ReportCacheManager implements Constants {
             };
 
             Cursor cursor = cacheReader.query(
-                    CacheDbConstants.ReportEntry.TABLE_NAME,  // The table to query
+                    CacheDbConstants.UnsentReportEntry.TABLE_NAME,  // The table to query
                     projection,                               // The columns to return
                     null,                                // The columns for the WHERE clause
                     null,                            // The values for the WHERE clause
@@ -100,15 +98,18 @@ public class ReportCacheManager implements Constants {
         return reports;
     }
 
-    public void deleteReportList(List<Report> reportsList, Context context){
-        Log.i(DEBUGTAG,"Deleting " + reportsList.size() + " sent reports from cache");
-        String selection = CacheDbConstants.ReportEntry._ID + " LIKE ?";
+    public void moveToSentDb(List<Report> reportsList, Context context){
+        Log.i(DEBUGTAG, "Moving " + reportsList.size() + " sent reports from unsent cache to sent db.");
+        String selection = CacheDbConstants.UnsentReportEntry._ID + " LIKE ?";
         CacheDbHelper cacheDbHelper = new CacheDbHelper(context);
         SQLiteDatabase cacheKiller = cacheDbHelper.getWritableDatabase();
 
         for (Report rep : reportsList) {
             String[] selectionArgs = { String.valueOf(rep.getId()) };
-            cacheKiller.delete(CacheDbConstants.ReportEntry.TABLE_NAME, selection, selectionArgs);
+            //delete from unsents
+            cacheKiller.delete(CacheDbConstants.UnsentReportEntry.TABLE_NAME, selection, selectionArgs);
+            //move to sent
+            save(context, rep, CacheDbConstants.SentReportEntry.TABLE_NAME);
         }
 
         reportsList.clear();

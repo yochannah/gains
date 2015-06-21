@@ -9,19 +9,25 @@ public class CacheDbConstants {
     public static final String TEXT_TYPE = " TEXT";
     public static final String COMMA_SEP = ",";
 
-    public static final String SQL_CREATE_ENTRIES =
-            "CREATE TABLE " + ReportEntry.TABLE_NAME + " (" +
-                    ReportEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    ReportEntry.COL_NAME_CONTENT + TEXT_TYPE + COMMA_SEP +
-                    ReportEntry.COL_NAME_DATE + TEXT_TYPE + COMMA_SEP +
-                    ReportEntry.COL_NAME_STATUS + TEXT_TYPE + COMMA_SEP +
-                    ReportEntry.COL_NAME_LATITUDE + TEXT_TYPE + COMMA_SEP +
-                    ReportEntry.COL_NAME_LONGITUDE + TEXT_TYPE + COMMA_SEP +
-                    ReportEntry.COL_NAME_IMAGEURI + TEXT_TYPE +
-                    " )";
+
+    private static String SQL_CREATE_REPORT_TABLE = " (" +
+            ReportEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            ReportEntry.COL_NAME_CONTENT + TEXT_TYPE + COMMA_SEP +
+            ReportEntry.COL_NAME_DATE + TEXT_TYPE + COMMA_SEP +
+            ReportEntry.COL_NAME_STATUS + TEXT_TYPE + COMMA_SEP +
+            ReportEntry.COL_NAME_LATITUDE + TEXT_TYPE + COMMA_SEP +
+            ReportEntry.COL_NAME_LONGITUDE + TEXT_TYPE + COMMA_SEP +
+            ReportEntry.COL_NAME_IMAGEURI + TEXT_TYPE +
+            " )";
+
+    public static final String SQL_CREATE_UNSENT_TABLE =
+            "CREATE TABLE " + UnsentReportEntry.TABLE_NAME + SQL_CREATE_REPORT_TABLE;
+
+    public static final String SQL_CREATE_SENT_TABLE =
+            "CREATE TABLE " + SentReportEntry.TABLE_NAME + SQL_CREATE_REPORT_TABLE;
 
     public static abstract class ReportEntry implements BaseColumns {
-        public static final String TABLE_NAME = "REPORTS";
+        public static String TABLE_NAME;
 
         public static final String COL_NAME_CONTENT = "CONTENT";
         public static final String COL_NAME_DATE = "DATE";
@@ -31,7 +37,17 @@ public class CacheDbConstants {
         public static final String COL_NAME_IMAGEURI = "IMAGEURI";
     }
 
-    public static final String SQL_DELETE_ENTRIES =
-            "DROP TABLE IF EXISTS " + ReportEntry.TABLE_NAME;
+    public static abstract class UnsentReportEntry extends ReportEntry implements BaseColumns {
+        public static final String TABLE_NAME = "UNSENT_REPORTS";
+    }
+
+    public static abstract class SentReportEntry extends ReportEntry implements BaseColumns {
+        public static final String TABLE_NAME = "SENT_REPORTS";
+    }
+
+    public static final String SQL_DELETE_UNSENT_ENTRIES =
+            "DROP TABLE IF EXISTS " + UnsentReportEntry.TABLE_NAME;
+    public static final String SQL_DELETE_SENT_ENTRIES =
+            "DROP TABLE IF EXISTS " + SentReportEntry.TABLE_NAME;
 
 }

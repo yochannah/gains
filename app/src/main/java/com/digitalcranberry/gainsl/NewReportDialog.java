@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.digitalcranberry.gainsl.db.CacheDbConstants;
 import com.digitalcranberry.gainsl.db.ReportCacheManager;
 import com.digitalcranberry.gainsl.model.Report;
 
@@ -45,7 +46,7 @@ public class NewReportDialog extends DialogFragment {
                         generateReportDetails(fragView);
                         geo.stopListening();
                         saveReport = new ReportCacheManager();
-                        saveReport.save(context,report);
+                        saveReport.save(context,report, CacheDbConstants.UnsentReportEntry.TABLE_NAME);
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
