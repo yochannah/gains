@@ -1,10 +1,15 @@
 package com.digitalcranberry.gainsl.map;
 
+import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.tileprovider.tilesource.ITileSource;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.tileprovider.util.CloudmadeUtil;
+import org.osmdroid.util.GeoPoint;
 import org.osmdroid.util.ResourceProxyImpl;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.ItemizedIconOverlay;
+import org.osmdroid.views.overlay.ItemizedOverlay;
+import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
 import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
@@ -14,6 +19,7 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Bundle;
@@ -26,10 +32,17 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.digitalcranberry.gainsl.NewReportDialog;
 import com.digitalcranberry.gainsl.R;
 import com.digitalcranberry.gainsl.constants.Constants;
+import com.digitalcranberry.gainsl.db.CacheDbConstants;
+import com.digitalcranberry.gainsl.db.ReportCacheManager;
+import com.digitalcranberry.gainsl.model.Report;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by yo on 17/04/15.
@@ -38,10 +51,14 @@ public class MapFragment extends Fragment implements Constants {
     private ResourceProxyImpl mResourceProxy;
     private MapView mMapView;
     private SharedPreferences mPrefs;
+
     private CompassOverlay mCompassOverlay;
     private MyLocationNewOverlay mLocationOverlay;
     private ScaleBarOverlay mScaleBarOverlay;
     private static int MENU_LAST_ID = 1;
+    private ArrayList<OverlayItem> mOverlayItems = new ArrayList<OverlayItem>();
+    private ItemizedIconOverlay mMarkerOverlay;
+    private ItemizedIconOverlay.OnItemGestureListener<OverlayItem> mOnItemGestureListener;
 
     //to be refactored to preference UI later
     private void setPrefs() {
@@ -71,7 +88,6 @@ public class MapFragment extends Fragment implements Constants {
 
         final Context context = this.getActivity();
         final DisplayMetrics dm = context.getResources().getDisplayMetrics();
-        // mResourceProxy = new ResourceProxyImpl(getActivity().getApplicationContext());
 
         mPrefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 
@@ -85,6 +101,9 @@ public class MapFragment extends Fragment implements Constants {
         this.mLocationOverlay = new MyLocationNewOverlay(context, new GpsMyLocationProvider(context),
                 mMapView);
 
+        prepareReportMarkers();
+        this.mMarkerOverlay = new ItemizedIconOverlay<OverlayItem>(mOverlayItems, mOnItemGestureListener, mResourceProxy);
+
         mScaleBarOverlay = new ScaleBarOverlay(context);
         mScaleBarOverlay.setCentred(true);
         mScaleBarOverlay.setScaleBarOffset(dm.widthPixels / 2, 10);
@@ -95,6 +114,7 @@ public class MapFragment extends Fragment implements Constants {
         mMapView.getOverlays().add(this.mLocationOverlay);
         mMapView.getOverlays().add(this.mCompassOverlay);
         mMapView.getOverlays().add(this.mScaleBarOverlay);
+        mMapView.getOverlays().add(this.mMarkerOverlay);
 
         mMapView.getController().setZoom(mPrefs.getInt(PREFS_ZOOM_LEVEL, 1));
         //mMapView.scrollTo(mPrefs.getInt(PREFS_SCROLL_X, 0), mPrefs.getInt(PREFS_SCROLL_Y, 0));
@@ -151,6 +171,38 @@ public class MapFragment extends Fragment implements Constants {
         mMapView.getOverlayManager().onCreateOptionsMenu(menu, MENU_LAST_ID, mMapView);
 
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    private void prepareReportMarkers() {
+        //get Report markers
+        List<Report> reports = new ReportCacheManager().getReports(getActivity(), CacheDbConstants.SentReportEntry.TABLE_NAME);
+
+        for (Report report : reports) {
+            GeoPoint point = new GeoPoint(report.getLatitude(), report.getLongitude());
+            OverlayItem olItem = new OverlayItem("Report", report.getContent(), point);
+            Drawable newMarker = this.getResources().getDrawable(R.drawable.ic_action_place);
+            olItem.setMarker(newMarker);
+            mOverlayItems.add(olItem);
+        }
+
+        mOnItemGestureListener
+                = new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>(){
+
+            @Override
+            public boolean onItemLongPress(int arg0, OverlayItem arg1) {
+                // TODO Auto-generated method stub
+                return false;
+            }
+
+            @Override
+            public boolean onItemSingleTapUp(int index, OverlayItem item) {
+                Toast.makeText(getActivity(),"Hello",
+                        Toast.LENGTH_LONG).show();
+
+                return true;
+            }
+
+        };
     }
 
 }

@@ -51,7 +51,7 @@ public class ReportCacheManager implements Constants {
         cacher.close();
     }
 
-    public List<Report> getCachedReports(Context context){
+    public List<Report> getReports(Context context, String tableName){
         List<Report> reports = new ArrayList<>();
         CacheDbHelper cacheDbHelper = new CacheDbHelper(context);
         SQLiteDatabase cacheReader = cacheDbHelper.getReadableDatabase();
@@ -67,7 +67,7 @@ public class ReportCacheManager implements Constants {
             };
 
             Cursor cursor = cacheReader.query(
-                    CacheDbConstants.UnsentReportEntry.TABLE_NAME,  // The table to query
+                    tableName,  // The table to query
                     projection,                               // The columns to return
                     null,                                // The columns for the WHERE clause
                     null,                            // The values for the WHERE clause

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.digitalcranberry.gainsl.constants.Constants;
+import com.digitalcranberry.gainsl.db.CacheDbConstants;
 import com.digitalcranberry.gainsl.db.ReportCacheManager;
 import com.digitalcranberry.gainsl.model.Report;
 import com.digitalcranberry.gainsl.settings.Settings;
@@ -55,7 +56,7 @@ public class ReportCommsService extends IntentService implements Constants, Send
                 cacheManager.moveToSentDb(sentReports, context);
 
                 //send any new ones, if we can see the intertubes.
-                cachedReports = cacheManager.getCachedReports(context);
+                cachedReports = cacheManager.getReports(context, CacheDbConstants.UnsentReportEntry.TABLE_NAME);
 
                 if (NetworkStatus.isConnected(context)) {
                     sendAllReports(cachedReports);
