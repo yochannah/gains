@@ -24,6 +24,7 @@ import com.digitalcranberry.gainsl.model.Report;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.UUID;
 
 public class NewReportDialog extends DialogFragment {
     private ImageButton cameraButton;
@@ -57,6 +58,8 @@ public class NewReportDialog extends DialogFragment {
         //start listening for location.
         geo = new GeoLocator();
         geo.startListening(context);
+
+
 
         cameraButton = (ImageButton) fragView.findViewById(R.id.input_report_take_picture);
         addPhotoClickListener();

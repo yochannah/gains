@@ -13,6 +13,7 @@ import com.digitalcranberry.gainsl.model.Report;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by yo on 14/06/15.
@@ -29,6 +30,7 @@ public class ReportCacheManager implements Constants {
 
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
+        values.put(CacheDbConstants.ReportEntry._ID, UUID.randomUUID().toString());
         values.put(CacheDbConstants.ReportEntry.COL_NAME_CONTENT, report.getContent());
         values.put(CacheDbConstants.ReportEntry.COL_NAME_DATE, report.getDateCreated().toString());
 
@@ -78,7 +80,7 @@ public class ReportCacheManager implements Constants {
 
             while (cursor.moveToNext()) {
                 Report rep = new Report(
-                        cursor.getInt(0), //id
+                        cursor.getString(0), //id
                         cursor.getString(1), //content
                         dateparse.parse(cursor.getString(2)), //date
                         cursor.getString(3), //status

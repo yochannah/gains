@@ -11,7 +11,7 @@ public class CacheDbConstants {
 
 
     private static String SQL_CREATE_REPORT_TABLE = " (" +
-            ReportEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            ReportEntry._ID + " STRING PRIMARY KEY," +
             ReportEntry.COL_NAME_CONTENT + TEXT_TYPE + COMMA_SEP +
             ReportEntry.COL_NAME_DATE + TEXT_TYPE + COMMA_SEP +
             ReportEntry.COL_NAME_STATUS + TEXT_TYPE + COMMA_SEP +

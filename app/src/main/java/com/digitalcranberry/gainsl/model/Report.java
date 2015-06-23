@@ -12,7 +12,7 @@ public class Report {
     private String status;
     private Double latitude;
     private Double longitude;
-    private int id;
+    private String id;
     private Uri image;
     private String orgName;
     private String reporter;
@@ -20,7 +20,7 @@ public class Report {
 
     public Report() {}
 
-    public Report(int id, String content, Date date, String status, Double latitude, Double longitude, Uri image) {
+    public Report(String id, String content, Date date, String status, Double latitude, Double longitude, Uri image) {
         this.content = content;
         this.date = date;
         this.status = status;
@@ -32,11 +32,11 @@ public class Report {
         this.reporter = "April";
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -115,7 +115,7 @@ public class Report {
         sb.append("&content=" + content);
         sb.append("&latitude=" + latitude);
         sb.append("&longitude=" + longitude);
-        sb.append("&id=" + id);
+        sb.append("&reportid=" + id);
         return sb.toString();
     }
 

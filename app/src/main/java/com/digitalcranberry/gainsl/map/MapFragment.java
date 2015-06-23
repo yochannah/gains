@@ -173,16 +173,24 @@ public class MapFragment extends Fragment implements Constants {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    private void prepareReportMarkers() {
-        //get Report markers
-        List<Report> reports = new ReportCacheManager().getReports(getActivity(), CacheDbConstants.SentReportEntry.TABLE_NAME);
+    private OverlayItem generateReportMarker(Report report, int drawable) {
+        GeoPoint point = new GeoPoint(report.getLatitude(), report.getLongitude());
+        OverlayItem olItem = new OverlayItem("Report", report.getContent(), point);
+        Drawable newMarker = this.getResources().getDrawable(drawable);
+        olItem.setMarker(newMarker);
+        return olItem;
+    }
 
-        for (Report report : reports) {
-            GeoPoint point = new GeoPoint(report.getLatitude(), report.getLongitude());
-            OverlayItem olItem = new OverlayItem("Report", report.getContent(), point);
-            Drawable newMarker = this.getResources().getDrawable(R.drawable.ic_action_place);
-            olItem.setMarker(newMarker);
-            mOverlayItems.add(olItem);
+    private void prepareReportMarkers() {
+        //get saved report markers
+        ReportCacheManager cm = new ReportCacheManager();
+        List<Report> sentReports = cm.getReports(getActivity(), CacheDbConstants.UnsentReportEntry.TABLE_NAME);
+        List<Report> unsentReports = cm.getReports(getActivity(), CacheDbConstants.SentReportEntry.TABLE_NAME);
+        for (Report report : sentReports) {
+            mOverlayItems.add(generateReportMarker(report, (R.drawable.ic_action_place_blue)));
+        }
+        for (Report report : unsentReports) {
+            mOverlayItems.add(generateReportMarker(report, (R.drawable.ic_action_place_orange)));
         }
 
         mOnItemGestureListener
@@ -196,7 +204,7 @@ public class MapFragment extends Fragment implements Constants {
 
             @Override
             public boolean onItemSingleTapUp(int index, OverlayItem item) {
-                Toast.makeText(getActivity(),"Hello",
+                Toast.makeText(getActivity(),item.getSnippet(),
                         Toast.LENGTH_LONG).show();
 
                 return true;
