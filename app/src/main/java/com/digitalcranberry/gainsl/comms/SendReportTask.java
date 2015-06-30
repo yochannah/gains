@@ -9,13 +9,17 @@ import android.util.Log;
 import com.digitalcranberry.gainsl.exception.ServerUnavailableException;
 import com.digitalcranberry.gainsl.model.Report;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -28,9 +32,11 @@ public class SendReportTask extends AsyncTask<Report, Void, Void> {
     private Report report;
     private SendReportResult result = null;
     private boolean success = false;
+    private List<Report> responses;
 
     public SendReportTask(SendReportResult result) {
         this.result = result;
+        this.responses = new ArrayList<>();
     }
 
     @Override
@@ -52,14 +58,16 @@ public class SendReportTask extends AsyncTask<Report, Void, Void> {
             //get result if there is one
             if(responseCode == 200) //HTTP 200: Response OK
             {
-                String result = "";
+                String response = "";
                 BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 String output;
                 while((output = br.readLine()) != null)
                 {
-                    result += output;
+                    response += output;
                 }
-                Log.i(DEBUGTAG, "Response message: " + result);
+                Log.i(DEBUGTAG, "Response message: " + response);
+                deserialiseResponse(response);
+                Log.i(DEBUGTAG, "Response messages: " + responses);
                 success = true;
             } else {
                 Log.w(DEBUGTAG, String.valueOf(responseCode));
@@ -83,5 +91,12 @@ public class SendReportTask extends AsyncTask<Report, Void, Void> {
         if(success) {
             result.updateReportList(report);
         }
+    }
+
+    private void deserialiseResponse(String response){
+        Gson gson = new Gson();
+        Type listType = new TypeToken<ArrayList<Report>>() {
+        }.getType();
+        responses = gson.fromJson(response, listType);
     }
 }
