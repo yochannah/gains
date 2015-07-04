@@ -65,7 +65,7 @@ public class MapFragment extends Fragment implements Constants {
         Context context = getActivity();
         mPrefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = mPrefs.edit();
-        editor.putInt(PREFS_ZOOM_LEVEL, 10);
+        editor.putInt(PREFS_ZOOM_LEVEL, 7);
         editor.putInt(PREFS_SCROLL_Y, -1);
         editor.putInt(PREFS_SCROLL_X, 53);
         editor.commit();
