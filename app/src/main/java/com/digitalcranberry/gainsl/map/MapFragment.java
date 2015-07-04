@@ -1,6 +1,25 @@
 package com.digitalcranberry.gainsl.map;
 
-import org.osmdroid.api.IGeoPoint;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.util.DisplayMetrics;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
+
+import com.digitalcranberry.gainsl.R;
+import com.digitalcranberry.gainsl.constants.Constants;
+import com.digitalcranberry.gainsl.constants.ReportStatuses;
+import com.digitalcranberry.gainsl.db.CacheDbConstants;
+import com.digitalcranberry.gainsl.db.ReportCacheManager;
+import com.digitalcranberry.gainsl.model.Report;
+
 import org.osmdroid.tileprovider.tilesource.ITileSource;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.tileprovider.util.CloudmadeUtil;
@@ -8,41 +27,17 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.util.ResourceProxyImpl;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
-import org.osmdroid.views.overlay.ItemizedOverlay;
 import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
 import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
-import org.osmdroid.views.overlay.mylocation.IMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
-import android.location.LocationManager;
-import android.location.LocationProvider;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.util.DisplayMetrics;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.Toast;
-
-import com.digitalcranberry.gainsl.NewReportDialog;
-import com.digitalcranberry.gainsl.R;
-import com.digitalcranberry.gainsl.constants.Constants;
-import com.digitalcranberry.gainsl.db.CacheDbConstants;
-import com.digitalcranberry.gainsl.db.ReportCacheManager;
-import com.digitalcranberry.gainsl.model.Report;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by yo on 17/04/15.
@@ -59,6 +54,10 @@ public class MapFragment extends Fragment implements Constants {
     private ArrayList<OverlayItem> mOverlayItems = new ArrayList<OverlayItem>();
     private ItemizedIconOverlay mMarkerOverlay;
     private ItemizedIconOverlay.OnItemGestureListener<OverlayItem> mOnItemGestureListener;
+
+
+    private Map<String, Integer> markerDrawables;
+    private MapManager mapManager;
 
     //to be refactored to preference UI later
     private void setPrefs() {
@@ -85,6 +84,10 @@ public class MapFragment extends Fragment implements Constants {
     public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
+
+        markerDrawables = new HashMap<>();
+        markerDrawables.put(ReportStatuses.REPORT_SENT,  R.drawable.ic_action_place_orange);
+        markerDrawables.put(ReportStatuses.REPORT_UNSENT,  R.drawable.ic_action_place_blue);
 
         final Context context = this.getActivity();
         final DisplayMetrics dm = context.getResources().getDisplayMetrics();
@@ -181,16 +184,17 @@ public class MapFragment extends Fragment implements Constants {
         return olItem;
     }
 
+
     private void prepareReportMarkers() {
         //get saved report markers
         ReportCacheManager cm = new ReportCacheManager();
-        List<Report> sentReports = cm.getReports(getActivity(), CacheDbConstants.UnsentReportEntry.TABLE_NAME);
-        List<Report> unsentReports = cm.getReports(getActivity(), CacheDbConstants.SentReportEntry.TABLE_NAME);
+        List<Report> sentReports = cm.getReports(getActivity(), CacheDbConstants.SentReportEntry.TABLE_NAME);
+        List<Report> unsentReports = cm.getReports(getActivity(), CacheDbConstants.UnsentReportEntry.TABLE_NAME);
         for (Report report : sentReports) {
-            mOverlayItems.add(generateReportMarker(report, (R.drawable.ic_action_place_blue)));
+            addMapMarker(report);
         }
         for (Report report : unsentReports) {
-            mOverlayItems.add(generateReportMarker(report, (R.drawable.ic_action_place_orange)));
+            addMapMarker(report);
         }
 
         mOnItemGestureListener
@@ -213,4 +217,12 @@ public class MapFragment extends Fragment implements Constants {
         };
     }
 
+    public void addMapMarker(Report report) {
+        OverlayItem marker = generateReportMarker(report, markerDrawables.get(report.getStatus()));
+        mOverlayItems.add(marker);
+    }
+
+    public void updateMapMarker(Report report) {
+        //todo
+    }
 }

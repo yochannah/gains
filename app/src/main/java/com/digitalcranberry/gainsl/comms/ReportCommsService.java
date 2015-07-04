@@ -8,6 +8,7 @@ import android.util.Log;
 import com.digitalcranberry.gainsl.constants.Constants;
 import com.digitalcranberry.gainsl.db.CacheDbConstants;
 import com.digitalcranberry.gainsl.db.ReportCacheManager;
+import com.digitalcranberry.gainsl.map.MapManager;
 import com.digitalcranberry.gainsl.model.Report;
 import com.digitalcranberry.gainsl.settings.Settings;
 
@@ -29,7 +30,10 @@ public class ReportCommsService extends IntentService implements Constants, Send
     private final ScheduledExecutorService scheduler =
             Executors.newScheduledThreadPool(1);
     private List<Report> sentReports;
-    ReportCacheManager cacheManager;
+    private ReportCacheManager cacheManager;
+    private List<Report> cachedReports;
+    private MapManager mapManager;
+
 
 
     public ReportCommsService(){
@@ -49,7 +53,6 @@ public class ReportCommsService extends IntentService implements Constants, Send
         final Context context = this;
 
         final Runnable saver = new Runnable() {
-            List<Report> cachedReports;
 
             public void run() {
                 //clear out successfully sent reports.
@@ -73,7 +76,7 @@ public class ReportCommsService extends IntentService implements Constants, Send
         },60*60,MINUTES);
     }
 
-    public void sendReport(Report report) {
+    public List<Report> sendReport(Report report) {
         try {
             new SendReportTask(this).execute(report);
 
@@ -86,15 +89,18 @@ public class ReportCommsService extends IntentService implements Constants, Send
         } catch (Exception e) {
             e.printStackTrace();
         }
+        //let's return new reports received from the server.
+        return null;
     }
 
-    private void sendAllReports(List<Report> reports) {
+    private List<Report> sendAllReports(List<Report> reports) {
         Log.i(DEBUGTAG, "Sending " + reports.size() + " stored reports");
 
         for (Report rep : reports) {
             Log.i(DEBUGTAG, "Sending: " + rep.getContent());
             sendReport(rep);      // sends the report.
         }
+        return null; //TODO, correct return handling
     }
 
 
@@ -110,10 +116,22 @@ public class ReportCommsService extends IntentService implements Constants, Send
         sentReports.add(report);
     }
 
+    /**
+     * Checks which reports are new to this phone, and returns only those reports
+     * @param remoteReportsList response from remote server
+     */
     @Override
-    public void serverReports(List<Report> reportsList) {
+    public List<Report> serverReports(List<Report> remoteReportsList) {
         //TODO: Add to list
-        Log.i(DEBUGTAG,"reportslist" + reportsList.toString());
+        List<Report> localReports = getAllReports();
+        List<Report> newReports = new ArrayList<>();
+        newReports.addAll(remoteReportsList);
+
+        newReports.removeAll(localReports);
+
+        Log.i(DEBUGTAG, "reportslist" + remoteReportsList.toString());
+        //ask the db for a reports list we already have.
+        return newReports;
     }
 
     @Override
@@ -121,5 +139,12 @@ public class ReportCommsService extends IntentService implements Constants, Send
 
         Log.d(DEBUGTAG,"Activated ReportsCommsService");
         activateReportMonitor();
+    }
+
+    private List<Report> getAllReports(){
+        List<Report> reports = new ArrayList<>();
+        reports.addAll(sentReports);
+        reports.addAll(cachedReports);
+        return reports;
     }
 }

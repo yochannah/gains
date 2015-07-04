@@ -20,6 +20,7 @@ import java.util.UUID;
 
  */
 public class ReportCacheManager implements Constants {
+    private List<Report> updatedReports;
 
     public ReportCacheManager() {
     }
@@ -118,4 +119,12 @@ public class ReportCacheManager implements Constants {
 
         cacheKiller.close();
     }
+
+    public void addServerReports(List<Report> reports){
+        updatedReports.addAll(reports);
+    }
+
+    public void markAsSent(String reportId) {
+        //TODO: Update db to mark a report as sent once it is sent.
+    };
 }

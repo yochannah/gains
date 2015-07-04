@@ -9,5 +9,5 @@ import java.util.List;
  */
 public interface SendReportResult {
     void updateReportList(Report report);
-    void serverReports(List<Report> reportsList);
+    List<Report> serverReports(List<Report> remoteReportsList);
 }

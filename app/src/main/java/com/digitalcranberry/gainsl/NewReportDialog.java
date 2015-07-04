@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.digitalcranberry.gainsl.db.CacheDbConstants;
 import com.digitalcranberry.gainsl.db.ReportCacheManager;
+import com.digitalcranberry.gainsl.map.MapManager;
 import com.digitalcranberry.gainsl.model.Report;
 
 import java.io.File;
@@ -33,6 +34,19 @@ public class NewReportDialog extends DialogFragment {
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
     private Uri imageUri;
     private ReportCacheManager saveReport;
+    private MapManager mapManager;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mapManager = (MapManager) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement Overridden methods");
+        }
+    }
+
+
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
