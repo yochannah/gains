@@ -113,7 +113,7 @@ public class ReportCommsService extends IntentService implements Constants, Send
     @Override
     public void serverReports(List<Report> reportsList) {
         //TODO: Add to list
-        //
+        Log.i(DEBUGTAG,"reportslist" + reportsList.toString());
     }
 
     @Override

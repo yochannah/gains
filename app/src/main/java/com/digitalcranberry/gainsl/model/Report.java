@@ -3,6 +3,14 @@ package com.digitalcranberry.gainsl.model;
 import android.location.Location;
 import android.net.Uri;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.annotations.SerializedName;
+
+import java.lang.reflect.Type;
 import java.util.Date;
 
 public class Report {
@@ -12,6 +20,8 @@ public class Report {
     private String status;
     private Double latitude;
     private Double longitude;
+
+    @SerializedName("reportid")
     private String id;
     private Uri image;
     private String orgName;
@@ -109,6 +119,7 @@ public class Report {
         this.date = date;
     }
 
+
     public String toQueryParam() {
         StringBuilder sb = new StringBuilder();
         sb.append("orgName=" + orgName);
@@ -117,6 +128,15 @@ public class Report {
         sb.append("&longitude=" + longitude);
         sb.append("&reportid=" + id);
         return sb.toString();
+    }
+
+    @Override
+    public String toString() {
+        return "Report{" +
+                "content='" + content + '\'' +
+                ", date=" + date +
+                ", status='" + status + '\'' +
+                '}';
     }
 
     /* Loose report comparison based on id alone */

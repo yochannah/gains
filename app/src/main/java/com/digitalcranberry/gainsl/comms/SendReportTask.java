@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.digitalcranberry.gainsl.exception.ServerUnavailableException;
+import com.digitalcranberry.gainsl.model.PropertyMap;
 import com.digitalcranberry.gainsl.model.Report;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -67,7 +68,6 @@ public class SendReportTask extends AsyncTask<Report, Void, Void> {
                 }
                 Log.i(DEBUGTAG, "Response message: " + response);
                 deserialiseResponse(response);
-                Log.i(DEBUGTAG, "Response messages: " + responses);
                 success = true;
             } else {
                 Log.w(DEBUGTAG, String.valueOf(responseCode));
@@ -90,13 +90,16 @@ public class SendReportTask extends AsyncTask<Report, Void, Void> {
     protected void onPostExecute(Void aVoid) {
         if(success) {
             result.updateReportList(report);
+            result.serverReports(responses);
         }
     }
 
     private void deserialiseResponse(String response){
         Gson gson = new Gson();
-        Type listType = new TypeToken<ArrayList<Report>>() {
+        Type listType = new TypeToken<ArrayList<PropertyMap>>() {
         }.getType();
-        responses = gson.fromJson(response, listType);
+        //get rid of that nasty json propertymap.
+        ArrayList<PropertyMap> tempResponses = gson.fromJson(response, listType);
+        responses = PropertyMap.getReportList(tempResponses);
     }
 }
