@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,6 +20,8 @@ import com.digitalcranberry.gainsl.constants.ReportStatuses;
 import com.digitalcranberry.gainsl.db.CacheDbConstants;
 import com.digitalcranberry.gainsl.db.ReportCacheManager;
 import com.digitalcranberry.gainsl.model.Report;
+import com.digitalcranberry.gainsl.model.events.ReportCreated;
+import com.digitalcranberry.gainsl.model.events.ReportSent;
 
 import org.osmdroid.tileprovider.tilesource.ITileSource;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -39,6 +42,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import de.greenrobot.event.EventBus;
+
 /**
  * Created by yo on 17/04/15.
  */
@@ -58,6 +63,28 @@ public class MapFragment extends Fragment implements Constants {
 
     private Map<String, Integer> markerDrawables;
     private MapManager mapManager;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
+
+    public void onEvent(ReportCreated event){
+
+        Toast.makeText(getActivity(), R.string.report_captured + " " + event.report.toString(), Toast.LENGTH_SHORT).show();
+        addMapMarker(event.report);
+    }
+
+    public void onEvent(ReportSent event){
+        updateMapMarker(event.report);
+    }
 
     //to be refactored to preference UI later
     private void setPrefs() {
@@ -218,11 +245,26 @@ public class MapFragment extends Fragment implements Constants {
     }
 
     public void addMapMarker(Report report) {
+        try {
+            OverlayItem marker = generateReportMarker(report, markerDrawables.get(report.getStatus()));
+            mOverlayItems.add(marker);
+            mMarkerOverlay.addItem(marker);
+            mMapView.invalidate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void removeMapMarker(Report report){
         OverlayItem marker = generateReportMarker(report, markerDrawables.get(report.getStatus()));
-        mOverlayItems.add(marker);
+        mMarkerOverlay.removeItem(marker);
+        mMapView.invalidate();
     }
 
     public void updateMapMarker(Report report) {
-        //todo
+        Log.i(DEBUGTAG,"report update received!");
+        removeMapMarker(report);
+        addMapMarker(report);
+        mMapView.invalidate();
     }
 }

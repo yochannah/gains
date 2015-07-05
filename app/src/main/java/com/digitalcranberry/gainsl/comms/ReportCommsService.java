@@ -10,6 +10,7 @@ import com.digitalcranberry.gainsl.db.CacheDbConstants;
 import com.digitalcranberry.gainsl.db.ReportCacheManager;
 import com.digitalcranberry.gainsl.map.MapManager;
 import com.digitalcranberry.gainsl.model.Report;
+import com.digitalcranberry.gainsl.model.events.ReportSent;
 import com.digitalcranberry.gainsl.settings.Settings;
 
 import java.util.ArrayList;
@@ -18,6 +19,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 
+import de.greenrobot.event.EventBus;
+
 import static com.digitalcranberry.gainsl.constants.ReportStatuses.REPORT_SENT;
 import static java.util.concurrent.TimeUnit.MINUTES;
 
@@ -25,7 +28,7 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 /**
  * Created by yo on 05/06/15.
  */
-public class ReportCommsService extends IntentService implements Constants, SendReportResult{
+public class ReportCommsService extends IntentService implements Constants, SendReportResult {
 
     private final ScheduledExecutorService scheduler =
             Executors.newScheduledThreadPool(1);
@@ -113,6 +116,7 @@ public class ReportCommsService extends IntentService implements Constants, Send
     public void updateReportList(Report report) {
         report.setStatus(REPORT_SENT);
         //add map marker
+        EventBus.getDefault().post(new ReportSent(report));
         sentReports.add(report);
     }
 

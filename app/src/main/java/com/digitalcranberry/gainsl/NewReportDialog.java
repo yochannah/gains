@@ -17,15 +17,21 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.digitalcranberry.gainsl.constants.Constants;
+import com.digitalcranberry.gainsl.constants.ReportStatuses;
 import com.digitalcranberry.gainsl.db.CacheDbConstants;
 import com.digitalcranberry.gainsl.db.ReportCacheManager;
 import com.digitalcranberry.gainsl.map.MapManager;
 import com.digitalcranberry.gainsl.model.Report;
+import com.digitalcranberry.gainsl.model.events.ReportCreated;
+import com.digitalcranberry.gainsl.model.events.ReportSent;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
+
+import de.greenrobot.event.EventBus;
 
 public class NewReportDialog extends DialogFragment {
     private ImageButton cameraButton;
@@ -62,6 +68,8 @@ public class NewReportDialog extends DialogFragment {
                         geo.stopListening();
                         saveReport = new ReportCacheManager();
                         saveReport.save(context,report, CacheDbConstants.UnsentReportEntry.TABLE_NAME);
+                        EventBus.getDefault().post(new ReportCreated(report));
+
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -98,7 +106,8 @@ public class NewReportDialog extends DialogFragment {
         EditText content = (EditText) view.findViewById(R.id.input_report_description);
         report = new Report(content.getText().toString());
         report.setLocation(geo.getCurrentLocation());
-        report.setOrgName("Android");
+        report.setOrgName("OU");
+        report.setStatus(ReportStatuses.REPORT_UNSENT);
         if(imageUri != null) {
             report.setImage(imageUri); // save uri to the report
         }
