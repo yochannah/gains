@@ -121,7 +121,8 @@ public class ReportCacheManager implements Constants {
     }
 
     public void addServerReports(List<Report> reports){
-        updatedReports.addAll(reports);
+        //add new reports
+        //update changed reports.
     }
 
     public void markAsSent(String reportId) {

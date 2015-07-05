@@ -262,6 +262,7 @@ public class MapFragment extends Fragment implements Constants {
             mOverlayItems.add(marker);
             mMarkerOverlay.addItem(marker);
             mMapView.invalidate();
+            Log.i(DEBUGTAG, "Adding " + report.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -270,13 +271,14 @@ public class MapFragment extends Fragment implements Constants {
     private void removeMapMarker(Report report){
         OverlayItem marker = generateReportMarker(report);
         if(mMarkerOverlay.contains(marker)) {
+            Log.i(DEBUGTAG,"Removing " + report.toString());
             mMarkerOverlay.removeItem(marker);
-            mMarkerOverlay.booya();
         }
         mMapView.invalidate();
     }
 
     public void updateMapMarker(Report report) {
+        Log.i(DEBUGTAG,"Updating " + report.toString());
         removeMapMarker(report);
         addMapMarker(report);
         mMapView.invalidate();

@@ -161,6 +161,33 @@ public class Report {
         return sameReportId((Report) o);
     }
 
+    /*
+    Reports are considered the same report - equal - if they have the same id,
+    but they may have changed, with different data inside. This checks if there
+    has been any change.
+     */
+    public boolean hasChanged(Report o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Report report = (Report) o;
+
+        if (content != null ? !content.equals(report.content) : report.content != null)
+            return false;
+        if (date != null ? !date.equals(report.date) : report.date != null) return false;
+        if (status != null ? !status.equals(report.status) : report.status != null) return false;
+        if (latitude != null ? !latitude.equals(report.latitude) : report.latitude != null)
+            return false;
+        if (longitude != null ? !longitude.equals(report.longitude) : report.longitude != null)
+            return false;
+        if (id != null ? !id.equals(report.id) : report.id != null) return false;
+        if (image != null ? !image.equals(report.image) : report.image != null) return false;
+        if (orgName != null ? !orgName.equals(report.orgName) : report.orgName != null)
+            return false;
+        return !(reporter != null ? !reporter.equals(report.reporter) : report.reporter != null);
+    }
+
+
     @Override
     public int hashCode() {
         int result = content != null ? content.hashCode() : 0;

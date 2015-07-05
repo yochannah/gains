@@ -11,6 +11,7 @@ import com.digitalcranberry.gainsl.db.ReportCacheManager;
 import com.digitalcranberry.gainsl.map.MapManager;
 import com.digitalcranberry.gainsl.model.Report;
 import com.digitalcranberry.gainsl.model.events.ReportSent;
+import com.digitalcranberry.gainsl.model.events.ReportUpdated;
 import com.digitalcranberry.gainsl.settings.Settings;
 
 import java.util.ArrayList;
@@ -131,12 +132,34 @@ public class ReportCommsService extends IntentService implements Constants, Send
         //TODO: Add to list
         List<Report> localReports = getAllReports();
         List<Report> newReports = new ArrayList<>();
-        newReports.addAll(remoteReportsList);
+        List<Report> changedReports = new ArrayList<>();
+        List<Report> existingReports = new ArrayList<>();
 
+        //populate the two lists with the reports
+        newReports.addAll(remoteReportsList);
+        existingReports.addAll(remoteReportsList);
+
+        //purge existing reports from the new list
         newReports.removeAll(localReports);
 
-        EventBus.getDefault().post(new ReportSent(remoteReportsList));
+        //add all existing reports to existing list, and only keep changed ones.
+        existingReports.removeAll(newReports);
+        for (Report report : existingReports) {
+            //get the matching report in temp
+            int location = localReports.indexOf(report);
+            if(localReports.get(location).hasChanged(report)) {
+                changedReports.add(report);
+            }
+        }
 
+        if(remoteReportsList.size() > 0) {
+            Log.i(DEBUGTAG,remoteReportsList.size() + " server reports received.");
+            EventBus.getDefault().post(new ReportSent(newReports));
+        }
+        if (changedReports.size() > 0) {
+            Log.i(DEBUGTAG,remoteReportsList.size() + " server reports updated.");
+            EventBus.getDefault().post(new ReportUpdated(changedReports));
+        }
     }
 
     @Override
