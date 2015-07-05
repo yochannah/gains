@@ -31,7 +31,7 @@ public class ReportCacheManager implements Constants {
 
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
-        values.put(CacheDbConstants.ReportEntry._ID, UUID.randomUUID().toString());
+        values.put(CacheDbConstants.ReportEntry._ID, report.getId());
         values.put(CacheDbConstants.ReportEntry.COL_NAME_CONTENT, report.getContent());
         values.put(CacheDbConstants.ReportEntry.COL_NAME_DATE, report.getDateCreated().toString());
 

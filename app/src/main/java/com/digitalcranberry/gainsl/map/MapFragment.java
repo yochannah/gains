@@ -205,7 +205,7 @@ public class MapFragment extends Fragment implements Constants {
 
     private OverlayItem generateReportMarker(Report report, int drawable) {
         GeoPoint point = new GeoPoint(report.getLatitude(), report.getLongitude());
-        OverlayItem olItem = new OverlayItem("Report", report.getContent(), point);
+        OverlayItem olItem = new ReportOverlayItem(report);
         Drawable newMarker = this.getResources().getDrawable(drawable);
         olItem.setMarker(newMarker);
         return olItem;
@@ -262,7 +262,6 @@ public class MapFragment extends Fragment implements Constants {
     }
 
     public void updateMapMarker(Report report) {
-        Log.i(DEBUGTAG,"report update received!");
         removeMapMarker(report);
         addMapMarker(report);
         mMapView.invalidate();

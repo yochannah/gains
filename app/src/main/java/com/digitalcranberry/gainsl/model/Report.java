@@ -10,6 +10,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.annotations.SerializedName;
 
+import org.osmdroid.util.GeoPoint;
+
 import java.lang.reflect.Type;
 import java.util.Date;
 
@@ -162,5 +164,9 @@ public class Report {
         result = 31 * result + (orgName != null ? orgName.hashCode() : 0);
         result = 31 * result + (reporter != null ? reporter.hashCode() : 0);
         return result;
+    }
+
+    public GeoPoint getGeopoint() {
+        return new GeoPoint(getLatitude(),getLongitude());
     }
 }

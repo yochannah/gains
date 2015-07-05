@@ -107,6 +107,7 @@ public class NewReportDialog extends DialogFragment {
         report = new Report(content.getText().toString());
         report.setLocation(geo.getCurrentLocation());
         report.setOrgName("OU");
+        report.setId(UUID.randomUUID().toString());
         report.setStatus(ReportStatuses.REPORT_UNSENT);
         if(imageUri != null) {
             report.setImage(imageUri); // save uri to the report
