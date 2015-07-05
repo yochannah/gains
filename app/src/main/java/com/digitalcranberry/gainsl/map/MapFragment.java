@@ -57,7 +57,7 @@ public class MapFragment extends Fragment implements Constants {
     private ScaleBarOverlay mScaleBarOverlay;
     private static int MENU_LAST_ID = 1;
     private ArrayList<OverlayItem> mOverlayItems = new ArrayList<OverlayItem>();
-    private ItemizedIconOverlay mMarkerOverlay;
+    private MyMarkerOverlay mMarkerOverlay;
     private ItemizedIconOverlay.OnItemGestureListener<OverlayItem> mOnItemGestureListener;
 
 
@@ -83,7 +83,9 @@ public class MapFragment extends Fragment implements Constants {
     }
 
     public void onEvent(ReportSent event){
-        updateMapMarker(event.report);
+        for (Report report : event.reports) {
+            updateMapMarker(report);
+        }
     }
 
     //to be refactored to preference UI later
@@ -114,6 +116,7 @@ public class MapFragment extends Fragment implements Constants {
 
         markerDrawables = new HashMap<>();
         markerDrawables.put(ReportStatuses.REPORT_SENT,  R.drawable.ic_action_place_orange);
+        markerDrawables.put(ReportStatuses.REPORT_NEW,  R.drawable.ic_action_place_orange);
         markerDrawables.put(ReportStatuses.REPORT_UNSENT,  R.drawable.ic_action_place_blue);
 
         final Context context = this.getActivity();
@@ -132,7 +135,7 @@ public class MapFragment extends Fragment implements Constants {
                 mMapView);
 
         prepareReportMarkers();
-        this.mMarkerOverlay = new ItemizedIconOverlay<OverlayItem>(mOverlayItems, mOnItemGestureListener, mResourceProxy);
+        this.mMarkerOverlay = new MyMarkerOverlay<OverlayItem>(mOverlayItems, mOnItemGestureListener, mResourceProxy);
 
         mScaleBarOverlay = new ScaleBarOverlay(context);
         mScaleBarOverlay.setCentred(true);
@@ -155,6 +158,14 @@ public class MapFragment extends Fragment implements Constants {
         mCompassOverlay.enableCompass();
 
         setHasOptionsMenu(true);
+    }
+
+    private int getStatusMarker(String status) {
+        try {
+            return markerDrawables.get(status);
+        } catch (NullPointerException e) {
+            return markerDrawables.get(ReportStatuses.REPORT_NEW);
+        }
     }
 
     @Override
@@ -203,7 +214,8 @@ public class MapFragment extends Fragment implements Constants {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    private OverlayItem generateReportMarker(Report report, int drawable) {
+    private OverlayItem generateReportMarker(Report report) {
+        int drawable = getStatusMarker(report.getStatus());
         GeoPoint point = new GeoPoint(report.getLatitude(), report.getLongitude());
         OverlayItem olItem = new ReportOverlayItem(report);
         Drawable newMarker = this.getResources().getDrawable(drawable);
@@ -246,7 +258,7 @@ public class MapFragment extends Fragment implements Constants {
 
     public void addMapMarker(Report report) {
         try {
-            OverlayItem marker = generateReportMarker(report, markerDrawables.get(report.getStatus()));
+            OverlayItem marker = generateReportMarker(report);
             mOverlayItems.add(marker);
             mMarkerOverlay.addItem(marker);
             mMapView.invalidate();
@@ -256,8 +268,11 @@ public class MapFragment extends Fragment implements Constants {
     }
 
     private void removeMapMarker(Report report){
-        OverlayItem marker = generateReportMarker(report, markerDrawables.get(report.getStatus()));
-        mMarkerOverlay.removeItem(marker);
+        OverlayItem marker = generateReportMarker(report);
+        if(mMarkerOverlay.contains(marker)) {
+            mMarkerOverlay.removeItem(marker);
+            mMarkerOverlay.booya();
+        }
         mMapView.invalidate();
     }
 

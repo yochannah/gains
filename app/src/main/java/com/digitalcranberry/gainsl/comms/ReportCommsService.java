@@ -116,7 +116,9 @@ public class ReportCommsService extends IntentService implements Constants, Send
     public void updateReportList(Report report) {
         report.setStatus(REPORT_SENT);
         //add map marker
-        EventBus.getDefault().post(new ReportSent(report));
+        List<Report> reports = new ArrayList<>();
+        reports.add(report);
+        EventBus.getDefault().post(new ReportSent(reports));
         sentReports.add(report);
     }
 
@@ -125,7 +127,7 @@ public class ReportCommsService extends IntentService implements Constants, Send
      * @param remoteReportsList response from remote server
      */
     @Override
-    public List<Report> serverReports(List<Report> remoteReportsList) {
+    public void serverReports(List<Report> remoteReportsList) {
         //TODO: Add to list
         List<Report> localReports = getAllReports();
         List<Report> newReports = new ArrayList<>();
@@ -133,9 +135,8 @@ public class ReportCommsService extends IntentService implements Constants, Send
 
         newReports.removeAll(localReports);
 
-        Log.i(DEBUGTAG, "reportslist" + remoteReportsList.toString());
-        //ask the db for a reports list we already have.
-        return newReports;
+        EventBus.getDefault().post(new ReportSent(remoteReportsList));
+
     }
 
     @Override

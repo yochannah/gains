@@ -3,6 +3,7 @@ package com.digitalcranberry.gainsl.model;
 import android.location.Location;
 import android.net.Uri;
 
+import com.digitalcranberry.gainsl.constants.ReportStatuses;
 import com.google.gson.Gson;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
@@ -106,6 +107,11 @@ public class Report {
     }
 
     public String getStatus() {
+        //this 'if' copes with legacy reports only.
+        if(this.status == null) {
+            return ReportStatuses.REPORT_SENT;
+        }
+
         return status;
     }
 
@@ -136,6 +142,9 @@ public class Report {
     public String toString() {
         return "Report{" +
                 "content='" + content + '\'' +
+                "lat='" + latitude + '\'' +
+                "long='" + longitude + '\'' +
+                "long='" + longitude + '\'' +
                 ", date=" + date +
                 ", status='" + status + '\'' +
                 '}';
