@@ -34,8 +34,4 @@ public class MyMarkerOverlay<Item extends OverlayItem> extends ItemizedIconOverl
         int toGet = this.mItemList.indexOf(oi);
         return (OverlayItem) this.mItemList.get(toGet);
     }
-
-    public void booya() {
-        Log.i("BOOYA", "booya");
-    }
 }
