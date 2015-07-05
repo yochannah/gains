@@ -1,4 +1,4 @@
-package com.digitalcranberry.gainsl.db;
+package com.digitalcranberry.gainsl.caching;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -13,7 +13,6 @@ import com.digitalcranberry.gainsl.model.Report;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by yo on 14/06/15.

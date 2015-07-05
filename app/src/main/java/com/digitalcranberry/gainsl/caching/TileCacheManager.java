@@ -1,4 +1,4 @@
-package com.digitalcranberry.gainsl.db;
+package com.digitalcranberry.gainsl.caching;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;

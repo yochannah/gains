@@ -17,14 +17,12 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.digitalcranberry.gainsl.constants.Constants;
 import com.digitalcranberry.gainsl.constants.ReportStatuses;
-import com.digitalcranberry.gainsl.db.CacheDbConstants;
-import com.digitalcranberry.gainsl.db.ReportCacheManager;
+import com.digitalcranberry.gainsl.caching.CacheDbConstants;
+import com.digitalcranberry.gainsl.caching.ReportCacheManager;
 import com.digitalcranberry.gainsl.map.MapManager;
 import com.digitalcranberry.gainsl.model.Report;
 import com.digitalcranberry.gainsl.model.events.ReportCreated;
-import com.digitalcranberry.gainsl.model.events.ReportSent;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
