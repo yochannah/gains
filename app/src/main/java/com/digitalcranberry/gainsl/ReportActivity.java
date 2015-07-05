@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
@@ -17,6 +18,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.digitalcranberry.gainsl.comms.ReportCommsService;
+import com.digitalcranberry.gainsl.dialog.CacheTilesDialog;
+import com.digitalcranberry.gainsl.dialog.NewReportDialog;
 import com.digitalcranberry.gainsl.map.MapFragment;
 import com.digitalcranberry.gainsl.map.MapManager;
 import com.digitalcranberry.gainsl.model.Report;
@@ -32,7 +35,6 @@ public class ReportActivity extends ActionBarActivity implements MapManager {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
-
         //setup map
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
@@ -48,6 +50,9 @@ public class ReportActivity extends ActionBarActivity implements MapManager {
         if(!isGPSEnabled()) {
             buildAlertMessageNoGps();
         }
+
+        checkTileCache();
+
     }
 
     public void addNewReportClickListener(View view) {
@@ -142,5 +147,18 @@ public class ReportActivity extends ActionBarActivity implements MapManager {
     @Override
     public void updateMapMarker(Report report) {
         mapFrag.addMapMarker(report);
+    }
+
+    private void checkTileCache() {
+        //check if this is the first run
+        //userprefs.
+        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+        if(!prefs.contains("setupComplete")) {
+            //TODO if it is, ask them if they want to add a cache area
+            CacheTilesDialog d = new CacheTilesDialog();
+            d.show(getSupportFragmentManager(),"select_map_area");
+        } else {
+            //TODO if it's not, check if all reports are within mapped areas.
+        }
     }
 }

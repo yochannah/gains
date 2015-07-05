@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.digitalcranberry.gainsl.R;
+import com.digitalcranberry.gainsl.caching.TileCacheManager;
 import com.digitalcranberry.gainsl.constants.Constants;
 import com.digitalcranberry.gainsl.constants.ReportStatuses;
 import com.digitalcranberry.gainsl.caching.CacheDbConstants;
@@ -27,6 +28,7 @@ import com.digitalcranberry.gainsl.model.events.ServerReportsReceived;
 import org.osmdroid.tileprovider.tilesource.ITileSource;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.tileprovider.util.CloudmadeUtil;
+import org.osmdroid.util.BoundingBoxE6;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.util.ResourceProxyImpl;
 import org.osmdroid.views.MapView;
@@ -115,6 +117,10 @@ public class MapFragment extends Fragment implements Constants {
         mResourceProxy = new ResourceProxyImpl(inflater.getContext().getApplicationContext());
         setPrefs();
         mMapView = new MapView(inflater.getContext(), 256, mResourceProxy);
+
+        //test bb.
+        BoundingBoxE6 bb = new BoundingBoxE6(-43.423, 172.728, -43.611, 172.455);
+        cacheTiles(bb);
 
         return mMapView;
     }
@@ -292,5 +298,11 @@ public class MapFragment extends Fragment implements Constants {
         removeMapMarker(report);
         addMapMarker(report);
         mMapView.invalidate();
+    }
+
+    private void cacheTiles(BoundingBoxE6 bb) {
+        TileCacheManager tcm = new TileCacheManager(mMapView);
+        tcm.downloadAreaAsync(this.getActivity(),bb,10,10);
+        Log.i(DEBUGTAG,"caching!!");
     }
 }
