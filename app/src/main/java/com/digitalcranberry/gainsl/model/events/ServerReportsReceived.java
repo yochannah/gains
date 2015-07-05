@@ -5,10 +5,10 @@ import com.digitalcranberry.gainsl.model.Report;
 import java.util.List;
 
 /**
- * Created by yo on 04/07/15.
+ * Created by yo on 05/07/15.
  */
-public class ReportUpdated extends ReportEvent {
-    public ReportUpdated(List<Report> reports) {
+public class ServerReportsReceived extends ReportEvent {
+    public ServerReportsReceived(List<Report> reports) {
         super(reports);
     }
 }

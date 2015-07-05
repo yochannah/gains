@@ -12,6 +12,7 @@ import com.digitalcranberry.gainsl.map.MapManager;
 import com.digitalcranberry.gainsl.model.Report;
 import com.digitalcranberry.gainsl.model.events.ReportSent;
 import com.digitalcranberry.gainsl.model.events.ReportUpdated;
+import com.digitalcranberry.gainsl.model.events.ServerReportsReceived;
 import com.digitalcranberry.gainsl.settings.Settings;
 
 import java.util.ArrayList;
@@ -120,7 +121,6 @@ public class ReportCommsService extends IntentService implements Constants, Send
         List<Report> reports = new ArrayList<>();
         reports.add(report);
         EventBus.getDefault().post(new ReportSent(reports));
-        sentReports.add(report);
     }
 
     /**
@@ -153,8 +153,8 @@ public class ReportCommsService extends IntentService implements Constants, Send
         }
 
         if(remoteReportsList.size() > 0) {
-            Log.i(DEBUGTAG,remoteReportsList.size() + " server reports received.");
-            EventBus.getDefault().post(new ReportSent(newReports));
+            Log.i(DEBUGTAG, remoteReportsList.size() + " server reports received.");
+            EventBus.getDefault().post(new ServerReportsReceived(newReports));
         }
         if (changedReports.size() > 0) {
             Log.i(DEBUGTAG,remoteReportsList.size() + " server reports updated.");

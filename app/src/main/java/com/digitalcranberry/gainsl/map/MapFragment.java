@@ -22,6 +22,7 @@ import com.digitalcranberry.gainsl.caching.ReportCacheManager;
 import com.digitalcranberry.gainsl.model.Report;
 import com.digitalcranberry.gainsl.model.events.ReportCreated;
 import com.digitalcranberry.gainsl.model.events.ReportSent;
+import com.digitalcranberry.gainsl.model.events.ServerReportsReceived;
 
 import org.osmdroid.tileprovider.tilesource.ITileSource;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -62,7 +63,6 @@ public class MapFragment extends Fragment implements Constants {
 
 
     private Map<String, Integer> markerDrawables;
-    private MapManager mapManager;
 
     @Override
     public void onStart() {
@@ -83,9 +83,19 @@ public class MapFragment extends Fragment implements Constants {
     }
 
     public void onEvent(ReportSent event){
+        ReportCacheManager cacheManager = new ReportCacheManager();
         for (Report report : event.reports) {
             updateMapMarker(report);
         }
+        cacheManager.moveToSentDb(event.reports, this.getActivity());
+    }
+
+    public void onEvent(ServerReportsReceived event){
+        ReportCacheManager cacheManager = new ReportCacheManager();
+        for (Report report : event.reports) {
+            addMapMarker(report);
+        }
+        cacheManager.addSentReports(event.reports, this.getActivity());
     }
 
     //to be refactored to preference UI later

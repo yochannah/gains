@@ -119,12 +119,13 @@ public class ReportCacheManager implements Constants {
         cacheKiller.close();
     }
 
-    public void addServerReports(List<Report> reports){
-        //add new reports
-        //update changed reports.
+    public void addSentReports(List<Report> reports, Context context){
+        for (Report rep : reports) {
+            save(context, rep, CacheDbConstants.SentReportEntry.TABLE_NAME);
+        }
     }
 
     public void markAsSent(String reportId) {
         //TODO: Update db to mark a report as sent once it is sent.
-    };
+    }
 }
