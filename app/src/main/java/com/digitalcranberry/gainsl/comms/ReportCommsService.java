@@ -37,7 +37,7 @@ public class ReportCommsService extends IntentService implements Constants, Send
     private List<Report> sentReports;
     private ReportCacheManager cacheManager;
     private List<Report> cachedReports;
-    private MapManager mapManager;
+
 
 
 

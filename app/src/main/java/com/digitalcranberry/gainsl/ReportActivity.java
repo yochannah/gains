@@ -21,13 +21,12 @@ import com.digitalcranberry.gainsl.comms.ReportCommsService;
 import com.digitalcranberry.gainsl.dialog.CacheTilesDialog;
 import com.digitalcranberry.gainsl.dialog.NewReportDialog;
 import com.digitalcranberry.gainsl.map.MapFragment;
-import com.digitalcranberry.gainsl.map.MapManager;
 import com.digitalcranberry.gainsl.model.Report;
 
 import static com.digitalcranberry.gainsl.constants.Constants.DEBUGTAG;
 
 
-public class ReportActivity extends ActionBarActivity implements MapManager {
+public class ReportActivity extends ActionBarActivity implements {
     private String TAG = "gainslDebug";
     private MapFragment mapFrag;
 
@@ -137,17 +136,7 @@ public class ReportActivity extends ActionBarActivity implements MapManager {
         final AlertDialog alert = builder.create();
         alert.show();
     }
-
-    /* Pass through map methods to map frag */
-    @Override
-    public void addMapMarker(Report report) {
-        mapFrag.addMapMarker(report);
-    }
-
-    @Override
-    public void updateMapMarker(Report report) {
-        mapFrag.addMapMarker(report);
-    }
+    
 
     private void checkTileCache() {
         //check if this is the first run

@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 import com.digitalcranberry.gainsl.GeoLocator;
 import com.digitalcranberry.gainsl.R;
-import com.digitalcranberry.gainsl.caching.TileCacheManager;
 import com.digitalcranberry.gainsl.constants.ReportStatuses;
 import com.digitalcranberry.gainsl.caching.CacheDbConstants;
 import com.digitalcranberry.gainsl.caching.ReportCacheManager;
