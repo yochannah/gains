@@ -1,4 +1,4 @@
-package com.digitalcranberry.gainsl.model.events;
+package com.digitalcranberry.gainsl.model.events.report;
 
 import com.digitalcranberry.gainsl.model.Report;
 

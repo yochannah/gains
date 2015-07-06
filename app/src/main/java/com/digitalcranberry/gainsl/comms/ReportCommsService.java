@@ -9,9 +9,9 @@ import com.digitalcranberry.gainsl.constants.Constants;
 import com.digitalcranberry.gainsl.caching.CacheDbConstants;
 import com.digitalcranberry.gainsl.caching.ReportCacheManager;
 import com.digitalcranberry.gainsl.model.Report;
-import com.digitalcranberry.gainsl.model.events.ReportSent;
-import com.digitalcranberry.gainsl.model.events.ReportUpdated;
-import com.digitalcranberry.gainsl.model.events.ServerReportsReceived;
+import com.digitalcranberry.gainsl.model.events.report.Sent;
+import com.digitalcranberry.gainsl.model.events.report.Updated;
+import com.digitalcranberry.gainsl.model.events.report.ServerReportsReceived;
 import com.digitalcranberry.gainsl.settings.Settings;
 
 import java.util.ArrayList;
@@ -119,7 +119,7 @@ public class ReportCommsService extends IntentService implements Constants, Send
         //add map marker
         List<Report> reports = new ArrayList<>();
         reports.add(report);
-        EventBus.getDefault().post(new ReportSent(reports));
+        EventBus.getDefault().post(new Sent(reports));
     }
 
     /**
@@ -157,7 +157,7 @@ public class ReportCommsService extends IntentService implements Constants, Send
         }
         if (changedReports.size() > 0) {
             Log.i(DEBUGTAG,remoteReportsList.size() + " server reports updated.");
-            EventBus.getDefault().post(new ReportUpdated(changedReports));
+            EventBus.getDefault().post(new Updated(changedReports));
         }
     }
 

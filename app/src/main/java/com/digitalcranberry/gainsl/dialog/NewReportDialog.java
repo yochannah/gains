@@ -23,7 +23,7 @@ import com.digitalcranberry.gainsl.constants.ReportStatuses;
 import com.digitalcranberry.gainsl.caching.CacheDbConstants;
 import com.digitalcranberry.gainsl.caching.ReportCacheManager;
 import com.digitalcranberry.gainsl.model.Report;
-import com.digitalcranberry.gainsl.model.events.ReportCreated;
+import com.digitalcranberry.gainsl.model.events.report.Created;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -55,7 +55,7 @@ public class NewReportDialog extends DialogFragment {
                         geo.stopListening();
                         saveReport = new ReportCacheManager();
                         saveReport.save(context,report, CacheDbConstants.UnsentReportEntry.TABLE_NAME);
-                        EventBus.getDefault().post(new ReportCreated(report));
+                        EventBus.getDefault().post(new Created(report));
 
                     }
                 })

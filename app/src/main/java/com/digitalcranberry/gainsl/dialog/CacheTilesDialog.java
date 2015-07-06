@@ -8,12 +8,10 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Toast;
 
 import com.digitalcranberry.gainsl.R;
 import com.digitalcranberry.gainsl.caching.TileCacheManager;
-import com.digitalcranberry.gainsl.model.events.MapTouchEvent;
-import com.digitalcranberry.gainsl.model.events.ReportCreated;
+import com.digitalcranberry.gainsl.model.events.map.TouchEvent;
 
 import org.osmdroid.util.GeoPoint;
 
@@ -53,6 +51,7 @@ public class CacheTilesDialog extends DialogFragment {
                 .setPositiveButton(R.string.select_map_area, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         //TODO: SELECT AREA ON MAP
+
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -65,7 +64,7 @@ public class CacheTilesDialog extends DialogFragment {
         return builder.create();
     }
 
-    public void onEvent(MapTouchEvent event){
+    public void onEvent(TouchEvent event){
         //allow the user to long press two points.
         corners.add(event.point);
         if(corners.size() >=2) {

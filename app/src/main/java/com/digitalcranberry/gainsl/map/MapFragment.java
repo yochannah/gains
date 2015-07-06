@@ -21,9 +21,9 @@ import com.digitalcranberry.gainsl.constants.ReportStatuses;
 import com.digitalcranberry.gainsl.caching.CacheDbConstants;
 import com.digitalcranberry.gainsl.caching.ReportCacheManager;
 import com.digitalcranberry.gainsl.model.Report;
-import com.digitalcranberry.gainsl.model.events.ReportCreated;
-import com.digitalcranberry.gainsl.model.events.ReportSent;
-import com.digitalcranberry.gainsl.model.events.ServerReportsReceived;
+import com.digitalcranberry.gainsl.model.events.report.Created;
+import com.digitalcranberry.gainsl.model.events.report.Sent;
+import com.digitalcranberry.gainsl.model.events.report.ServerReportsReceived;
 
 import org.osmdroid.tileprovider.tilesource.ITileSource;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -87,7 +87,7 @@ public class MapFragment extends Fragment implements Constants {
     /*
     Eventbus event handler for newreport creation. Adds map marker.
      */
-    public void onEvent(ReportCreated event){
+    public void onEvent(Created event){
         Toast.makeText(getActivity(), R.string.report_captured + " " + event.report.toString(), Toast.LENGTH_SHORT).show();
         addMapMarker(event.report);
     }
@@ -95,7 +95,7 @@ public class MapFragment extends Fragment implements Constants {
     /*
     Eventbus event handler for changing map marker to 'sent' colour when sent
      */
-    public void onEvent(ReportSent event){
+    public void onEvent(Sent event){
         ReportCacheManager cacheManager = new ReportCacheManager();
         for (Report report : event.reports) {
             updateMapMarker(report);
@@ -152,10 +152,6 @@ public class MapFragment extends Fragment implements Constants {
     }
 
     private void initializeOverlaysAndSettings() {
-        markerDrawables = new HashMap<>();
-        markerDrawables.put(ReportStatuses.REPORT_SENT,  R.drawable.ic_action_place_orange);
-        markerDrawables.put(ReportStatuses.REPORT_NEW,  R.drawable.ic_action_place_orange);
-        markerDrawables.put(ReportStatuses.REPORT_UNSENT,  R.drawable.ic_action_place_blue);
 
         final Context context = this.getActivity();
         final DisplayMetrics dm = context.getResources().getDisplayMetrics();
@@ -207,9 +203,9 @@ public class MapFragment extends Fragment implements Constants {
 
     public void initializeMarkerDrawables() {
         markerDrawables = new HashMap<>();
-        markerDrawables.put(ReportStatuses.REPORT_SENT,  R.drawable.ic_action_place_orange);
-        markerDrawables.put(ReportStatuses.REPORT_NEW,  R.drawable.ic_action_place_orange);
-        markerDrawables.put(ReportStatuses.REPORT_UNSENT,  R.drawable.ic_action_place_blue);
+        markerDrawables.put(ReportStatuses.REPORT_SENT, R.drawable.ic_action_place_orange);
+        markerDrawables.put(ReportStatuses.REPORT_NEW, R.drawable.ic_action_place_orange);
+        markerDrawables.put(ReportStatuses.REPORT_UNSENT, R.drawable.ic_action_place_blue);
     }
 
     @Override
@@ -271,12 +267,9 @@ public class MapFragment extends Fragment implements Constants {
     private void prepareReportMarkers() {
         //get saved report markers
         ReportCacheManager cm = new ReportCacheManager();
-        List<Report> sentReports = cm.getReports(getActivity(), CacheDbConstants.SentReportEntry.TABLE_NAME);
-        List<Report> unsentReports = cm.getReports(getActivity(), CacheDbConstants.UnsentReportEntry.TABLE_NAME);
-        for (Report report : sentReports) {
-            addMapMarker(report);
-        }
-        for (Report report : unsentReports) {
+        List<Report> reports = cm.getReports(getActivity(), CacheDbConstants.SentReportEntry.TABLE_NAME);
+        reports.addAll(cm.getReports(getActivity(), CacheDbConstants.UnsentReportEntry.TABLE_NAME));
+        for (Report report : reports) {
             addMapMarker(report);
         }
 

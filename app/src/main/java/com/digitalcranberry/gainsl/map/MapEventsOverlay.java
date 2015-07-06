@@ -8,7 +8,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.view.MotionEvent;
 
-import com.digitalcranberry.gainsl.model.events.MapTouchEvent;
+import com.digitalcranberry.gainsl.model.events.map.TouchEvent;
 
 import de.greenrobot.event.EventBus;
 
@@ -35,7 +35,7 @@ public class MapEventsOverlay extends Overlay {
     @Override public boolean onSingleTapConfirmed(MotionEvent e, MapView mapView){
         Projection proj = mapView.getProjection();
         GeoPoint p = (GeoPoint)proj.fromPixels((int)e.getX(), (int)e.getY());
-        EventBus.getDefault().post(new MapTouchEvent(p));
+        EventBus.getDefault().post(new TouchEvent(p));
         return true;//this could have unexpected side effects. not sure what it does! //TODO
     }
 
@@ -43,7 +43,7 @@ public class MapEventsOverlay extends Overlay {
         Projection proj = mapView.getProjection();
         GeoPoint p = (GeoPoint)proj.fromPixels((int)e.getX(), (int)e.getY());
         //throw event to the receiver:
-        EventBus.getDefault().post(new MapTouchEvent(p));
+        EventBus.getDefault().post(new TouchEvent(p));
         return true;
     }
 
