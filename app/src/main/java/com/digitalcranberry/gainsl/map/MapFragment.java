@@ -66,24 +66,35 @@ public class MapFragment extends Fragment implements Constants {
 
     private Map<String, Integer> markerDrawables;
 
+    /*
+    Binds Eventbus listener
+     */
     @Override
     public void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
     }
 
+    /*
+    Unbinds Eventbus listener
+     */
     @Override
     public void onStop() {
         EventBus.getDefault().unregister(this);
         super.onStop();
     }
 
+    /*
+    Eventbus event handler for newreport creation. Adds map marker.
+     */
     public void onEvent(ReportCreated event){
-
         Toast.makeText(getActivity(), R.string.report_captured + " " + event.report.toString(), Toast.LENGTH_SHORT).show();
         addMapMarker(event.report);
     }
 
+    /*
+    Eventbus event handler for changing map marker to 'sent' colour when sent
+     */
     public void onEvent(ReportSent event){
         ReportCacheManager cacheManager = new ReportCacheManager();
         for (Report report : event.reports) {
@@ -92,6 +103,9 @@ public class MapFragment extends Fragment implements Constants {
         cacheManager.moveToSentDb(event.reports, this.getActivity());
     }
 
+    /*
+    Eventbus event handler for en-masse adding of server-side reports
+     */
     public void onEvent(ServerReportsReceived event){
         ReportCacheManager cacheManager = new ReportCacheManager();
         for (Report report : event.reports) {
@@ -100,7 +114,7 @@ public class MapFragment extends Fragment implements Constants {
         cacheManager.addSentReports(event.reports, this.getActivity());
     }
 
-    //to be refactored to preference UI later
+    //to be refactored to preference UI later. Sane defaults set for now.
     private void setPrefs() {
         Context context = getActivity();
         mPrefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
@@ -111,9 +125,11 @@ public class MapFragment extends Fragment implements Constants {
         editor.commit();
     }
 
+    /*
+    * Initialize map and initiate tile caching if there is internet.
+    * */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mResourceProxy = new ResourceProxyImpl(inflater.getContext().getApplicationContext());
         setPrefs();
         mMapView = new MapView(inflater.getContext(), 256, mResourceProxy);
@@ -125,11 +141,17 @@ public class MapFragment extends Fragment implements Constants {
         return mMapView;
     }
 
+    /**
+     * Adds markers and various overlay layers to maps.
+     */
     @Override
-    public void onActivityCreated(Bundle savedInstanceState)
-    {
+    public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        initializeMarkerDrawables();
+        initializeOverlaysAndSettings();
+    }
 
+    private void initializeOverlaysAndSettings() {
         markerDrawables = new HashMap<>();
         markerDrawables.put(ReportStatuses.REPORT_SENT,  R.drawable.ic_action_place_orange);
         markerDrawables.put(ReportStatuses.REPORT_NEW,  R.drawable.ic_action_place_orange);
@@ -157,7 +179,6 @@ public class MapFragment extends Fragment implements Constants {
         mScaleBarOverlay.setCentred(true);
         mScaleBarOverlay.setScaleBarOffset(dm.widthPixels / 2, 10);
 
-
         mMapView.setBuiltInZoomControls(true);
         mMapView.setMultiTouchControls(true);
         mMapView.getOverlays().add(this.mLocationOverlay);
@@ -168,12 +189,12 @@ public class MapFragment extends Fragment implements Constants {
         mMapView.getController().setZoom(mPrefs.getInt(PREFS_ZOOM_LEVEL, 1));
         //mMapView.scrollTo(mPrefs.getInt(PREFS_SCROLL_X, 0), mPrefs.getInt(PREFS_SCROLL_Y, 0));
 
-
         mLocationOverlay.enableMyLocation();
         mLocationOverlay.enableFollowLocation();
         mCompassOverlay.enableCompass();
 
         setHasOptionsMenu(true);
+
     }
 
     private int getStatusMarker(String status) {
@@ -182,6 +203,13 @@ public class MapFragment extends Fragment implements Constants {
         } catch (NullPointerException e) {
             return markerDrawables.get(ReportStatuses.REPORT_NEW);
         }
+    }
+
+    public void initializeMarkerDrawables() {
+        markerDrawables = new HashMap<>();
+        markerDrawables.put(ReportStatuses.REPORT_SENT,  R.drawable.ic_action_place_orange);
+        markerDrawables.put(ReportStatuses.REPORT_NEW,  R.drawable.ic_action_place_orange);
+        markerDrawables.put(ReportStatuses.REPORT_UNSENT,  R.drawable.ic_action_place_blue);
     }
 
     @Override
