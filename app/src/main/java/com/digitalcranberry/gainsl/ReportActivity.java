@@ -26,9 +26,8 @@ import com.digitalcranberry.gainsl.model.Report;
 import static com.digitalcranberry.gainsl.constants.Constants.DEBUGTAG;
 
 
-public class ReportActivity extends ActionBarActivity implements {
-    private String TAG = "gainslDebug";
-    private MapFragment mapFrag;
+public class ReportActivity extends ActionBarActivity  {
+    private MapFragment mapFrag; //this is used, honest, but android studio is a fool
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +86,7 @@ public class ReportActivity extends ActionBarActivity implements {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        Log.i(TAG, data + ", result: " + resultCode + ", request: " + requestCode);
+        Log.i(DEBUGTAG, data + ", result: " + resultCode + ", request: " + requestCode);
 
 //        super.onActivityResult(requestCode,resultCode, data);
 
@@ -98,13 +97,13 @@ public class ReportActivity extends ActionBarActivity implements {
             toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
             toast.show();
 
-            Log.i(TAG, data.toString() + " " + resultCode);
+            Log.i(DEBUGTAG, data.toString() + " " + resultCode);
 
             reportFrag.onActivityResult(requestCode, resultCode, data);
 
         } else {
             Toast toast = Toast.makeText(getApplicationContext(), "What is the story, bob?" + data, Toast.LENGTH_LONG);
-            Log.i(TAG, Integer.toString(requestCode) + " " + resultCode);
+            Log.i(DEBUGTAG, Integer.toString(requestCode) + " " + resultCode);
             toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
             toast.show();
             super.onActivityResult(requestCode,resultCode, data);
@@ -136,7 +135,7 @@ public class ReportActivity extends ActionBarActivity implements {
         final AlertDialog alert = builder.create();
         alert.show();
     }
-    
+
 
     private void checkTileCache() {
         //check if this is the first run

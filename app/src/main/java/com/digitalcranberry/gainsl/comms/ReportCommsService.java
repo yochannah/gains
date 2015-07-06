@@ -8,7 +8,6 @@ import android.util.Log;
 import com.digitalcranberry.gainsl.constants.Constants;
 import com.digitalcranberry.gainsl.caching.CacheDbConstants;
 import com.digitalcranberry.gainsl.caching.ReportCacheManager;
-import com.digitalcranberry.gainsl.map.MapManager;
 import com.digitalcranberry.gainsl.model.Report;
 import com.digitalcranberry.gainsl.model.events.ReportSent;
 import com.digitalcranberry.gainsl.model.events.ReportUpdated;
