@@ -1,4 +1,4 @@
-package com.digitalcranberry.gainsl.db;
+package com.digitalcranberry.gainsl.caching;
 
 import android.provider.BaseColumns;
 
@@ -49,5 +49,7 @@ public class CacheDbConstants {
             "DROP TABLE IF EXISTS " + UnsentReportEntry.TABLE_NAME;
     public static final String SQL_DELETE_SENT_ENTRIES =
             "DROP TABLE IF EXISTS " + SentReportEntry.TABLE_NAME;
+
+    public static final String SQL_COUNT_TABLE = "select count(*) from ";
 
 }

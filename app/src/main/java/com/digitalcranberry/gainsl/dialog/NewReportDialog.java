@@ -1,4 +1,4 @@
-package com.digitalcranberry.gainsl;
+package com.digitalcranberry.gainsl.dialog;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -17,14 +17,15 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.digitalcranberry.gainsl.constants.Constants;
+import com.digitalcranberry.gainsl.GeoLocator;
+import com.digitalcranberry.gainsl.R;
+import com.digitalcranberry.gainsl.caching.PendingReportCounter;
 import com.digitalcranberry.gainsl.constants.ReportStatuses;
-import com.digitalcranberry.gainsl.db.CacheDbConstants;
-import com.digitalcranberry.gainsl.db.ReportCacheManager;
-import com.digitalcranberry.gainsl.map.MapManager;
+import com.digitalcranberry.gainsl.caching.CacheDbConstants;
+import com.digitalcranberry.gainsl.caching.ReportCacheManager;
 import com.digitalcranberry.gainsl.model.Report;
-import com.digitalcranberry.gainsl.model.events.ReportCreated;
-import com.digitalcranberry.gainsl.model.events.ReportSent;
+import com.digitalcranberry.gainsl.model.events.PendingReportCountUpdated;
+import com.digitalcranberry.gainsl.model.events.report.Created;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -34,25 +35,13 @@ import java.util.UUID;
 import de.greenrobot.event.EventBus;
 
 public class NewReportDialog extends DialogFragment {
+
     private ImageButton cameraButton;
     private Report report;
     private GeoLocator geo;
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
     private Uri imageUri;
     private ReportCacheManager saveReport;
-    private MapManager mapManager;
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            mapManager = (MapManager) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString() + " must implement Overridden methods");
-        }
-    }
-
-
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -67,9 +56,9 @@ public class NewReportDialog extends DialogFragment {
                         generateReportDetails(fragView);
                         geo.stopListening();
                         saveReport = new ReportCacheManager();
-                        saveReport.save(context,report, CacheDbConstants.UnsentReportEntry.TABLE_NAME);
-                        EventBus.getDefault().post(new ReportCreated(report));
-
+                        saveReport.save(context, report, CacheDbConstants.UnsentReportEntry.TABLE_NAME);
+                        EventBus.getDefault().post(new Created(report));
+                        PendingReportCounter.updatePendingReportCount(context, saveReport);
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -142,4 +131,6 @@ public class NewReportDialog extends DialogFragment {
             }
         }
     }
+
+
 }

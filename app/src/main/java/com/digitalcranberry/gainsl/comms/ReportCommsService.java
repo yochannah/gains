@@ -6,12 +6,12 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.digitalcranberry.gainsl.constants.Constants;
-import com.digitalcranberry.gainsl.db.CacheDbConstants;
-import com.digitalcranberry.gainsl.db.ReportCacheManager;
-import com.digitalcranberry.gainsl.map.MapManager;
+import com.digitalcranberry.gainsl.caching.CacheDbConstants;
+import com.digitalcranberry.gainsl.caching.ReportCacheManager;
 import com.digitalcranberry.gainsl.model.Report;
-import com.digitalcranberry.gainsl.model.events.ReportSent;
-import com.digitalcranberry.gainsl.model.events.ReportUpdated;
+import com.digitalcranberry.gainsl.model.events.report.Sent;
+import com.digitalcranberry.gainsl.model.events.report.Updated;
+import com.digitalcranberry.gainsl.model.events.report.ServerReportsReceived;
 import com.digitalcranberry.gainsl.settings.Settings;
 
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ public class ReportCommsService extends IntentService implements Constants, Send
     private List<Report> sentReports;
     private ReportCacheManager cacheManager;
     private List<Report> cachedReports;
-    private MapManager mapManager;
+
 
 
 
@@ -119,8 +119,7 @@ public class ReportCommsService extends IntentService implements Constants, Send
         //add map marker
         List<Report> reports = new ArrayList<>();
         reports.add(report);
-        EventBus.getDefault().post(new ReportSent(reports));
-        sentReports.add(report);
+        EventBus.getDefault().post(new Sent(reports));
     }
 
     /**
@@ -139,26 +138,25 @@ public class ReportCommsService extends IntentService implements Constants, Send
         newReports.addAll(remoteReportsList);
         existingReports.addAll(remoteReportsList);
 
-        //purge existing reports from the new list
-        newReports.removeAll(localReports);
-
         //add all existing reports to existing list, and only keep changed ones.
-        existingReports.removeAll(newReports);
         for (Report report : existingReports) {
             //get the matching report in temp
             int location = localReports.indexOf(report);
-            if(localReports.get(location).hasChanged(report)) {
+            if((location >=0) && localReports.get(location).hasChanged(report)) {
                 changedReports.add(report);
             }
         }
 
+        //purge existing reports from the new list
+        newReports.removeAll(localReports);
+
         if(remoteReportsList.size() > 0) {
-            Log.i(DEBUGTAG,remoteReportsList.size() + " server reports received.");
-            EventBus.getDefault().post(new ReportSent(newReports));
+            Log.i(DEBUGTAG, remoteReportsList.size() + " server reports received.");
+            EventBus.getDefault().post(new ServerReportsReceived(newReports));
         }
         if (changedReports.size() > 0) {
             Log.i(DEBUGTAG,remoteReportsList.size() + " server reports updated.");
-            EventBus.getDefault().post(new ReportUpdated(changedReports));
+            EventBus.getDefault().post(new Updated(changedReports));
         }
     }
 
@@ -171,7 +169,7 @@ public class ReportCommsService extends IntentService implements Constants, Send
 
     private List<Report> getAllReports(){
         List<Report> reports = new ArrayList<>();
-        reports.addAll(sentReports);
+        reports.addAll(cacheManager.getReports(this, CacheDbConstants.SentReportEntry.TABLE_NAME));
         reports.addAll(cachedReports);
         return reports;
     }

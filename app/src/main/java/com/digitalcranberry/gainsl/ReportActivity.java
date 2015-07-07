@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
@@ -14,25 +15,54 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.digitalcranberry.gainsl.comms.ReportCommsService;
+import com.digitalcranberry.gainsl.dialog.CacheTilesDialog;
+import com.digitalcranberry.gainsl.dialog.NewReportDialog;
 import com.digitalcranberry.gainsl.map.MapFragment;
-import com.digitalcranberry.gainsl.map.MapManager;
-import com.digitalcranberry.gainsl.model.Report;
+import com.digitalcranberry.gainsl.model.events.PendingReportCountUpdated;
+
+import de.greenrobot.event.EventBus;
 
 import static com.digitalcranberry.gainsl.constants.Constants.DEBUGTAG;
 
 
-public class ReportActivity extends ActionBarActivity implements MapManager {
-    private String TAG = "gainslDebug";
-    private MapFragment mapFrag;
+public class ReportActivity extends ActionBarActivity  {
+    private MapFragment mapFrag; //this is used, honest, but android studio is a fool
+
+    /*
+Binds Eventbus listener
+ */
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    /*
+    Unbinds Eventbus listener
+     */
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
+
+    /*
+Eventbus event handler for newreport creation. Adds map marker.
+ */
+    public void onEvent(PendingReportCountUpdated event){
+        Log.i(DEBUGTAG,"pending count updated");
+        TextView statusBar = (TextView) findViewById(R.id.statusbar);
+        statusBar.setText("Currently working offline. Unsent reports: " + event.reports + ". ");
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
-
         //setup map
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
@@ -48,6 +78,9 @@ public class ReportActivity extends ActionBarActivity implements MapManager {
         if(!isGPSEnabled()) {
             buildAlertMessageNoGps();
         }
+
+//        checkTileCache();
+
     }
 
     public void addNewReportClickListener(View view) {
@@ -70,8 +103,9 @@ public class ReportActivity extends ActionBarActivity implements MapManager {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Log.i(DEBUGTAG,"settings pressed. booya.");
+            //todo I3: launch settings.
             return true;
         }
 
@@ -83,7 +117,7 @@ public class ReportActivity extends ActionBarActivity implements MapManager {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        Log.i(TAG, data + ", result: " + resultCode + ", request: " + requestCode);
+        Log.i(DEBUGTAG, data + ", result: " + resultCode + ", request: " + requestCode);
 
 //        super.onActivityResult(requestCode,resultCode, data);
 
@@ -94,13 +128,13 @@ public class ReportActivity extends ActionBarActivity implements MapManager {
             toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
             toast.show();
 
-            Log.i(TAG, data.toString() + " " + resultCode);
+            Log.i(DEBUGTAG, data.toString() + " " + resultCode);
 
             reportFrag.onActivityResult(requestCode, resultCode, data);
 
         } else {
             Toast toast = Toast.makeText(getApplicationContext(), "What is the story, bob?" + data, Toast.LENGTH_LONG);
-            Log.i(TAG, Integer.toString(requestCode) + " " + resultCode);
+            Log.i(DEBUGTAG, Integer.toString(requestCode) + " " + resultCode);
             toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
             toast.show();
             super.onActivityResult(requestCode,resultCode, data);
@@ -133,14 +167,17 @@ public class ReportActivity extends ActionBarActivity implements MapManager {
         alert.show();
     }
 
-    /* Pass through map methods to map frag */
-    @Override
-    public void addMapMarker(Report report) {
-        mapFrag.addMapMarker(report);
-    }
 
-    @Override
-    public void updateMapMarker(Report report) {
-        mapFrag.addMapMarker(report);
+    private void checkTileCache() {
+        //check if this is the first run
+        //userprefs.
+        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+        if(!prefs.contains("setupComplete")) {
+            CacheTilesDialog d = new CacheTilesDialog();
+            d.show(getSupportFragmentManager(), "select_map_area");
+            //prefs.edit().putBoolean("setupComplete", true);
+        } else {
+            //TODO if it's not, check if all reports are within mapped areas.
+        }
     }
 }
