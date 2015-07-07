@@ -138,18 +138,17 @@ public class ReportCommsService extends IntentService implements Constants, Send
         newReports.addAll(remoteReportsList);
         existingReports.addAll(remoteReportsList);
 
-        //purge existing reports from the new list
-        newReports.removeAll(localReports);
-
         //add all existing reports to existing list, and only keep changed ones.
-        existingReports.removeAll(newReports);
         for (Report report : existingReports) {
             //get the matching report in temp
             int location = localReports.indexOf(report);
-            if(localReports.get(location).hasChanged(report)) {
+            if((location >=0) && localReports.get(location).hasChanged(report)) {
                 changedReports.add(report);
             }
         }
+
+        //purge existing reports from the new list
+        newReports.removeAll(localReports);
 
         if(remoteReportsList.size() > 0) {
             Log.i(DEBUGTAG, remoteReportsList.size() + " server reports received.");
@@ -170,7 +169,7 @@ public class ReportCommsService extends IntentService implements Constants, Send
 
     private List<Report> getAllReports(){
         List<Report> reports = new ArrayList<>();
-        reports.addAll(sentReports);
+        reports.addAll(cacheManager.getReports(this, CacheDbConstants.SentReportEntry.TABLE_NAME));
         reports.addAll(cachedReports);
         return reports;
     }

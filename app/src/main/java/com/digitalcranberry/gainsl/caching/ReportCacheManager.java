@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.util.Log;
@@ -29,7 +30,7 @@ public class ReportCacheManager implements Constants {
     }
 
     public void save(Context context, Report report, String tableName) {
-        
+
         CacheDbHelper cacheDbHelper = new CacheDbHelper(context);
         SQLiteDatabase cacher = cacheDbHelper.getWritableDatabase();
 
@@ -51,12 +52,16 @@ public class ReportCacheManager implements Constants {
         values.put(CacheDbConstants.ReportEntry.COL_NAME_LONGITUDE, report.getLongitude());
         values.put(CacheDbConstants.ReportEntry.COL_NAME_STATUS, report.getStatus());
 
-        cacher.insert(
-                tableName,
-                null,
-                values);
-        cacher.close();
-
+        try {
+            cacher.insert(
+                    tableName,
+                    null,
+                    values);
+            cacher.close();
+        } catch (SQLiteConstraintException e) {
+            Log.wtf(DEBUGTAG, "did you see this?!");
+            Log.e(DEBUGTAG, "Oh poo.", e);
+        }
     }
 
     public List<Report> getReports(Context context, String tableName){
