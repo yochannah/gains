@@ -21,6 +21,8 @@ import com.digitalcranberry.gainsl.constants.ReportStatuses;
 import com.digitalcranberry.gainsl.caching.CacheDbConstants;
 import com.digitalcranberry.gainsl.caching.ReportCacheManager;
 import com.digitalcranberry.gainsl.model.Report;
+import com.digitalcranberry.gainsl.model.events.map.AddOverlay;
+import com.digitalcranberry.gainsl.model.events.map.RemoveOverlay;
 import com.digitalcranberry.gainsl.model.events.report.Created;
 import com.digitalcranberry.gainsl.model.events.report.Sent;
 import com.digitalcranberry.gainsl.model.events.report.ServerReportsReceived;
@@ -33,6 +35,7 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.util.ResourceProxyImpl;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
+import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
@@ -112,6 +115,18 @@ public class MapFragment extends Fragment implements Constants {
             addMapMarker(report);
         }
         cacheManager.addSentReports(event.reports, this.getActivity());
+    }
+
+    /*
+Eventbus event handler for adding and removing overlays
+ */
+    public void onEvent(AddOverlay event){
+        addOverlay(event.overlay);
+        mMapView.invalidate();
+    }
+    public void onEvent(RemoveOverlay event){
+        removeOverlay(event.overlay);
+        mMapView.invalidate();
     }
 
     //to be refactored to preference UI later. Sane defaults set for now.
@@ -263,6 +278,13 @@ public class MapFragment extends Fragment implements Constants {
         return olItem;
     }
 
+    public void addOverlay(Overlay overlay){
+        mMapView.getOverlays().add(overlay);
+    }
+
+    public void removeOverlay(Overlay overlay){
+        mMapView.getOverlays().remove(overlay);
+    }
 
     private void prepareReportMarkers() {
         //get saved report markers
