@@ -15,19 +15,49 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.digitalcranberry.gainsl.comms.ReportCommsService;
 import com.digitalcranberry.gainsl.dialog.CacheTilesDialog;
 import com.digitalcranberry.gainsl.dialog.NewReportDialog;
 import com.digitalcranberry.gainsl.map.MapFragment;
-import com.digitalcranberry.gainsl.model.Report;
+import com.digitalcranberry.gainsl.model.events.PendingReportCountUpdated;
+
+import de.greenrobot.event.EventBus;
 
 import static com.digitalcranberry.gainsl.constants.Constants.DEBUGTAG;
 
 
 public class ReportActivity extends ActionBarActivity  {
     private MapFragment mapFrag; //this is used, honest, but android studio is a fool
+
+    /*
+Binds Eventbus listener
+ */
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    /*
+    Unbinds Eventbus listener
+     */
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
+
+    /*
+Eventbus event handler for newreport creation. Adds map marker.
+ */
+    public void onEvent(PendingReportCountUpdated event){
+        Log.i(DEBUGTAG,"pending count updated");
+        TextView statusBar = (TextView) findViewById(R.id.statusbar);
+        statusBar.setText("Currently working offline. Unsent reports: " + event.reports + ". ");
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

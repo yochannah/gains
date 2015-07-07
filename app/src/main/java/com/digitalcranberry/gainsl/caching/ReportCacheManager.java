@@ -3,16 +3,20 @@ package com.digitalcranberry.gainsl.caching;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.util.Log;
 
 import com.digitalcranberry.gainsl.constants.Constants;
 import com.digitalcranberry.gainsl.model.Report;
+import com.digitalcranberry.gainsl.model.events.PendingReportCountUpdated;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by yo on 14/06/15.
@@ -25,6 +29,7 @@ public class ReportCacheManager implements Constants {
     }
 
     public void save(Context context, Report report, String tableName) {
+        
         CacheDbHelper cacheDbHelper = new CacheDbHelper(context);
         SQLiteDatabase cacher = cacheDbHelper.getWritableDatabase();
 
@@ -51,6 +56,7 @@ public class ReportCacheManager implements Constants {
                 null,
                 values);
         cacher.close();
+
     }
 
     public List<Report> getReports(Context context, String tableName){
@@ -100,6 +106,17 @@ public class ReportCacheManager implements Constants {
         return reports;
     }
 
+    public long getNumOfReports(String tableName, Context context){
+        long reportNum = 0;
+
+        CacheDbHelper cacheDbHelper = new CacheDbHelper(context);
+        SQLiteDatabase cacheReader = cacheDbHelper.getReadableDatabase();
+        reportNum = DatabaseUtils.queryNumEntries(cacheReader,tableName);
+        cacheReader.close();
+
+        return reportNum;
+    }
+
     public void moveToSentDb(List<Report> reportsList, Context context){
         Log.i(DEBUGTAG, "Moving " + reportsList.size() + " sent reports from unsent cache to sent db.");
         String selection = CacheDbConstants.UnsentReportEntry._ID + " LIKE ?";
@@ -115,7 +132,6 @@ public class ReportCacheManager implements Constants {
         }
 
         reportsList.clear();
-
         cacheKiller.close();
     }
 

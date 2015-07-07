@@ -50,4 +50,6 @@ public class CacheDbConstants {
     public static final String SQL_DELETE_SENT_ENTRIES =
             "DROP TABLE IF EXISTS " + SentReportEntry.TABLE_NAME;
 
+    public static final String SQL_COUNT_TABLE = "select count(*) from ";
+
 }

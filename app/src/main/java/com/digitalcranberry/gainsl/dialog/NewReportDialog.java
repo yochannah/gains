@@ -23,6 +23,7 @@ import com.digitalcranberry.gainsl.constants.ReportStatuses;
 import com.digitalcranberry.gainsl.caching.CacheDbConstants;
 import com.digitalcranberry.gainsl.caching.ReportCacheManager;
 import com.digitalcranberry.gainsl.model.Report;
+import com.digitalcranberry.gainsl.model.events.PendingReportCountUpdated;
 import com.digitalcranberry.gainsl.model.events.report.Created;
 
 import java.io.File;
@@ -54,9 +55,9 @@ public class NewReportDialog extends DialogFragment {
                         generateReportDetails(fragView);
                         geo.stopListening();
                         saveReport = new ReportCacheManager();
-                        saveReport.save(context,report, CacheDbConstants.UnsentReportEntry.TABLE_NAME);
+                        saveReport.save(context, report, CacheDbConstants.UnsentReportEntry.TABLE_NAME);
                         EventBus.getDefault().post(new Created(report));
-
+                        updatePendingReportCount(context, saveReport);
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -87,6 +88,11 @@ public class NewReportDialog extends DialogFragment {
 
         });
 
+    }
+
+    private void updatePendingReportCount(Context context, ReportCacheManager cacheManager){
+        long numOfReports = cacheManager.getNumOfReports(CacheDbConstants.UnsentReportEntry.TABLE_NAME, context);
+        EventBus.getDefault().post(new PendingReportCountUpdated(numOfReports));
     }
 
     private void generateReportDetails(View view) {
