@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.digitalcranberry.gainsl.R;
+import com.digitalcranberry.gainsl.caching.PendingReportCounter;
 import com.digitalcranberry.gainsl.caching.TileCacheManager;
 import com.digitalcranberry.gainsl.constants.Constants;
 import com.digitalcranberry.gainsl.constants.ReportStatuses;
@@ -99,11 +100,14 @@ public class MapFragment extends Fragment implements Constants {
     Eventbus event handler for changing map marker to 'sent' colour when sent
      */
     public void onEvent(Sent event){
+
+        Context context = this.getActivity();
         ReportCacheManager cacheManager = new ReportCacheManager();
         for (Report report : event.reports) {
             updateMapMarker(report);
         }
-        cacheManager.moveToSentDb(event.reports, this.getActivity());
+        cacheManager.moveToSentDb(event.reports, context);
+        PendingReportCounter.updatePendingReportCount(context);
     }
 
     /*

@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.digitalcranberry.gainsl.GeoLocator;
 import com.digitalcranberry.gainsl.R;
+import com.digitalcranberry.gainsl.caching.PendingReportCounter;
 import com.digitalcranberry.gainsl.constants.ReportStatuses;
 import com.digitalcranberry.gainsl.caching.CacheDbConstants;
 import com.digitalcranberry.gainsl.caching.ReportCacheManager;
@@ -57,7 +58,7 @@ public class NewReportDialog extends DialogFragment {
                         saveReport = new ReportCacheManager();
                         saveReport.save(context, report, CacheDbConstants.UnsentReportEntry.TABLE_NAME);
                         EventBus.getDefault().post(new Created(report));
-                        updatePendingReportCount(context, saveReport);
+                        PendingReportCounter.updatePendingReportCount(context, saveReport);
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -88,11 +89,6 @@ public class NewReportDialog extends DialogFragment {
 
         });
 
-    }
-
-    private void updatePendingReportCount(Context context, ReportCacheManager cacheManager){
-        long numOfReports = cacheManager.getNumOfReports(CacheDbConstants.UnsentReportEntry.TABLE_NAME, context);
-        EventBus.getDefault().post(new PendingReportCountUpdated(numOfReports));
     }
 
     private void generateReportDetails(View view) {
