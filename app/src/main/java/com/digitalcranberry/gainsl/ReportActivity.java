@@ -49,7 +49,7 @@ public class ReportActivity extends ActionBarActivity  {
             buildAlertMessageNoGps();
         }
 
-        checkTileCache();
+//        checkTileCache();
 
     }
 
@@ -73,8 +73,9 @@ public class ReportActivity extends ActionBarActivity  {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Log.i(DEBUGTAG,"settings pressed. booya.");
+            //todo I3: launch settings.
             return true;
         }
 
@@ -142,9 +143,9 @@ public class ReportActivity extends ActionBarActivity  {
         //userprefs.
         SharedPreferences prefs = getPreferences(MODE_PRIVATE);
         if(!prefs.contains("setupComplete")) {
-            //TODO if it is, ask them if they want to add a cache area
             CacheTilesDialog d = new CacheTilesDialog();
-            d.show(getSupportFragmentManager(),"select_map_area");
+            d.show(getSupportFragmentManager(), "select_map_area");
+            //prefs.edit().putBoolean("setupComplete", true);
         } else {
             //TODO if it's not, check if all reports are within mapped areas.
         }

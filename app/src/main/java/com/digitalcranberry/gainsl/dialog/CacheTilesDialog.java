@@ -56,7 +56,7 @@ public class CacheTilesDialog extends DialogFragment {
         builder.setView(fragView)
                 .setPositiveButton(R.string.ok_got_it, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-
+                        //Todo save the whales. Or, alternatively, save the preference so this doesn't come back up
                     }
                 });
 
