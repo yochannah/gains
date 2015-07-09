@@ -140,14 +140,9 @@ public class Report {
 
     @Override
     public String toString() {
-        return "Report{" +
-                "content='" + content + '\'' +
-                "lat='" + latitude + '\'' +
-                "long='" + longitude + '\'' +
-                "long='" + longitude + '\'' +
-                ", date=" + date +
-                ", status='" + status + '\'' +
-                '}';
+        return "Report: " + content + '\n' +
+                "Location=" + latitude + ", " +
+                longitude;
     }
 
     /* Loose report comparison based on id alone */
