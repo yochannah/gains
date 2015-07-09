@@ -108,7 +108,7 @@ public class MapFragment extends Fragment implements Constants {
         }
         cacheManager.moveToSentDb(event.reports, context);
         PendingReportCounter.updatePendingReportCount(context);
-    }
+        }
 
     /*
     Eventbus event handler for en-masse adding of server-side reports
