@@ -68,7 +68,7 @@ public class ReportDetailsDialog extends DialogFragment {
         reportDetails.setText(snippet);
 
         builder.setView(fragView)
-                .setPositiveButton(R.string.send, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dismiss();
                     }

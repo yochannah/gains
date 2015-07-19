@@ -24,5 +24,6 @@
     <string name="setup_your_map">Thanks for installing! To save maps for offline use later, and to set up your synchronisation interval, press menu and head to the app settings.</string>
     <string name="ok_got_it">Ok, got it!</string>
     <string name="inital_setup_required">Offline setup required</string>
+    <string name="close">Close</string>
 
 </resources>

@@ -17,8 +17,9 @@ public class ReportOverlayItem extends OverlayItem {
     }
 
     public ReportOverlayItem(Report report) {
-        super(report.getId(), "Report", report.getContent(), report.getGeopoint());
+        super(report.getId(), "Report", report.toString(), report.getGeopoint());
     }
+
 
     @Override
     public boolean equals(Object o) {
