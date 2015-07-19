@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +23,8 @@ import com.digitalcranberry.gainsl.constants.Constants;
 import com.digitalcranberry.gainsl.constants.ReportStatuses;
 import com.digitalcranberry.gainsl.caching.CacheDbConstants;
 import com.digitalcranberry.gainsl.caching.ReportCacheManager;
+import com.digitalcranberry.gainsl.dialog.NewReportDialog;
+import com.digitalcranberry.gainsl.dialog.ReportDetailsDialog;
 import com.digitalcranberry.gainsl.model.Report;
 import com.digitalcranberry.gainsl.model.events.map.AddOverlay;
 import com.digitalcranberry.gainsl.model.events.map.RemoveOverlay;
@@ -310,8 +314,19 @@ Eventbus event handler for adding and removing overlays
 
             @Override
             public boolean onItemSingleTapUp(int index, OverlayItem item) {
-                Toast.makeText(getActivity(),item.getSnippet(),
-                        Toast.LENGTH_LONG).show();
+                ReportDetailsDialog d = new ReportDetailsDialog();
+                d.setSnippet(item.getSnippet());
+                d.show(getFragmentManager(), "ReportDetailsDialog");
+
+//                FragmentTransaction ft = getFragmentManager().beginTransaction();
+//                Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+//                if (prev != null) {
+//                    ft.remove(prev);
+//                }
+//                ft.addToBackStack(null);
+//
+//                DialogFragment newFragment = ReportDetailsDialog.newInstance(item.getSnippet());
+//                newFragment.show("dialog");
 
                 return true;
             }

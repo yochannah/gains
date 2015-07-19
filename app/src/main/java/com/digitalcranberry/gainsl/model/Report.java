@@ -2,6 +2,8 @@ package com.digitalcranberry.gainsl.model;
 
 import android.location.Location;
 import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.digitalcranberry.gainsl.constants.ReportStatuses;
 import com.google.gson.Gson;
@@ -16,7 +18,7 @@ import org.osmdroid.util.GeoPoint;
 import java.lang.reflect.Type;
 import java.util.Date;
 
-public class Report {
+public class Report implements Parcelable {
 
     private String content;
     private Date date;
@@ -200,4 +202,58 @@ public class Report {
     public GeoPoint getGeopoint() {
         return new GeoPoint(getLatitude(),getLongitude());
     }
+
+    protected Report(Parcel in) {
+        content = in.readString();
+        long tmpDate = in.readLong();
+        date = tmpDate != -1 ? new Date(tmpDate) : null;
+        status = in.readString();
+        latitude = in.readByte() == 0x00 ? null : in.readDouble();
+        longitude = in.readByte() == 0x00 ? null : in.readDouble();
+        id = in.readString();
+        image = (Uri) in.readValue(Uri.class.getClassLoader());
+        orgName = in.readString();
+        reporter = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(content);
+        dest.writeLong(date != null ? date.getTime() : -1L);
+        dest.writeString(status);
+        if (latitude == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeDouble(latitude);
+        }
+        if (longitude == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeDouble(longitude);
+        }
+        dest.writeString(id);
+        dest.writeValue(image);
+        dest.writeString(orgName);
+        dest.writeString(reporter);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Report> CREATOR = new Parcelable.Creator<Report>() {
+        @Override
+        public Report createFromParcel(Parcel in) {
+            return new Report(in);
+        }
+
+        @Override
+        public Report[] newArray(int size) {
+            return new Report[size];
+        }
+    };
 }
