@@ -26,4 +26,25 @@
     <string name="inital_setup_required">Offline setup required</string>
     <string name="close">Close</string>
 
+    <string-array name="prefs_update_frequency_entry_values">
+        <item>Use Wifi only</item>
+        <item>1 hour</item>
+        <item>2 hours</item>
+        <item>4 hours</item>
+        <item>6 hours</item>
+        <item>12 hours</item>
+        <item>24 hours</item>
+    </string-array>
+    <string-array name="prefs_update_frequency_values">
+        <item>wifi</item>
+        <item>1</item>
+        <item>2</item>
+        <item>4</item>
+        <item>6</item>
+        <item>12</item>
+        <item>24</item>
+    </string-array>
+    <string name="pref_summary_update_frequency">Less frequent updates means longer battery life.</string>
+    <string name="pref_title_update_frequency">Update frequency</string>
+
 </resources>

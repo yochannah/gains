@@ -104,8 +104,7 @@ Eventbus event handler for newreport creation. Adds map marker.
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
-            Log.i(DEBUGTAG,"settings pressed. booya.");
-            //todo I3: launch settings.
+            startActivity(new Intent(this, SettingsActivity.class));
             return true;
         }
 

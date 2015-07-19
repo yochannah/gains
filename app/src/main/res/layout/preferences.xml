@@ -1,0 +1,15 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:layout_height="fill_parent" android:layout_width="fill_parent">
+
+    <ListPreference
+        android:key="update_frequency"
+        android:summary="@string/pref_summary_update_frequency"
+        android:title="@string/pref_title_update_frequency"
+        android:entries="@array/prefs_update_frequency_values"
+        android:entryValues="@array/prefs_update_frequency_values" />
+    <!--ListPreference
+        android:key="offline_user_map"
+        android:summary="@string/pref_summary_update_frequency"
+        android:title="@string/pref_title_update_frequency"
+        android:entries="prefs_update_frequency_values" /-->
+
+</PreferenceScreen>

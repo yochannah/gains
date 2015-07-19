@@ -212,7 +212,7 @@ Eventbus event handler for adding and removing overlays
         mLocationOverlay.enableFollowLocation();
         mCompassOverlay.enableCompass();
 
-        setHasOptionsMenu(true);
+        //setHasOptionsMenu(true);
 
     }
 
