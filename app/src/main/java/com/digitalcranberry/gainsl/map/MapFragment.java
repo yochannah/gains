@@ -226,9 +226,9 @@ Eventbus event handler for adding and removing overlays
 
     public void initializeMarkerDrawables() {
         markerDrawables = new HashMap<>();
-        markerDrawables.put(ReportStatuses.REPORT_SENT, R.drawable.ic_action_place_orange);
-        markerDrawables.put(ReportStatuses.REPORT_NEW, R.drawable.ic_action_place_orange);
-        markerDrawables.put(ReportStatuses.REPORT_UNSENT, R.drawable.ic_action_place_blue);
+        markerDrawables.put(ReportStatuses.REPORT_SENT, R.drawable.pin1);
+        markerDrawables.put(ReportStatuses.REPORT_NEW, R.drawable.pin1);
+        markerDrawables.put(ReportStatuses.REPORT_UNSENT, R.drawable.pin2);
     }
 
     @Override
