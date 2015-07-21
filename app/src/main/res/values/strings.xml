@@ -28,6 +28,7 @@
 
     <string-array name="prefs_update_frequency_entry_values">
         <item>Use Wifi only</item>
+        <item>1 minute</item>
         <item>1 hour</item>
         <item>2 hours</item>
         <item>4 hours</item>
@@ -35,14 +36,15 @@
         <item>12 hours</item>
         <item>24 hours</item>
     </string-array>
-    <string-array name="prefs_update_frequency_values">
+    <string-array name="prefs_update_frequency_values_minutes">
         <item>wifi</item>
         <item>1</item>
-        <item>2</item>
-        <item>4</item>
-        <item>6</item>
-        <item>12</item>
-        <item>24</item>
+        <item>60</item>
+        <item>120</item>
+        <item>240</item>
+        <item>360</item>
+        <item>720</item>
+        <item>1440</item>
     </string-array>
     <string name="pref_summary_update_frequency">Less frequent updates means longer battery life.</string>
     <string name="pref_title_update_frequency">Update frequency</string>

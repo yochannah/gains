@@ -23,6 +23,7 @@ import com.digitalcranberry.gainsl.dialog.CacheTilesDialog;
 import com.digitalcranberry.gainsl.dialog.NewReportDialog;
 import com.digitalcranberry.gainsl.map.MapFragment;
 import com.digitalcranberry.gainsl.model.events.PendingReportCountUpdated;
+import com.digitalcranberry.gainsl.settings.SettingsActivity;
 
 import de.greenrobot.event.EventBus;
 

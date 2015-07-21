@@ -12,7 +12,7 @@ import com.digitalcranberry.gainsl.model.Report;
 import com.digitalcranberry.gainsl.model.events.report.Sent;
 import com.digitalcranberry.gainsl.model.events.report.Updated;
 import com.digitalcranberry.gainsl.model.events.report.ServerReportsReceived;
-import com.digitalcranberry.gainsl.settings.Settings;
+import com.digitalcranberry.gainsl.settings.SettingsManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +53,8 @@ public class ReportCommsService extends IntentService implements Constants, Send
      * and removes successfully sent items.
      **/
     public void activateReportMonitor() {
-        int interval = Settings.getNetworkSendInterval();
+        int interval = SettingsManager.getNetworkSendInterval(this);
+        Log.i(DEBUGTAG, "Starting report sync service with interval of " + interval + " minutes");
         final Context context = this;
 
         final Runnable saver = new Runnable() {

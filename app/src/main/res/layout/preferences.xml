@@ -5,7 +5,8 @@
         android:summary="@string/pref_summary_update_frequency"
         android:title="@string/pref_title_update_frequency"
         android:entries="@array/prefs_update_frequency_entry_values"
-        android:entryValues="@array/prefs_update_frequency_values" />
+        android:persistent="true"
+        android:entryValues="@array/prefs_update_frequency_values_minutes" />
     <!--ListPreference
         android:key="offline_user_map"
         android:summary="@string/pref_summary_update_frequency"

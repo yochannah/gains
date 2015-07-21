@@ -3,15 +3,15 @@
     <!-- These settings headers are only used on tablets. -->
 
     <header
-        android:fragment="com.digitalcranberry.gainsl.SettingsActivity$GeneralPreferenceFragment"
+        android:fragment="com.digitalcranberry.gainsl.settings.SettingsActivity$GeneralPreferenceFragment"
         android:title="@string/pref_header_general" />
 
     <header
-        android:fragment="com.digitalcranberry.gainsl.SettingsActivity$NotificationPreferenceFragment"
+        android:fragment="com.digitalcranberry.gainsl.settings.SettingsActivity$NotificationPreferenceFragment"
         android:title="@string/pref_header_notifications" />
 
     <header
-        android:fragment="com.digitalcranberry.gainsl.SettingsActivity$DataSyncPreferenceFragment"
+        android:fragment="com.digitalcranberry.gainsl.settings.SettingsActivity$DataSyncPreferenceFragment"
         android:title="@string/pref_header_data_sync" />
 
 </preference-headers>

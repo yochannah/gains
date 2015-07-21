@@ -1,4 +1,4 @@
-package com.digitalcranberry.gainsl;
+package com.digitalcranberry.gainsl.settings;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -18,6 +18,8 @@ import android.preference.RingtonePreference;
 import android.text.TextUtils;
 
 
+import com.digitalcranberry.gainsl.R;
+
 import java.util.List;
 
 /**
@@ -27,9 +29,9 @@ import java.util.List;
  * the list of settings.
  * <p/>
  * See <a href="http://developer.android.com/design/patterns/settings.html">
- * Android Design: Settings</a> for design guidelines and the <a
- * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
- * API Guide</a> for more information on developing a Settings UI.
+ * Android Design: SettingsManager</a> for design guidelines and the <a
+ * href="http://developer.android.com/guide/topics/ui/settings.html">SettingsManager
+ * API Guide</a> for more information on developing a SettingsManager UI.
  */
 public class SettingsActivity extends PreferenceActivity {
     @Override
