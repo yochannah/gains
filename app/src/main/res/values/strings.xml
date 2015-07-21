@@ -21,6 +21,7 @@
     <string name="select_map_area">Select map area</string>
     <string name="select_map_area_prompt">Would you like to download map tiles for an offline area now, before you go somewhere without signal?</string>
     <string name="no_maptiles_cached">No map tiles cached</string>
+    <string name="prefs_cache_location">Select cache location</string>
     <string name="setup_your_map">Thanks for installing! To save maps for offline use later, and to set up your synchronisation interval, press menu and head to the app settings.</string>
     <string name="ok_got_it">Ok, got it!</string>
     <string name="inital_setup_required">Offline setup required</string>
@@ -48,5 +49,8 @@
     </string-array>
     <string name="pref_summary_update_frequency">Less frequent updates means longer battery life.</string>
     <string name="pref_title_update_frequency">Update frequency</string>
+    <string name="title_activity_cached_map_selector">CachedMapSelector</string>
+
+    <string name="test">Hello world!</string>
 
 </resources>
