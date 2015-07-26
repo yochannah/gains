@@ -8,7 +8,6 @@ import android.util.Log;
 public class PendingReportCountUpdated {
     public long reports;
     public PendingReportCountUpdated(long reportNum){
-        Log.i("SDFSDFSFSf","Hello, we're updating the counter to " + reportNum);
         this.reports = reportNum;
     }
 }
