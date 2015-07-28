@@ -1,19 +1,27 @@
 package com.digitalcranberry.gainsl.settings;
 
-import android.preference.PreferenceActivity;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.digitalcranberry.gainsl.R;
+import com.digitalcranberry.gainsl.map.SelectCacheMapFragment;
 
 public class CachedMapSelector extends ActionBarActivity {
+    private SelectCacheMapFragment mapFrag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cached_map_selector);
+        //setup map
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.select_map_placeholder, mapFrag = new SelectCacheMapFragment())
+                    .commit();
+        }
+
     }
 
     @Override

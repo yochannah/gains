@@ -3,13 +3,7 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="200dp"
     android:gravity="right"
-    android:id="@+id/new_report_dialog_fragment">
+    android:id="@+id/select_map_fragment">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        style="@style/Base.TextAppearance.AppCompat.Light.Widget.PopupMenu.Large"
-        android:padding="10dp"
-        android:text="@string/setup_your_map"/>
 
 </RelativeLayout>

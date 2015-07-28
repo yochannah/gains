@@ -9,4 +9,10 @@
     <TextView android:text="@string/test" android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/select_map_placeholder"></FrameLayout>
+
+
 </RelativeLayout>

@@ -16,16 +16,20 @@ import com.digitalcranberry.gainsl.caching.TileCacheManager;
 import com.digitalcranberry.gainsl.constants.Constants;
 import com.digitalcranberry.gainsl.model.events.map.AddOverlay;
 import com.digitalcranberry.gainsl.model.events.map.RemoveOverlay;
+import com.digitalcranberry.gainsl.model.events.map.TouchEvent;
 
 import org.osmdroid.tileprovider.tilesource.ITileSource;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.tileprovider.util.CloudmadeUtil;
 import org.osmdroid.util.BoundingBoxE6;
+import org.osmdroid.util.GeoPoint;
 import org.osmdroid.util.ResourceProxyImpl;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
+import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
+import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.util.ArrayList;
 
@@ -37,6 +41,9 @@ import de.greenrobot.event.EventBus;
 public class SelectCacheMapFragment extends Fragment implements Constants {
     private ResourceProxyImpl mResourceProxy;
     private MapView mMapView;
+    private MapEventsOverlay mMapEventOverlay;
+    private MyLocationNewOverlay mLocationOverlay;
+
     private SharedPreferences mPrefs;
 
     private ScaleBarOverlay mScaleBarOverlay;
@@ -72,6 +79,9 @@ Eventbus event handler for adding and removing overlays
         removeOverlay(event.overlay);
         mMapView.invalidate();
     }
+    public void onEvent(TouchEvent event){
+        Log.i(DEBUGTAG,event.point.toString());
+    }
 
     //to be refactored to preference UI later. Sane defaults set for now.
     private void setPrefs() {
@@ -79,8 +89,11 @@ Eventbus event handler for adding and removing overlays
         mPrefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = mPrefs.edit();
         editor.putInt(PREFS_ZOOM_LEVEL, 7);
-        editor.putInt(PREFS_SCROLL_Y, -1);
-        editor.putInt(PREFS_SCROLL_X, 53);
+        editor.putInt(PREFS_SCROLL_Y, 53);
+        editor.putInt(PREFS_SCROLL_X, -1);
+        editor.putInt(PREFS_DEFAULT_SCROLL_Y, 53);
+        editor.putInt(PREFS_DEFAULT_SCROLL_X, -1);
+
         editor.commit();
     }
 
@@ -93,9 +106,11 @@ Eventbus event handler for adding and removing overlays
         setPrefs();
         mMapView = new MapView(inflater.getContext(), 256, mResourceProxy);
 
+        mMapView.getController().setZoom(mPrefs.getInt(PREFS_ZOOM_LEVEL,10));
+
         //test bb.
-        BoundingBoxE6 bb = new BoundingBoxE6(-43.423, 172.728, -43.611, 172.455);
-        cacheTiles(bb);
+       // BoundingBoxE6 bb = new BoundingBoxE6(-43.423, 172.728, -43.611, 172.455);
+       // cacheTiles(bb);
 
         return mMapView;
     }
@@ -121,16 +136,32 @@ Eventbus event handler for adding and removing overlays
             CloudmadeUtil.retrieveCloudmadeKey(context.getApplicationContext());
         }
 
+        mMapEventOverlay = new MapEventsOverlay(context);
+
 
         mScaleBarOverlay = new ScaleBarOverlay(context);
         mScaleBarOverlay.setCentred(true);
         mScaleBarOverlay.setScaleBarOffset(dm.widthPixels / 2, 10);
 
+        this.mLocationOverlay = new MyLocationNewOverlay(context, new GpsMyLocationProvider(context),
+                mMapView);
+
+
+
         mMapView.setBuiltInZoomControls(true);
         mMapView.setMultiTouchControls(true);
+
         mMapView.getOverlays().add(this.mScaleBarOverlay);
+        mMapView.getOverlays().add(this.mMapEventOverlay);
+        mMapView.getOverlays().add(this.mLocationOverlay);
+
+        mLocationOverlay.enableMyLocation();
+        mLocationOverlay.enableFollowLocation();
 
         mMapView.getController().setZoom(mPrefs.getInt(PREFS_ZOOM_LEVEL, 1));
+        //todo: remove UK hardcode
+       // mMapView.scrollTo(mPrefs.getInt(PREFS_SCROLL_X, -1),mPrefs.getInt(PREFS_SCROLL_X,53));
+        mMapView.getController().setCenter(new GeoPoint(mPrefs.getInt(PREFS_DEFAULT_SCROLL_X, -1),mPrefs.getInt(PREFS_DEFAULT_SCROLL_Y,53)));
     }
 
     @Override
