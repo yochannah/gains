@@ -14,5 +14,17 @@
         android:layout_height="match_parent"
         android:id="@+id/select_map_placeholder"></FrameLayout>
 
+    <ImageButton
+        android:src="@drawable/ic_action_save"
+        android:id="@+id/save_cache_button"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:onClick="saveMapCache"
+        android:background="@drawable/round_button"
+        android:gravity="center_vertical|center_horizontal"
+        android:hint="@string/hint_report_add_photo"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:textColor="#fff" />
 
 </RelativeLayout>

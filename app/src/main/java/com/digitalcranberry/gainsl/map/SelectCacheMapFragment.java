@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 
 import com.digitalcranberry.gainsl.caching.TileCacheManager;
 import com.digitalcranberry.gainsl.constants.Constants;
+import com.digitalcranberry.gainsl.dialog.NewReportDialog;
 import com.digitalcranberry.gainsl.model.events.map.AddOverlay;
 import com.digitalcranberry.gainsl.model.events.map.RemoveOverlay;
 import com.digitalcranberry.gainsl.model.events.map.TouchEvent;
@@ -114,7 +115,7 @@ Eventbus event handler for adding and removing overlays
         mMapView.invalidate();
     }
 
-    private void saveCache(){
+    public void saveMapCache(){
         ArrayList<GeoPoint> points = new ArrayList<>(this.mCacheArea.getPoints());
         BoundingBoxE6 bb = BoundingBoxE6.fromGeoPoints(points);
         cacheTiles(bb);
@@ -143,15 +144,10 @@ Eventbus event handler for adding and removing overlays
         setPrefs();
         mMapView = new MapView(inflater.getContext(), 256, mResourceProxy);
 
-        mMapView.getController().setZoom(mPrefs.getInt(PREFS_ZOOM_LEVEL,10));
-
-        //test bb.
-       // BoundingBoxE6 bb = new BoundingBoxE6(-43.423, 172.728, -43.611, 172.455);
-       // cacheTiles(bb);
+        mMapView.getController().setZoom(mPrefs.getInt(PREFS_ZOOM_LEVEL, 10));
 
         return mMapView;
     }
-
     /**
      * Adds markers and various overlay layers to maps.
      */
@@ -247,7 +243,7 @@ Eventbus event handler for adding and removing overlays
 
     private void cacheTiles(BoundingBoxE6 bb) {
         TileCacheManager tcm = new TileCacheManager(mMapView);
-        tcm.downloadAreaAsync(this.getActivity(),bb,10,10);
+        tcm.downloadAreaAsync(this.getActivity(),bb,8,14);
         Log.i(DEBUGTAG,"caching!!");
     }
 }

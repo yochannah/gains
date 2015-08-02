@@ -5,5 +5,4 @@
     android:gravity="right"
     android:id="@+id/select_map_fragment">
 
-
 </RelativeLayout>

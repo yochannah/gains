@@ -1,9 +1,13 @@
 package com.digitalcranberry.gainsl.settings;
 
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.digitalcranberry.gainsl.R;
 import com.digitalcranberry.gainsl.map.SelectCacheMapFragment;
@@ -30,6 +34,11 @@ public class CachedMapSelector extends ActionBarActivity {
         getMenuInflater().inflate(R.menu.menu_cached_map_selector, menu);
         return true;
     }
+
+    public void saveMapCache(View view) {
+        mapFrag.saveMapCache();
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
