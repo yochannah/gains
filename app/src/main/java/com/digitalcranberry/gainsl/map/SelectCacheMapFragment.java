@@ -36,6 +36,7 @@ import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import de.greenrobot.event.EventBus;
 
@@ -111,6 +112,12 @@ Eventbus event handler for adding and removing overlays
         mCacheArea = newArea;
 
         mMapView.invalidate();
+    }
+
+    private void saveCache(){
+        ArrayList<GeoPoint> points = new ArrayList<>(this.mCacheArea.getPoints());
+        BoundingBoxE6 bb = BoundingBoxE6.fromGeoPoints(points);
+        cacheTiles(bb);
     }
 
     //to be refactored to preference UI later. Sane defaults set for now.
