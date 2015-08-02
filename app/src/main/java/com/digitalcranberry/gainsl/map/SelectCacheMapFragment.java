@@ -2,6 +2,8 @@ package com.digitalcranberry.gainsl.map;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
@@ -18,6 +20,8 @@ import com.digitalcranberry.gainsl.model.events.map.AddOverlay;
 import com.digitalcranberry.gainsl.model.events.map.RemoveOverlay;
 import com.digitalcranberry.gainsl.model.events.map.TouchEvent;
 
+import org.osmdroid.api.IGeoPoint;
+import org.osmdroid.bonuspack.overlays.Polygon;
 import org.osmdroid.tileprovider.tilesource.ITileSource;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.tileprovider.util.CloudmadeUtil;
@@ -43,6 +47,7 @@ public class SelectCacheMapFragment extends Fragment implements Constants {
     private MapView mMapView;
     private MapEventsOverlay mMapEventOverlay;
     private MyLocationNewOverlay mLocationOverlay;
+    private Polygon mCacheArea;
 
     private SharedPreferences mPrefs;
 
@@ -80,7 +85,32 @@ Eventbus event handler for adding and removing overlays
         mMapView.invalidate();
     }
     public void onEvent(TouchEvent event){
-        Log.i(DEBUGTAG,event.point.toString());
+        Log.i(DEBUGTAG, event.point.toString());
+        addCacheCircle(event.point);
+    }
+
+    /**
+     * adds one cache area and removes any previous ones. We don't want more than one.
+     * Because the phone will get full up.
+     */
+    private void addCacheCircle(GeoPoint p) {
+
+        //create area with style
+        Polygon newArea = new Polygon(getActivity().getApplicationContext());
+        newArea.setPoints(Polygon.pointsAsRect(p, 6000.0, 6000.0));
+        newArea.setFillColor(0x12121212);
+        newArea.setStrokeColor(Color.RED);
+        newArea.setStrokeWidth(2);
+
+        //grab the old circle and remove from the map.
+        Polygon oldArea = mCacheArea;
+        mMapView.getOverlays().remove(oldArea);
+
+        //save the new circle.
+        mMapView.getOverlays().add(newArea);
+        mCacheArea = newArea;
+
+        mMapView.invalidate();
     }
 
     //to be refactored to preference UI later. Sane defaults set for now.
