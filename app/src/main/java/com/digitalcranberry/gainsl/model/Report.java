@@ -21,7 +21,8 @@ import java.util.Date;
 public class Report implements Parcelable {
 
     private String content;
-    private Date date;
+    private Date date; //the report indexes in this in the Google DataStore, so re-naming to something useful breaks it. Grr.
+    private Date dateCaptured;
     private String status;
     private Double latitude;
     private Double longitude;
@@ -33,11 +34,14 @@ public class Report implements Parcelable {
     private String reporter;
 
 
-    public Report() {}
+    public Report() {
+        //if no date explicitly stated, we'll assume it's a brand new report
+        this.dateCaptured = new Date();
+    }
 
-    public Report(String id, String content, Date date, String status, Double latitude, Double longitude, Uri image) {
+    public Report(String id, String content, Date dateCaptured, String status, Double latitude, Double longitude, Uri image) {
         this.content = content;
-        this.date = date;
+        this.dateCaptured = dateCaptured;
         this.status = status;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -45,6 +49,14 @@ public class Report implements Parcelable {
         this.image = image;
         this.orgName = "OU";
         this.reporter = "April";
+    }
+
+    public Date getDateCaptured() {
+        return dateCaptured;
+    }
+
+    public void setDateCaptured(Date dateCaptured) {
+        this.dateCaptured = dateCaptured;
     }
 
     public String getId() {
@@ -121,11 +133,11 @@ public class Report implements Parcelable {
         this.status = aStatus;
     }
 
-    public Date getDateCreated() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDateCreated(Date date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 

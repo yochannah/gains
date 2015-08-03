@@ -38,7 +38,7 @@ public class ReportCacheManager implements Constants {
         ContentValues values = new ContentValues();
         values.put(CacheDbConstants.ReportEntry._ID, report.getId());
         values.put(CacheDbConstants.ReportEntry.COL_NAME_CONTENT, report.getContent());
-        values.put(CacheDbConstants.ReportEntry.COL_NAME_DATE, report.getDateCreated().toString());
+        values.put(CacheDbConstants.ReportEntry.COL_NAME_DATE, report.getDateCaptured().toString());
 
         //let's prevent the nullpointers
         Uri image = report.getImage();
