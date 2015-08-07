@@ -96,6 +96,7 @@ public class NewReportDialog extends DialogFragment {
         report = new Report(content.getText().toString());
         report.setLocation(geo.getCurrentLocation());
         report.setOrgName("OU");
+        report.setDateCaptured(new Date());
         report.setId(UUID.randomUUID().toString());
         report.setStatus(ReportStatuses.REPORT_UNSENT);
         if(imageUri != null) {

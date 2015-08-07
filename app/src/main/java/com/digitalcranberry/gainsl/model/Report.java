@@ -4,6 +4,7 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.digitalcranberry.gainsl.constants.ReportStatuses;
 import com.google.gson.Gson;
@@ -16,6 +17,7 @@ import com.google.gson.annotations.SerializedName;
 import org.osmdroid.util.GeoPoint;
 
 import java.lang.reflect.Type;
+import java.util.Calendar;
 import java.util.Date;
 
 public class Report implements Parcelable {
@@ -52,6 +54,7 @@ public class Report implements Parcelable {
     }
 
     public Date getDateCaptured() {
+        Log.i("DATE CAPTURED", content);
         return dateCaptured;
     }
 
@@ -149,6 +152,10 @@ public class Report implements Parcelable {
         sb.append("&latitude=" + latitude);
         sb.append("&longitude=" + longitude);
         sb.append("&reportid=" + id);
+        Calendar c = Calendar.getInstance();
+        c.setTime(dateCaptured);
+        long time = c.getTimeInMillis();
+        sb.append("&dateCaptured=" + time);
         return sb.toString();
     }
 
@@ -219,6 +226,8 @@ public class Report implements Parcelable {
         content = in.readString();
         long tmpDate = in.readLong();
         date = tmpDate != -1 ? new Date(tmpDate) : null;
+        long tmpDateCap = in.readLong();
+        dateCaptured = tmpDateCap != -1 ? new Date(tmpDateCap) : null;
         status = in.readString();
         latitude = in.readByte() == 0x00 ? null : in.readDouble();
         longitude = in.readByte() == 0x00 ? null : in.readDouble();
@@ -237,6 +246,7 @@ public class Report implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(content);
         dest.writeLong(date != null ? date.getTime() : -1L);
+        dest.writeLong(dateCaptured != null ? dateCaptured.getTime() : -1L);
         dest.writeString(status);
         if (latitude == null) {
             dest.writeByte((byte) (0x00));
