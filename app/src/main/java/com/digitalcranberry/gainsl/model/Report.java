@@ -54,7 +54,6 @@ public class Report implements Parcelable {
     }
 
     public Date getDateCaptured() {
-        Log.i("DATE CAPTURED", content);
         return dateCaptured;
     }
 
