@@ -15,6 +15,8 @@ import com.digitalcranberry.gainsl.model.events.PendingReportCountUpdated;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
@@ -38,7 +40,7 @@ public class ReportCacheManager implements Constants {
         ContentValues values = new ContentValues();
         values.put(CacheDbConstants.ReportEntry._ID, report.getId());
         values.put(CacheDbConstants.ReportEntry.COL_NAME_CONTENT, report.getContent());
-        values.put(CacheDbConstants.ReportEntry.COL_NAME_DATE, report.getDateCaptured().toString());
+        values.put(CacheDbConstants.ReportEntry.COL_NAME_DATE, report.getDateFirstCaptured().toString());
 
         //let's prevent the nullpointers
         Uri image = report.getImage();
@@ -51,6 +53,17 @@ public class ReportCacheManager implements Constants {
         values.put(CacheDbConstants.ReportEntry.COL_NAME_LATITUDE, report.getLatitude());
         values.put(CacheDbConstants.ReportEntry.COL_NAME_LONGITUDE, report.getLongitude());
         values.put(CacheDbConstants.ReportEntry.COL_NAME_STATUS, report.getStatus());
+
+        //we can't save as a Date type, so let's make it a nice timestamp.
+        Calendar c = Calendar.getInstance();
+        c.setTime(report.getDateFirstCaptured());
+        long time = c.getTimeInMillis();
+        values.put(CacheDbConstants.ReportEntry.COL_NAME_DATE_CAPTURED, time);
+
+        //last updated time is always now, because we're updating it again if we're running save.
+        c.setTime(new Date());
+        time = c.getTimeInMillis();
+        values.put(CacheDbConstants.ReportEntry.COL_NAME_LAST_UPDATED, time);
 
         try {
             cacher.insert(
@@ -68,6 +81,7 @@ public class ReportCacheManager implements Constants {
         List<Report> reports = new ArrayList<>();
         CacheDbHelper cacheDbHelper = new CacheDbHelper(context);
         SQLiteDatabase cacheReader = cacheDbHelper.getReadableDatabase();
+
         try {
             SimpleDateFormat dateparse = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
             String[] projection = {
@@ -76,7 +90,9 @@ public class ReportCacheManager implements Constants {
                     CacheDbConstants.ReportEntry.COL_NAME_DATE,
                     CacheDbConstants.ReportEntry.COL_NAME_STATUS,
                     CacheDbConstants.ReportEntry.COL_NAME_LATITUDE,
-                    CacheDbConstants.ReportEntry.COL_NAME_LONGITUDE
+                    CacheDbConstants.ReportEntry.COL_NAME_LONGITUDE,
+                    CacheDbConstants.ReportEntry.COL_NAME_DATE_CAPTURED,
+                    CacheDbConstants.ReportEntry.COL_NAME_LAST_UPDATED
             };
 
             Cursor cursor = cacheReader.query(
@@ -97,7 +113,8 @@ public class ReportCacheManager implements Constants {
                         cursor.getString(3), //status
                         cursor.getDouble(4), //lat
                         cursor.getDouble(5), //long
-                        Uri.parse("")  //imageURI
+                        Uri.parse(""),       //imageURI
+                        new Date(Long.parseLong(cursor.getString(7)))    //dateCaptured
                 );
                 Log.d(DEBUGTAG, rep.getContent());
                 reports.add(rep);

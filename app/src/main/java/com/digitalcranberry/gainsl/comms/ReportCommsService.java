@@ -102,7 +102,7 @@ public class ReportCommsService extends IntentService implements Constants, Send
         Log.i(DEBUGTAG, "Sending " + reports.size() + " stored reports");
 
         for (Report rep : reports) {
-            Log.i(DEBUGTAG, "Sending: " + rep.getContent());
+            Log.i(DEBUGTAG, "Sending: " + rep.toString() + " " + rep.toQueryParam());
             sendReport(rep);      // sends the report.
         }
         return null; //TODO, correct return handling

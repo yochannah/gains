@@ -24,7 +24,8 @@ public class Report implements Parcelable {
 
     private String content;
     private Date date; //the report indexes in this in the Google DataStore, so re-naming to something useful breaks it. Grr.
-    private Date dateCaptured;
+    private Date dateFirstCaptured;
+    private Date lastUpdated;
     private String status;
     private Double latitude;
     private Double longitude;
@@ -38,12 +39,13 @@ public class Report implements Parcelable {
 
     public Report() {
         //if no date explicitly stated, we'll assume it's a brand new report
-        this.dateCaptured = new Date();
+        this.dateFirstCaptured = new Date();
     }
 
     public Report(String id, String content, Date dateCaptured, String status, Double latitude, Double longitude, Uri image) {
         this.content = content;
-        this.dateCaptured = dateCaptured;
+        this.dateFirstCaptured = dateCaptured;
+        this.lastUpdated = new Date();
         this.status = status;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -53,12 +55,17 @@ public class Report implements Parcelable {
         this.reporter = "April";
     }
 
-    public Date getDateCaptured() {
-        return dateCaptured;
+    public Report(String id, String content, Date dateCaptured, String status, Double latitude, Double longitude, Uri image, Date lastUpdated) {
+        this(id, content, dateCaptured, status, latitude, longitude, image);
+        this.lastUpdated = lastUpdated;
     }
 
-    public void setDateCaptured(Date dateCaptured) {
-        this.dateCaptured = dateCaptured;
+    public Date getDateFirstCaptured() {
+        return dateFirstCaptured;
+    }
+
+    public void setDateFirstCaptured(Date dateCaptured) {
+        this.dateFirstCaptured = dateCaptured;
     }
 
     public String getId() {
@@ -151,10 +158,15 @@ public class Report implements Parcelable {
         sb.append("&latitude=" + latitude);
         sb.append("&longitude=" + longitude);
         sb.append("&reportid=" + id);
+
         Calendar c = Calendar.getInstance();
-        c.setTime(dateCaptured);
+        c.setTime(dateFirstCaptured);
         long time = c.getTimeInMillis();
-        sb.append("&dateCaptured=" + time);
+        sb.append("&dateFirstCaptured=" + time);
+
+        c.setTime(lastUpdated);
+        time = c.getTimeInMillis();
+        sb.append("&lastUpdated=" + time);
         return sb.toString();
     }
 
@@ -226,7 +238,7 @@ public class Report implements Parcelable {
         long tmpDate = in.readLong();
         date = tmpDate != -1 ? new Date(tmpDate) : null;
         long tmpDateCap = in.readLong();
-        dateCaptured = tmpDateCap != -1 ? new Date(tmpDateCap) : null;
+        dateFirstCaptured = tmpDateCap != -1 ? new Date(tmpDateCap) : null;
         status = in.readString();
         latitude = in.readByte() == 0x00 ? null : in.readDouble();
         longitude = in.readByte() == 0x00 ? null : in.readDouble();
@@ -245,7 +257,7 @@ public class Report implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(content);
         dest.writeLong(date != null ? date.getTime() : -1L);
-        dest.writeLong(dateCaptured != null ? dateCaptured.getTime() : -1L);
+        dest.writeLong(dateFirstCaptured != null ? dateFirstCaptured.getTime() : -1L);
         dest.writeString(status);
         if (latitude == null) {
             dest.writeByte((byte) (0x00));

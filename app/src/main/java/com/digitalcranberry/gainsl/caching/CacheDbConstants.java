@@ -17,7 +17,9 @@ public class CacheDbConstants {
             ReportEntry.COL_NAME_STATUS + TEXT_TYPE + COMMA_SEP +
             ReportEntry.COL_NAME_LATITUDE + TEXT_TYPE + COMMA_SEP +
             ReportEntry.COL_NAME_LONGITUDE + TEXT_TYPE + COMMA_SEP +
-            ReportEntry.COL_NAME_IMAGEURI + TEXT_TYPE +
+            ReportEntry.COL_NAME_IMAGEURI + TEXT_TYPE + COMMA_SEP +
+            ReportEntry.COL_NAME_DATE_CAPTURED + TEXT_TYPE + COMMA_SEP +
+            ReportEntry.COL_NAME_LAST_UPDATED + TEXT_TYPE +
             " )";
 
     public static final String SQL_CREATE_UNSENT_TABLE =
@@ -35,6 +37,8 @@ public class CacheDbConstants {
         public static final String COL_NAME_LATITUDE = "LATITUDE";
         public static final String COL_NAME_LONGITUDE = "LONGITUDE";
         public static final String COL_NAME_IMAGEURI = "IMAGEURI";
+        public static final String COL_NAME_DATE_CAPTURED = "DATE_FIRST_CAPTURED";
+        public static final String COL_NAME_LAST_UPDATED = "LAST_UPDATED";
     }
 
     public static abstract class UnsentReportEntry extends ReportEntry implements BaseColumns {
