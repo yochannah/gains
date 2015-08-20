@@ -90,9 +90,6 @@ Eventbus event handler for newreport creation. Adds map marker.
         if(!isGPSEnabled()) {
             buildAlertMessageNoGps();
         }
-
-//        checkTileCache();
-
     }
 
     public void addNewReportClickListener(View view) {

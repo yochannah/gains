@@ -72,6 +72,13 @@ public class ReportDetailsDialog extends DialogFragment {
                     public void onClick(DialogInterface dialog, int id) {
                         dismiss();
                     }
+                })
+                .setNegativeButton(R.string.update_report, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        UpdateReportDialog d = new UpdateReportDialog();
+                        d.show(getFragmentManager(), "update_report");
+                        dismiss();
+                    }
                 });
         // Create the AlertDialog object and return it
         return builder.create();
