@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -35,11 +36,7 @@ import de.greenrobot.event.EventBus;
 
 public class UpdateReportDialog extends DialogFragment {
 
-    private ImageButton cameraButton;
     private Report report;
-    private GeoLocator geo;
-    private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
-    private Uri imageUri;
     private ReportCacheManager saveReport;
 
     @Override
@@ -55,12 +52,15 @@ public class UpdateReportDialog extends DialogFragment {
                         //TODO: Save new details to report db.
                         //phones only have the current known status, for simplicity
                         //but the entire audit history is present on the server.
+                        updateReport(fragView);
                     //    EventBus.getDefault().post(new Created(report));
                     //    PendingReportCounter.updatePendingReportCount(context, saveReport);
+                        Log.i("GAINSL", report.toString());
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+
                         // User cancelled the dialog
                     }
                 });
@@ -69,47 +69,19 @@ public class UpdateReportDialog extends DialogFragment {
         return builder.create();
     }
 
+    private void updateReport(View view) {
+      //  report.setStatus(); //TODO
+        EditText content = (EditText) view.findViewById(R.id.input_report_description_update);
+        report.setContent(content.getText().toString());
+    }
+
     private void generateReportDetails(View view) {
-        EditText content = (EditText) view.findViewById(R.id.input_report_description);
-        report = new Report(content.getText().toString());
-        report.setLocation(geo.getCurrentLocation());
-        report.setOrgName("OU");
-        report.setDateFirstCaptured(new Date());
-        report.setId(UUID.randomUUID().toString());
         report.setStatus(ReportStatuses.REPORT_UNSENT);
-        if(imageUri != null) {
-            report.setImage(imageUri); // save uri to the report
-        }
+
     }
 
-    private void dispatchTakePictureIntent() {
-
-        Intent imageIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-        File imagesFolder = new File(Environment.getExternalStorageDirectory(), "gainsl");
-        imagesFolder.mkdirs();
-        String fileName = "gainsl_" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".jpg";
-        File image = new File(imagesFolder, fileName);
-        Uri uriSavedImage = Uri.fromFile(image);
-        imageUri = uriSavedImage;
-        imageIntent.putExtra(MediaStore.EXTRA_OUTPUT, uriSavedImage);
-        startActivityForResult(imageIntent,CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+    public void setReport(Report report) {
+        this.report = report;
     }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
-                // Image captured and saved to fileUri specified in the Intent
-                Toast.makeText(this.getActivity(), "Image saved successfully", Toast.LENGTH_LONG).show();
-
-            } else if (resultCode == Activity.RESULT_CANCELED) {
-                // User cancelled the image capture
-            } else {
-                Toast.makeText(this.getActivity(), "Image problem, please try again.", Toast.LENGTH_LONG).show();
-            }
-        }
-    }
-
 
 }

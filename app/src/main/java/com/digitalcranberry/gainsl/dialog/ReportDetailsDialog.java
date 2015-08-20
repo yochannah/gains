@@ -53,11 +53,14 @@ public class ReportDetailsDialog extends DialogFragment {
 
             if (savedInstanceState.getString("snippet") != null) {
                 this.snippet = savedInstanceState.getString("snippet");
+                Log.i(DEBUGTAG, "Using snippet");
             } else {
                 this.report = (Report) savedInstanceState.getParcelable("report");
                 snippet = report.getContent();
+                Log.i(DEBUGTAG, "Using report");
             }
-            Log.i(DEBUGTAG, snippet);
+        } else {
+            Log.i(DEBUGTAG, "No SavedInstanceSTate." + report.toString());
         }
         
         final View fragView = inflater.inflate(R.layout.dialog_report_details, null);
@@ -76,6 +79,7 @@ public class ReportDetailsDialog extends DialogFragment {
                 .setNegativeButton(R.string.update_report, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         UpdateReportDialog d = new UpdateReportDialog();
+                        d.setReport(report);
                         d.show(getFragmentManager(), "update_report");
                         dismiss();
                     }
@@ -86,5 +90,8 @@ public class ReportDetailsDialog extends DialogFragment {
 
     public void setSnippet(String snippet) {
         this.snippet = snippet;
+    }
+    public void setReport(Report report) {
+        this.report = report;
     }
 }

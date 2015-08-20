@@ -67,7 +67,7 @@ public class MapFragment extends Fragment implements Constants {
     private MyLocationNewOverlay mLocationOverlay;
     private ScaleBarOverlay mScaleBarOverlay;
     private static int MENU_LAST_ID = 1;
-    private ArrayList<OverlayItem> mOverlayItems = new ArrayList<OverlayItem>();
+    private ArrayList<ReportOverlayItem> mOverlayItems = new ArrayList<ReportOverlayItem>();
     private MyMarkerOverlay mMarkerOverlay;
     private ItemizedIconOverlay.OnItemGestureListener<OverlayItem> mOnItemGestureListener;
 
@@ -277,10 +277,10 @@ Eventbus event handler for adding and removing overlays
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    private OverlayItem generateReportMarker(Report report) {
+    private ReportOverlayItem generateReportMarker(Report report) {
         int drawable = getStatusMarker(report.getStatus());
         GeoPoint point = new GeoPoint(report.getLatitude(), report.getLongitude());
-        OverlayItem olItem = new ReportOverlayItem(report);
+        ReportOverlayItem olItem = new ReportOverlayItem(report);
         Drawable newMarker = this.getResources().getDrawable(drawable);
         olItem.setMarker(newMarker);
         return olItem;
@@ -316,18 +316,10 @@ Eventbus event handler for adding and removing overlays
             public boolean onItemSingleTapUp(int index, OverlayItem item) {
                 ReportDetailsDialog d = new ReportDetailsDialog();
                 d.setSnippet(item.getSnippet());
+                ReportOverlayItem rItem = (ReportOverlayItem) item;
+                //TODO: Something like this:
+                d.setReport(rItem.getReport());
                 d.show(getFragmentManager(), "ReportDetailsDialog");
-
-//                FragmentTransaction ft = getFragmentManager().beginTransaction();
-//                Fragment prev = getFragmentManager().findFragmentByTag("dialog");
-//                if (prev != null) {
-//                    ft.remove(prev);
-//                }
-//                ft.addToBackStack(null);
-//
-//                DialogFragment newFragment = ReportDetailsDialog.newInstance(item.getSnippet());
-//                newFragment.show("dialog");
-
                 return true;
             }
 
@@ -336,7 +328,7 @@ Eventbus event handler for adding and removing overlays
 
     public void addMapMarker(Report report) {
         try {
-            OverlayItem marker = generateReportMarker(report);
+            ReportOverlayItem marker = generateReportMarker(report);
             mOverlayItems.add(marker);
             mMarkerOverlay.addItem(marker);
             mMapView.invalidate();
@@ -347,7 +339,7 @@ Eventbus event handler for adding and removing overlays
     }
 
     private void removeMapMarker(Report report){
-        OverlayItem marker = generateReportMarker(report);
+        ReportOverlayItem marker = generateReportMarker(report);
         if(mMarkerOverlay.contains(marker)) {
             Log.i(DEBUGTAG,"Removing " + report.toString());
             mMarkerOverlay.removeItem(marker);

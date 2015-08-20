@@ -12,12 +12,22 @@ import org.osmdroid.views.overlay.OverlayItem;
  * Created by yo on 05/07/15.
  */
 public class ReportOverlayItem extends OverlayItem {
+    public Report getReport() {
+        return report;
+    }
+
+    public void setReport(Report report) {
+        this.report = report;
+    }
+
+    private Report report;
     public ReportOverlayItem(String aUid, String aTitle, String aDescription, GeoPoint aGeoPoint) {
         super(aUid, aTitle, aDescription, aGeoPoint);
     }
 
     public ReportOverlayItem(Report report) {
         super(report.getId(), "Report", report.toString(), report.getGeopoint());
+        this.report = report;
     }
 
 
