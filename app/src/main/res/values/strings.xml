@@ -47,6 +47,13 @@
         <item>720</item>
         <item>1440</item>
     </string-array>
+
+    <string-array name="user_report_statuses">
+        <item>Resolved</item>
+        <item>In Progress</item>
+        <item>New</item>
+    </string-array>
+
     <string name="pref_summary_update_frequency">Less frequent updates means longer battery life.</string>
     <string name="pref_title_update_frequency">Update frequency</string>
     <string name="title_activity_cached_map_selector">CachedMapSelector</string>
@@ -54,5 +61,6 @@
     <string name="test">Hello world!</string>
     <string name="update_report">Add update</string>
     <string name="send_update">Send update</string>
+    <string name="label_report_status">Report Status:</string>
 
 </resources>

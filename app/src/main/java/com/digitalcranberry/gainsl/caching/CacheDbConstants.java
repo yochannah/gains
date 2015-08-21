@@ -14,7 +14,8 @@ public class CacheDbConstants {
             ReportEntry._ID + " STRING PRIMARY KEY," +
             ReportEntry.COL_NAME_CONTENT + TEXT_TYPE + COMMA_SEP +
             ReportEntry.COL_NAME_DATE + TEXT_TYPE + COMMA_SEP +
-            ReportEntry.COL_NAME_STATUS + TEXT_TYPE + COMMA_SEP +
+            ReportEntry.COL_NAME_SEND_STATUS + TEXT_TYPE + COMMA_SEP +
+            ReportEntry.COL_NAME_USER_STATUS + TEXT_TYPE + COMMA_SEP +
             ReportEntry.COL_NAME_LATITUDE + TEXT_TYPE + COMMA_SEP +
             ReportEntry.COL_NAME_LONGITUDE + TEXT_TYPE + COMMA_SEP +
             ReportEntry.COL_NAME_IMAGEURI + TEXT_TYPE + COMMA_SEP +
@@ -33,7 +34,8 @@ public class CacheDbConstants {
 
         public static final String COL_NAME_CONTENT = "CONTENT";
         public static final String COL_NAME_DATE = "DATE";
-        public static final String COL_NAME_STATUS = "STATUS";
+        public static final String COL_NAME_SEND_STATUS = "SEND_STATUS";
+        public static final String COL_NAME_USER_STATUS = "USER_STATUS";
         public static final String COL_NAME_LATITUDE = "LATITUDE";
         public static final String COL_NAME_LONGITUDE = "LONGITUDE";
         public static final String COL_NAME_IMAGEURI = "IMAGEURI";

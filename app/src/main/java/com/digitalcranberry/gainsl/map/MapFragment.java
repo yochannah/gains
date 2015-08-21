@@ -4,9 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,7 +21,6 @@ import com.digitalcranberry.gainsl.constants.Constants;
 import com.digitalcranberry.gainsl.constants.ReportStatuses;
 import com.digitalcranberry.gainsl.caching.CacheDbConstants;
 import com.digitalcranberry.gainsl.caching.ReportCacheManager;
-import com.digitalcranberry.gainsl.dialog.NewReportDialog;
 import com.digitalcranberry.gainsl.dialog.ReportDetailsDialog;
 import com.digitalcranberry.gainsl.model.Report;
 import com.digitalcranberry.gainsl.model.events.map.AddOverlay;
@@ -278,7 +275,7 @@ Eventbus event handler for adding and removing overlays
     }
 
     private ReportOverlayItem generateReportMarker(Report report) {
-        int drawable = getStatusMarker(report.getStatus());
+        int drawable = getStatusMarker(report.getSendStatus());
         GeoPoint point = new GeoPoint(report.getLatitude(), report.getLongitude());
         ReportOverlayItem olItem = new ReportOverlayItem(report);
         Drawable newMarker = this.getResources().getDrawable(drawable);

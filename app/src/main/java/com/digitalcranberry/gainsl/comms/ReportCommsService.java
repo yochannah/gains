@@ -116,7 +116,7 @@ public class ReportCommsService extends IntentService implements Constants, Send
      */
     @Override
     public void updateReportList(Report report) {
-        report.setStatus(REPORT_SENT);
+        report.setSendStatus(REPORT_SENT);
         //add map marker
         List<Report> reports = new ArrayList<>();
         reports.add(report);

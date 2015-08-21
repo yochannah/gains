@@ -24,7 +24,6 @@ import com.digitalcranberry.gainsl.constants.ReportStatuses;
 import com.digitalcranberry.gainsl.caching.CacheDbConstants;
 import com.digitalcranberry.gainsl.caching.ReportCacheManager;
 import com.digitalcranberry.gainsl.model.Report;
-import com.digitalcranberry.gainsl.model.events.PendingReportCountUpdated;
 import com.digitalcranberry.gainsl.model.events.report.Created;
 
 import java.io.File;
@@ -98,7 +97,7 @@ public class NewReportDialog extends DialogFragment {
         report.setOrgName("OU");
         report.setDateFirstCaptured(new Date());
         report.setId(UUID.randomUUID().toString());
-        report.setStatus(ReportStatuses.REPORT_UNSENT);
+        report.setSendStatus(ReportStatuses.REPORT_UNSENT);
         if(imageUri != null) {
             report.setImage(imageUri); // save uri to the report
         }

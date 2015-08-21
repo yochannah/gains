@@ -4,19 +4,12 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
-import com.digitalcranberry.gainsl.constants.ReportStatuses;
-import com.google.gson.Gson;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
+import static com.digitalcranberry.gainsl.constants.ReportStatuses.*;
 import com.google.gson.annotations.SerializedName;
 
 import org.osmdroid.util.GeoPoint;
 
-import java.lang.reflect.Type;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -26,7 +19,8 @@ public class Report implements Parcelable {
     private Date date; //the report indexes in this in the Google DataStore, so re-naming to something useful breaks it. Grr.
     private Date dateFirstCaptured;
     private Date lastUpdated;
-    private String status;
+    private String sendStatus;      //this is for tracking if it's sent or not
+    private String userStatus;      //this tracks the user's status. Initially, it's set to new.
     private Double latitude;
     private Double longitude;
 
@@ -40,13 +34,15 @@ public class Report implements Parcelable {
     public Report() {
         //if no date explicitly stated, we'll assume it's a brand new report
         this.dateFirstCaptured = new Date();
+        this.userStatus = REPORT_NEW;
     }
 
-    public Report(String id, String content, Date dateCaptured, String status, Double latitude, Double longitude, Uri image) {
+    public Report(String id, String content, Date dateCaptured, String sendStatus, String userStatus, Double latitude, Double longitude, Uri image) {
         this.content = content;
         this.dateFirstCaptured = dateCaptured;
         this.lastUpdated = new Date();
-        this.status = status;
+        this.sendStatus = sendStatus;
+        this.userStatus = userStatus;
         this.latitude = latitude;
         this.longitude = longitude;
         this.id = id;
@@ -55,8 +51,8 @@ public class Report implements Parcelable {
         this.reporter = "April";
     }
 
-    public Report(String id, String content, Date dateCaptured, String status, Double latitude, Double longitude, Uri image, Date lastUpdated) {
-        this(id, content, dateCaptured, status, latitude, longitude, image);
+    public Report(String id, String content, Date dateCaptured, String sendStatus, String userStatus, Double latitude, Double longitude, Uri image, Date lastUpdated) {
+        this(id, content, dateCaptured, sendStatus, userStatus, latitude, longitude, image);
         this.lastUpdated = lastUpdated;
     }
 
@@ -129,17 +125,17 @@ public class Report implements Parcelable {
         this.content = theContent;
     }
 
-    public String getStatus() {
+    public String getSendStatus() {
         //this 'if' copes with legacy reports only.
-        if(this.status == null) {
-            return ReportStatuses.REPORT_SENT;
+        if(this.sendStatus == null) {
+            return REPORT_SENT;
         }
 
-        return status;
+        return sendStatus;
     }
 
-    public void setStatus(String aStatus) {
-        this.status = aStatus;
+    public void setSendStatus(String aStatus) {
+        this.sendStatus = aStatus;
     }
 
     public Date getDate() {
@@ -158,6 +154,7 @@ public class Report implements Parcelable {
         sb.append("&latitude=" + latitude);
         sb.append("&longitude=" + longitude);
         sb.append("&reportid=" + id);
+        sb.append("&status=" + userStatus); //send status is internal and need never be transmitted
 
         Calendar c = Calendar.getInstance();
         c.setTime(dateFirstCaptured);
@@ -202,7 +199,8 @@ public class Report implements Parcelable {
         if (content != null ? !content.equals(report.content) : report.content != null)
             return false;
         if (date != null ? !date.equals(report.date) : report.date != null) return false;
-        if (status != null ? !status.equals(report.status) : report.status != null) return false;
+        if (sendStatus != null ? !sendStatus.equals(report.sendStatus) : report.sendStatus != null) return false;
+        if (userStatus != null ? !userStatus.equals(report.userStatus) : report.userStatus != null) return false;
         if (latitude != null ? !latitude.equals(report.latitude) : report.latitude != null)
             return false;
         if (longitude != null ? !longitude.equals(report.longitude) : report.longitude != null)
@@ -219,7 +217,8 @@ public class Report implements Parcelable {
     public int hashCode() {
         int result = content != null ? content.hashCode() : 0;
         result = 31 * result + (date != null ? date.hashCode() : 0);
-        result = 31 * result + (status != null ? status.hashCode() : 0);
+        result = 31 * result + (sendStatus != null ? sendStatus.hashCode() : 0);
+        result = 31 * result + (userStatus != null ? sendStatus.hashCode() : 0);
         result = 31 * result + (latitude != null ? latitude.hashCode() : 0);
         result = 31 * result + (longitude != null ? longitude.hashCode() : 0);
         result = 31 * result + (id != null ? id.hashCode() : 0);
@@ -239,7 +238,8 @@ public class Report implements Parcelable {
         date = tmpDate != -1 ? new Date(tmpDate) : null;
         long tmpDateCap = in.readLong();
         dateFirstCaptured = tmpDateCap != -1 ? new Date(tmpDateCap) : null;
-        status = in.readString();
+        sendStatus = in.readString();
+        userStatus = in.readString();
         latitude = in.readByte() == 0x00 ? null : in.readDouble();
         longitude = in.readByte() == 0x00 ? null : in.readDouble();
         id = in.readString();
@@ -258,7 +258,8 @@ public class Report implements Parcelable {
         dest.writeString(content);
         dest.writeLong(date != null ? date.getTime() : -1L);
         dest.writeLong(dateFirstCaptured != null ? dateFirstCaptured.getTime() : -1L);
-        dest.writeString(status);
+        dest.writeString(sendStatus);
+        dest.writeString(userStatus);
         if (latitude == null) {
             dest.writeByte((byte) (0x00));
         } else {
@@ -289,4 +290,8 @@ public class Report implements Parcelable {
             return new Report[size];
         }
     };
+
+    public String getUserStatus() {
+        return userStatus;
+    }
 }

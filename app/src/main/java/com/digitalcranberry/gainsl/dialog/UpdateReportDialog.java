@@ -1,38 +1,22 @@
 package com.digitalcranberry.gainsl.dialog;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.Toast;
+import android.widget.Spinner;
 
-import com.digitalcranberry.gainsl.GeoLocator;
 import com.digitalcranberry.gainsl.R;
-import com.digitalcranberry.gainsl.caching.CacheDbConstants;
-import com.digitalcranberry.gainsl.caching.PendingReportCounter;
 import com.digitalcranberry.gainsl.caching.ReportCacheManager;
 import com.digitalcranberry.gainsl.constants.ReportStatuses;
 import com.digitalcranberry.gainsl.model.Report;
-import com.digitalcranberry.gainsl.model.events.report.Created;
-
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.UUID;
-
-import de.greenrobot.event.EventBus;
 
 public class UpdateReportDialog extends DialogFragment {
 
@@ -65,18 +49,27 @@ public class UpdateReportDialog extends DialogFragment {
                     }
                 });
 
+        Spinner spinner = (Spinner) fragView.findViewById(R.id.status_spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                context,
+                R.array.user_report_statuses, android.R.layout.simple_spinner_item
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
         // Create the AlertDialog object and return it
         return builder.create();
     }
 
     private void updateReport(View view) {
-      //  report.setStatus(); //TODO
+        Spinner status = (Spinner) view.findViewById(R.id.status_spinner);
+        report.setSendStatus(status.getSelectedItem().toString());
         EditText content = (EditText) view.findViewById(R.id.input_report_description_update);
         report.setContent(content.getText().toString());
     }
 
     private void generateReportDetails(View view) {
-        report.setStatus(ReportStatuses.REPORT_UNSENT);
+        report.setSendStatus(ReportStatuses.REPORT_UPDATED);
 
     }
 
