@@ -62,5 +62,6 @@
     <string name="update_report">Add update</string>
     <string name="send_update">Send update</string>
     <string name="label_report_status">Report Status:</string>
+    <string name="report_update_captured">Update captured and will be sent at next opportunity.</string>
 
 </resources>

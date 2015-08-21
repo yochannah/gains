@@ -14,9 +14,14 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.digitalcranberry.gainsl.R;
+import com.digitalcranberry.gainsl.caching.CacheDbConstants;
+import com.digitalcranberry.gainsl.caching.PendingReportCounter;
 import com.digitalcranberry.gainsl.caching.ReportCacheManager;
 import com.digitalcranberry.gainsl.constants.ReportStatuses;
 import com.digitalcranberry.gainsl.model.Report;
+import com.digitalcranberry.gainsl.model.events.report.UpdatedByUser;
+
+import de.greenrobot.event.EventBus;
 
 public class UpdateReportDialog extends DialogFragment {
 
@@ -36,9 +41,9 @@ public class UpdateReportDialog extends DialogFragment {
                         //TODO: Save new details to report db.
                         //phones only have the current known status, for simplicity
                         //but the entire audit history is present on the server.
-                        updateReport(fragView);
-                    //    EventBus.getDefault().post(new Created(report));
-                    //    PendingReportCounter.updatePendingReportCount(context, saveReport);
+                        updateReport(fragView, context);
+                        EventBus.getDefault().post(new UpdatedByUser(report));
+                        PendingReportCounter.updatePendingReportCount(context, saveReport);
                         Log.i("GAINSL", report.toString());
                     }
                 })
@@ -61,11 +66,14 @@ public class UpdateReportDialog extends DialogFragment {
         return builder.create();
     }
 
-    private void updateReport(View view) {
+    private void updateReport(View view, Context context) {
         Spinner status = (Spinner) view.findViewById(R.id.status_spinner);
         report.setSendStatus(status.getSelectedItem().toString());
         EditText content = (EditText) view.findViewById(R.id.input_report_description_update);
         report.setContent(content.getText().toString());
+
+        saveReport = new ReportCacheManager();
+        saveReport.save(context, report, CacheDbConstants.UnsentReportEntry.TABLE_NAME);
     }
 
     private void generateReportDetails(View view) {

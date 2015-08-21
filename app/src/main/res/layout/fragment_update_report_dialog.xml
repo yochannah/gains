@@ -16,6 +16,7 @@
         android:id="@+id/statusSpinnerLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/input_report_description_update"
         android:text="@string/label_report_status"
         android:textColor="#777777"
         android:textSize="22px"

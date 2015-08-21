@@ -8,8 +8,8 @@ import java.util.List;
 /**
  * Created by yo on 04/07/15.
  */
-public class Updated extends ReportEvent {
-    public Updated(List<Report> reports) {
+public class UpdatedByServer extends ReportEvent {
+    public UpdatedByServer(List<Report> reports) {
         super(reports);
     }
 }
