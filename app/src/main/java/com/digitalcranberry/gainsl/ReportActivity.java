@@ -9,6 +9,7 @@ import android.location.LocationManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -23,6 +24,10 @@ import com.digitalcranberry.gainsl.dialog.CacheTilesDialog;
 import com.digitalcranberry.gainsl.dialog.NewReportDialog;
 import com.digitalcranberry.gainsl.map.MapFragment;
 import com.digitalcranberry.gainsl.model.events.PendingReportCountUpdated;
+import com.digitalcranberry.gainsl.settings.SettingsActivity;
+
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 import de.greenrobot.event.EventBus;
 
@@ -54,9 +59,16 @@ Binds Eventbus listener
 Eventbus event handler for newreport creation. Adds map marker.
  */
     public void onEvent(PendingReportCountUpdated event){
-        Log.i(DEBUGTAG,"pending count updated");
+        Log.i(DEBUGTAG, "pending count updated");
         TextView statusBar = (TextView) findViewById(R.id.statusbar);
-        statusBar.setText("Currently working offline. Unsent reports: " + event.reports + ". ");
+        GregorianCalendar calendar = new GregorianCalendar();
+        Date now = new Date();
+        calendar.setTime(now);
+        if(event.reports <= 0 ) {
+            statusBar.setText("Last synchronised " + now);
+        } else {
+            statusBar.setText("Currently working offline. Unsent reports: " + event.reports + ". ");
+        }
     }
 
     @Override
@@ -78,9 +90,6 @@ Eventbus event handler for newreport creation. Adds map marker.
         if(!isGPSEnabled()) {
             buildAlertMessageNoGps();
         }
-
-//        checkTileCache();
-
     }
 
     public void addNewReportClickListener(View view) {
@@ -104,8 +113,7 @@ Eventbus event handler for newreport creation. Adds map marker.
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
-            Log.i(DEBUGTAG,"settings pressed. booya.");
-            //todo I3: launch settings.
+            startActivity(new Intent(this, SettingsActivity.class));
             return true;
         }
 

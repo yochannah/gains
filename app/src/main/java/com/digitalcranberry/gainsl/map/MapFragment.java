@@ -21,6 +21,7 @@ import com.digitalcranberry.gainsl.constants.Constants;
 import com.digitalcranberry.gainsl.constants.ReportStatuses;
 import com.digitalcranberry.gainsl.caching.CacheDbConstants;
 import com.digitalcranberry.gainsl.caching.ReportCacheManager;
+import com.digitalcranberry.gainsl.dialog.ReportDetailsDialog;
 import com.digitalcranberry.gainsl.model.Report;
 import com.digitalcranberry.gainsl.model.events.map.AddOverlay;
 import com.digitalcranberry.gainsl.model.events.map.RemoveOverlay;
@@ -63,7 +64,7 @@ public class MapFragment extends Fragment implements Constants {
     private MyLocationNewOverlay mLocationOverlay;
     private ScaleBarOverlay mScaleBarOverlay;
     private static int MENU_LAST_ID = 1;
-    private ArrayList<OverlayItem> mOverlayItems = new ArrayList<OverlayItem>();
+    private ArrayList<ReportOverlayItem> mOverlayItems = new ArrayList<ReportOverlayItem>();
     private MyMarkerOverlay mMarkerOverlay;
     private ItemizedIconOverlay.OnItemGestureListener<OverlayItem> mOnItemGestureListener;
 
@@ -108,7 +109,7 @@ public class MapFragment extends Fragment implements Constants {
         }
         cacheManager.moveToSentDb(event.reports, context);
         PendingReportCounter.updatePendingReportCount(context);
-    }
+        }
 
     /*
     Eventbus event handler for en-masse adding of server-side reports
@@ -208,7 +209,7 @@ Eventbus event handler for adding and removing overlays
         mLocationOverlay.enableFollowLocation();
         mCompassOverlay.enableCompass();
 
-        setHasOptionsMenu(true);
+        //setHasOptionsMenu(true);
 
     }
 
@@ -222,9 +223,9 @@ Eventbus event handler for adding and removing overlays
 
     public void initializeMarkerDrawables() {
         markerDrawables = new HashMap<>();
-        markerDrawables.put(ReportStatuses.REPORT_SENT, R.drawable.ic_action_place_orange);
-        markerDrawables.put(ReportStatuses.REPORT_NEW, R.drawable.ic_action_place_orange);
-        markerDrawables.put(ReportStatuses.REPORT_UNSENT, R.drawable.ic_action_place_blue);
+        markerDrawables.put(ReportStatuses.REPORT_SENT, R.drawable.pin1);
+        markerDrawables.put(ReportStatuses.REPORT_NEW, R.drawable.pin1);
+        markerDrawables.put(ReportStatuses.REPORT_UNSENT, R.drawable.pin2);
     }
 
     @Override
@@ -273,10 +274,10 @@ Eventbus event handler for adding and removing overlays
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    private OverlayItem generateReportMarker(Report report) {
-        int drawable = getStatusMarker(report.getStatus());
+    private ReportOverlayItem generateReportMarker(Report report) {
+        int drawable = getStatusMarker(report.getSendStatus());
         GeoPoint point = new GeoPoint(report.getLatitude(), report.getLongitude());
-        OverlayItem olItem = new ReportOverlayItem(report);
+        ReportOverlayItem olItem = new ReportOverlayItem(report);
         Drawable newMarker = this.getResources().getDrawable(drawable);
         olItem.setMarker(newMarker);
         return olItem;
@@ -310,9 +311,12 @@ Eventbus event handler for adding and removing overlays
 
             @Override
             public boolean onItemSingleTapUp(int index, OverlayItem item) {
-                Toast.makeText(getActivity(),item.getSnippet(),
-                        Toast.LENGTH_LONG).show();
-
+                ReportDetailsDialog d = new ReportDetailsDialog();
+                d.setSnippet(item.getSnippet());
+                ReportOverlayItem rItem = (ReportOverlayItem) item;
+                //TODO: Something like this:
+                d.setReport(rItem.getReport());
+                d.show(getFragmentManager(), "ReportDetailsDialog");
                 return true;
             }
 
@@ -321,7 +325,7 @@ Eventbus event handler for adding and removing overlays
 
     public void addMapMarker(Report report) {
         try {
-            OverlayItem marker = generateReportMarker(report);
+            ReportOverlayItem marker = generateReportMarker(report);
             mOverlayItems.add(marker);
             mMarkerOverlay.addItem(marker);
             mMapView.invalidate();
@@ -332,7 +336,7 @@ Eventbus event handler for adding and removing overlays
     }
 
     private void removeMapMarker(Report report){
-        OverlayItem marker = generateReportMarker(report);
+        ReportOverlayItem marker = generateReportMarker(report);
         if(mMarkerOverlay.contains(marker)) {
             Log.i(DEBUGTAG,"Removing " + report.toString());
             mMarkerOverlay.removeItem(marker);

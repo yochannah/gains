@@ -2,25 +2,25 @@ package com.digitalcranberry.gainsl.model;
 
 import android.location.Location;
 import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-import com.digitalcranberry.gainsl.constants.ReportStatuses;
-import com.google.gson.Gson;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
+import static com.digitalcranberry.gainsl.constants.ReportStatuses.*;
 import com.google.gson.annotations.SerializedName;
 
 import org.osmdroid.util.GeoPoint;
 
-import java.lang.reflect.Type;
+import java.util.Calendar;
 import java.util.Date;
 
-public class Report {
+public class Report implements Parcelable {
 
     private String content;
-    private Date date;
-    private String status;
+    private Date date; //the report indexes in this in the Google DataStore, so re-naming to something useful breaks it. Grr.
+    private Date dateFirstCaptured;
+    private Date lastUpdated;
+    private String sendStatus;      //this is for tracking if it's sent or not
+    private String userStatus;      //this tracks the user's status. Initially, it's set to new.
     private Double latitude;
     private Double longitude;
 
@@ -31,18 +31,37 @@ public class Report {
     private String reporter;
 
 
-    public Report() {}
+    public Report() {
+        //if no date explicitly stated, we'll assume it's a brand new report
+        this.dateFirstCaptured = new Date();
+        this.userStatus = REPORT_NEW;
+    }
 
-    public Report(String id, String content, Date date, String status, Double latitude, Double longitude, Uri image) {
+    public Report(String id, String content, Date dateCaptured, String sendStatus, String userStatus, Double latitude, Double longitude, Uri image) {
         this.content = content;
-        this.date = date;
-        this.status = status;
+        this.dateFirstCaptured = dateCaptured;
+        this.lastUpdated = new Date();
+        this.sendStatus = sendStatus;
+        this.userStatus = userStatus;
         this.latitude = latitude;
         this.longitude = longitude;
         this.id = id;
         this.image = image;
         this.orgName = "OU";
         this.reporter = "April";
+    }
+
+    public Report(String id, String content, Date dateCaptured, String sendStatus, String userStatus, Double latitude, Double longitude, Uri image, Date lastUpdated) {
+        this(id, content, dateCaptured, sendStatus, userStatus, latitude, longitude, image);
+        this.lastUpdated = lastUpdated;
+    }
+
+    public Date getDateFirstCaptured() {
+        return dateFirstCaptured;
+    }
+
+    public void setDateFirstCaptured(Date dateCaptured) {
+        this.dateFirstCaptured = dateCaptured;
     }
 
     public String getId() {
@@ -106,24 +125,24 @@ public class Report {
         this.content = theContent;
     }
 
-    public String getStatus() {
+    public String getSendStatus() {
         //this 'if' copes with legacy reports only.
-        if(this.status == null) {
-            return ReportStatuses.REPORT_SENT;
+        if(this.sendStatus == null) {
+            return REPORT_SENT;
         }
 
-        return status;
+        return sendStatus;
     }
 
-    public void setStatus(String aStatus) {
-        this.status = aStatus;
+    public void setSendStatus(String aStatus) {
+        this.sendStatus = aStatus;
     }
 
-    public Date getDateCreated() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDateCreated(Date date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
@@ -135,19 +154,24 @@ public class Report {
         sb.append("&latitude=" + latitude);
         sb.append("&longitude=" + longitude);
         sb.append("&reportid=" + id);
+        sb.append("&status=" + userStatus); //send status is internal and need never be transmitted
+
+        Calendar c = Calendar.getInstance();
+        c.setTime(dateFirstCaptured);
+        long time = c.getTimeInMillis();
+        sb.append("&dateFirstCaptured=" + time);
+
+        c.setTime(lastUpdated);
+        time = c.getTimeInMillis();
+        sb.append("&lastUpdated=" + time);
         return sb.toString();
     }
 
     @Override
     public String toString() {
-        return "Report{" +
-                "content='" + content + '\'' +
-                "lat='" + latitude + '\'' +
-                "long='" + longitude + '\'' +
-                "long='" + longitude + '\'' +
-                ", date=" + date +
-                ", status='" + status + '\'' +
-                '}';
+        return "Report: " + content + '\n' +
+                "Location=" + latitude + ", " +
+                longitude;
     }
 
     /* Loose report comparison based on id alone */
@@ -175,7 +199,8 @@ public class Report {
         if (content != null ? !content.equals(report.content) : report.content != null)
             return false;
         if (date != null ? !date.equals(report.date) : report.date != null) return false;
-        if (status != null ? !status.equals(report.status) : report.status != null) return false;
+        if (sendStatus != null ? !sendStatus.equals(report.sendStatus) : report.sendStatus != null) return false;
+        if (userStatus != null ? !userStatus.equals(report.userStatus) : report.userStatus != null) return false;
         if (latitude != null ? !latitude.equals(report.latitude) : report.latitude != null)
             return false;
         if (longitude != null ? !longitude.equals(report.longitude) : report.longitude != null)
@@ -192,7 +217,8 @@ public class Report {
     public int hashCode() {
         int result = content != null ? content.hashCode() : 0;
         result = 31 * result + (date != null ? date.hashCode() : 0);
-        result = 31 * result + (status != null ? status.hashCode() : 0);
+        result = 31 * result + (sendStatus != null ? sendStatus.hashCode() : 0);
+        result = 31 * result + (userStatus != null ? sendStatus.hashCode() : 0);
         result = 31 * result + (latitude != null ? latitude.hashCode() : 0);
         result = 31 * result + (longitude != null ? longitude.hashCode() : 0);
         result = 31 * result + (id != null ? id.hashCode() : 0);
@@ -204,5 +230,68 @@ public class Report {
 
     public GeoPoint getGeopoint() {
         return new GeoPoint(getLatitude(),getLongitude());
+    }
+
+    protected Report(Parcel in) {
+        content = in.readString();
+        long tmpDate = in.readLong();
+        date = tmpDate != -1 ? new Date(tmpDate) : null;
+        long tmpDateCap = in.readLong();
+        dateFirstCaptured = tmpDateCap != -1 ? new Date(tmpDateCap) : null;
+        sendStatus = in.readString();
+        userStatus = in.readString();
+        latitude = in.readByte() == 0x00 ? null : in.readDouble();
+        longitude = in.readByte() == 0x00 ? null : in.readDouble();
+        id = in.readString();
+        image = (Uri) in.readValue(Uri.class.getClassLoader());
+        orgName = in.readString();
+        reporter = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(content);
+        dest.writeLong(date != null ? date.getTime() : -1L);
+        dest.writeLong(dateFirstCaptured != null ? dateFirstCaptured.getTime() : -1L);
+        dest.writeString(sendStatus);
+        dest.writeString(userStatus);
+        if (latitude == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeDouble(latitude);
+        }
+        if (longitude == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeDouble(longitude);
+        }
+        dest.writeString(id);
+        dest.writeValue(image);
+        dest.writeString(orgName);
+        dest.writeString(reporter);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Report> CREATOR = new Parcelable.Creator<Report>() {
+        @Override
+        public Report createFromParcel(Parcel in) {
+            return new Report(in);
+        }
+
+        @Override
+        public Report[] newArray(int size) {
+            return new Report[size];
+        }
+    };
+
+    public String getUserStatus() {
+        return userStatus;
     }
 }

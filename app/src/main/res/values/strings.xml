@@ -21,8 +21,46 @@
     <string name="select_map_area">Select map area</string>
     <string name="select_map_area_prompt">Would you like to download map tiles for an offline area now, before you go somewhere without signal?</string>
     <string name="no_maptiles_cached">No map tiles cached</string>
+    <string name="prefs_cache_location">Select cache location</string>
     <string name="setup_your_map">Thanks for installing! To save maps for offline use later, and to set up your synchronisation interval, press menu and head to the app settings.</string>
     <string name="ok_got_it">Ok, got it!</string>
     <string name="inital_setup_required">Offline setup required</string>
+    <string name="close">Close</string>
+
+    <string-array name="prefs_update_frequency_entry_values">
+        <item>Use Wifi only</item>
+        <item>1 minute</item>
+        <item>1 hour</item>
+        <item>2 hours</item>
+        <item>4 hours</item>
+        <item>6 hours</item>
+        <item>12 hours</item>
+        <item>24 hours</item>
+    </string-array>
+    <string-array name="prefs_update_frequency_values_minutes">
+        <item>wifi</item>
+        <item>1</item>
+        <item>60</item>
+        <item>120</item>
+        <item>240</item>
+        <item>360</item>
+        <item>720</item>
+        <item>1440</item>
+    </string-array>
+
+    <string-array name="user_report_statuses">
+        <item>Resolved</item>
+        <item>In Progress</item>
+        <item>New</item>
+    </string-array>
+
+    <string name="pref_summary_update_frequency">Less frequent updates means longer battery life.</string>
+    <string name="pref_title_update_frequency">Update frequency</string>
+    <string name="title_activity_cached_map_selector">CachedMapSelector</string>
+
+    <string name="test">Hello world!</string>
+    <string name="update_report">Add update</string>
+    <string name="send_update">Send update</string>
+    <string name="label_report_status">Report Status:</string>
 
 </resources>

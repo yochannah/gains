@@ -22,7 +22,6 @@ public class MapEventsOverlay extends Overlay {
 
     /**
      * @param ctx the context
-     * It must implement MapEventsReceiver interface.
      */
     public MapEventsOverlay(Context ctx) {
         super(ctx);

@@ -222,7 +222,8 @@ public class TileCacheManager {
 
         @Override protected void onPostExecute(final Integer errors) {
             if (errors != 0)
-                Toast.makeText(mCtx, "Loading completed with " + errors + " errors.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mCtx, "Loading completed with " + errors + " errors. " +
+                        "Are you connected to the Internet?", Toast.LENGTH_SHORT).show();
             if (mProgressDialog.isShowing()) {
                 mProgressDialog.dismiss();
             }
