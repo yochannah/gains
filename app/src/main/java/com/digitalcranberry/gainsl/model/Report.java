@@ -292,4 +292,8 @@ public class Report implements Parcelable {
     public String getUserStatus() {
         return userStatus;
     }
+
+    public Date getLastUpdated() {
+        return lastUpdated;
+    }
 }
