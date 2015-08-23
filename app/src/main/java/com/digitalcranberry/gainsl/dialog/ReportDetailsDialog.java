@@ -53,14 +53,10 @@ public class ReportDetailsDialog extends DialogFragment {
 
             if (savedInstanceState.getString("snippet") != null) {
                 this.snippet = savedInstanceState.getString("snippet");
-                Log.i(DEBUGTAG, "Using snippet");
             } else {
                 this.report = (Report) savedInstanceState.getParcelable("report");
                 snippet = report.getContent();
-                Log.i(DEBUGTAG, "Using report");
             }
-        } else {
-            Log.i(DEBUGTAG, "No SavedInstanceSTate." + report.toString());
         }
         
         final View fragView = inflater.inflate(R.layout.dialog_report_details, null);
