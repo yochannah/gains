@@ -25,6 +25,7 @@ import com.digitalcranberry.gainsl.caching.CacheDbConstants;
 import com.digitalcranberry.gainsl.caching.ReportCacheManager;
 import com.digitalcranberry.gainsl.model.Report;
 import com.digitalcranberry.gainsl.model.events.report.Created;
+import com.digitalcranberry.gainsl.settings.SettingsManager;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -52,7 +53,7 @@ public class NewReportDialog extends DialogFragment {
         builder.setView(fragView)
                 .setPositiveButton(R.string.send, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        generateReportDetails(fragView);
+                        generateReportDetails(fragView, context);
                         geo.stopListening();
                         saveReport = new ReportCacheManager();
                         saveReport.save(context, report, CacheDbConstants.UnsentReportEntry.TABLE_NAME);
@@ -90,7 +91,7 @@ public class NewReportDialog extends DialogFragment {
 
     }
 
-    private void generateReportDetails(View view) {
+    private void generateReportDetails(View view, Context context) {
         EditText content = (EditText) view.findViewById(R.id.input_report_description);
         report = new Report(content.getText().toString());
         report.setLocation(geo.getCurrentLocation());
@@ -98,6 +99,7 @@ public class NewReportDialog extends DialogFragment {
         report.setDateFirstCaptured(new Date());
         report.setId(UUID.randomUUID().toString());
         report.setSendStatus(ReportStatuses.REPORT_UNSENT);
+        report.setLastUpdatedBy(SettingsManager.getReporter(context));
         if(imageUri != null) {
             report.setImage(imageUri); // save uri to the report
         }

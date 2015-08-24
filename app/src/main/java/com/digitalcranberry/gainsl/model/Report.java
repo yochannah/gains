@@ -6,6 +6,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import static com.digitalcranberry.gainsl.constants.ReportStatuses.*;
+
+import com.digitalcranberry.gainsl.settings.SettingsManager;
 import com.google.gson.annotations.SerializedName;
 
 import org.osmdroid.util.GeoPoint;
@@ -29,7 +31,41 @@ public class Report implements Parcelable {
     private Uri image;
     private String orgName;
     private String reporter;
+
+    public String getAssignee() {
+        return assignee;
+    }
+
+    public void setAssignee(String assignee) {
+        this.assignee = assignee;
+    }
+
+    public void setLastUpdated(Date lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
+    public void setUserStatus(String userStatus) {
+        this.userStatus = userStatus;
+    }
+
+    public String getReporter() {
+        return reporter;
+    }
+
+    public void setReporter(String reporter) {
+        this.reporter = reporter;
+    }
+
+    public String getLastUpdatedBy() {
+        return lastUpdatedBy;
+    }
+
+    public void setLastUpdatedBy(String lastUpdatedBy) {
+        this.lastUpdatedBy = lastUpdatedBy;
+    }
+
     private String lastUpdatedBy;
+    private String assignee;
 
 
     public Report() {
@@ -44,7 +80,7 @@ public class Report implements Parcelable {
         this.date = new Date();
     }
 
-    public Report(String id, String content, Date dateCaptured, String sendStatus, String userStatus, Double latitude, Double longitude, Uri image) {
+    public Report(String id, String content, String sendStatus, String userStatus, Double latitude, Double longitude, Uri image, Date dateCaptured, String lastUpdatedBy, String assignee, String reporter) {
         this.content = content;
         this.dateFirstCaptured = dateCaptured;
         this.lastUpdated = new Date();
@@ -55,11 +91,10 @@ public class Report implements Parcelable {
         this.id = id;
         this.image = image;
         this.orgName = "OU";
-        this.reporter = "April";
     }
 
-    public Report(String id, String content, Date dateCaptured, String sendStatus, String userStatus, Double latitude, Double longitude, Uri image, Date lastUpdated) {
-        this(id, content, dateCaptured, sendStatus, userStatus, latitude, longitude, image);
+    public Report(String id, String content, String sendStatus, String userStatus, Double latitude, Double longitude, Uri image, Date dateCaptured, Date lastUpdated, String lastUpdatedBy, String assignee, String reporter) {
+        this(id, content, sendStatus, userStatus, latitude, longitude, image, dateCaptured, lastUpdatedBy, assignee, reporter);
         this.lastUpdated = lastUpdated;
     }
 
@@ -153,6 +188,9 @@ public class Report implements Parcelable {
         sb.append("&latitude=" + latitude);
         sb.append("&longitude=" + longitude);
         sb.append("&reportid=" + id);
+        sb.append("&reporter=" + reporter);
+        sb.append("&assignee=" + assignee);
+        sb.append("&lastUpdatedBy=" + lastUpdatedBy);
         sb.append("&status=" + userStatus); //send status is internal and need never be transmitted
 
         Calendar c = Calendar.getInstance();
@@ -223,6 +261,8 @@ public class Report implements Parcelable {
         result = 31 * result + (id != null ? id.hashCode() : 0);
         result = 31 * result + (image != null ? image.hashCode() : 0);
         result = 31 * result + (orgName != null ? orgName.hashCode() : 0);
+        result = 31 * result + (assignee != null ? assignee.hashCode() : 0);
+        result = 31 * result + (lastUpdatedBy != null ? lastUpdatedBy.hashCode() : 0);
         result = 31 * result + (reporter != null ? reporter.hashCode() : 0);
         return result;
     }
@@ -244,6 +284,8 @@ public class Report implements Parcelable {
         id = in.readString();
         image = (Uri) in.readValue(Uri.class.getClassLoader());
         orgName = in.readString();
+        assignee = in.readString();
+        lastUpdatedBy = in.readString();
         reporter = in.readString();
     }
 
@@ -274,6 +316,8 @@ public class Report implements Parcelable {
         dest.writeString(id);
         dest.writeValue(image);
         dest.writeString(orgName);
+        dest.writeString(assignee);
+        dest.writeString(lastUpdatedBy);
         dest.writeString(reporter);
     }
 

@@ -37,7 +37,6 @@ public class ReportCacheManager implements Constants {
         ContentValues values = new ContentValues();
         values.put(CacheDbConstants.ReportEntry._ID, report.getId());
         values.put(CacheDbConstants.ReportEntry.COL_NAME_CONTENT, report.getContent());
-        values.put(CacheDbConstants.ReportEntry.COL_NAME_DATE, report.getDateFirstCaptured().toString());
 
         //let's prevent the nullpointers
         Uri image = report.getImage();
@@ -55,6 +54,10 @@ public class ReportCacheManager implements Constants {
 
         //last updated time is always now, because we're updating it again if we're running save.
         values.put(CacheDbConstants.ReportEntry.COL_NAME_LAST_UPDATED, dateToMs(new Date()));
+
+        values.put(CacheDbConstants.ReportEntry.COL_NAME_LAST_UPDATED_BY, report.getLastUpdatedBy());
+        values.put(CacheDbConstants.ReportEntry.COL_NAME_ASSIGNEE, report.getAssignee());
+        values.put(CacheDbConstants.ReportEntry.COL_NAME_REPORTER, report.getReporter());
 
         try {
             cacher.insert(
@@ -78,13 +81,16 @@ public class ReportCacheManager implements Constants {
             String[] projection = {
                     CacheDbConstants.ReportEntry._ID,
                     CacheDbConstants.ReportEntry.COL_NAME_CONTENT,
-                    CacheDbConstants.ReportEntry.COL_NAME_DATE,
                     CacheDbConstants.ReportEntry.COL_NAME_SEND_STATUS,
                     CacheDbConstants.ReportEntry.COL_NAME_USER_STATUS,
                     CacheDbConstants.ReportEntry.COL_NAME_LATITUDE,
                     CacheDbConstants.ReportEntry.COL_NAME_LONGITUDE,
+                    CacheDbConstants.ReportEntry.COL_NAME_IMAGEURI,
                     CacheDbConstants.ReportEntry.COL_NAME_DATE_CAPTURED,
-                    CacheDbConstants.ReportEntry.COL_NAME_LAST_UPDATED
+                    CacheDbConstants.ReportEntry.COL_NAME_LAST_UPDATED,
+                    CacheDbConstants.ReportEntry.COL_NAME_LAST_UPDATED_BY,
+                    CacheDbConstants.ReportEntry.COL_NAME_ASSIGNEE,
+                    CacheDbConstants.ReportEntry.COL_NAME_REPORTER
             };
 
             Cursor cursor = cacheReader.query(
@@ -101,13 +107,16 @@ public class ReportCacheManager implements Constants {
                 Report rep = new Report(
                         cursor.getString(0), //id
                         cursor.getString(1), //content
-                        dateparse.parse(cursor.getString(2)), //date
-                        cursor.getString(3), //sendstatus
-                        cursor.getString(4), //userstatus
-                        cursor.getDouble(5), //lat
-                        cursor.getDouble(6), //long
+                        cursor.getString(2), //sendstatus
+                        cursor.getString(3), //userstatus
+                        cursor.getDouble(4), //lat
+                        cursor.getDouble(5), //long
                         Uri.parse(""),       //imageURI
-                        new Date(Long.parseLong(cursor.getString(8)))    //dateCaptured
+                        new Date(Long.parseLong(cursor.getString(7))), //dateCaptured
+                        new Date(Long.parseLong(cursor.getString(8))),    //lastUpdated
+                        cursor.getString(9), //lastUpdatedBy
+                        cursor.getString(10), //assignee
+                        cursor.getString(11) //reporter
                 );
                 Log.d(DEBUGTAG, rep.getContent());
                 reports.add(rep);
@@ -162,6 +171,8 @@ public class ReportCacheManager implements Constants {
         values.put(CacheDbConstants.ReportEntry.COL_NAME_CONTENT, report.getContent());
         values.put(CacheDbConstants.ReportEntry.COL_NAME_LAST_UPDATED, dateToMs(report.getLastUpdated()));
         values.put(CacheDbConstants.ReportEntry.COL_NAME_USER_STATUS, report.getUserStatus());
+        values.put(CacheDbConstants.ReportEntry.COL_NAME_LAST_UPDATED_BY, report.getLastUpdatedBy());
+        values.put(CacheDbConstants.ReportEntry.COL_NAME_ASSIGNEE, report.getAssignee());
 
         cacher.update(tableName, values, whereClause, selectionArgs);
         cacher.close();

@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class CacheDbHelper extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
-    public static final int DATABASE_VERSION = 9;
+    public static final int DATABASE_VERSION = CacheDbConstants.DB_VERSION;
     public static final String DATABASE_NAME = "GAINSL.db";
 
     public CacheDbHelper(Context context) {
