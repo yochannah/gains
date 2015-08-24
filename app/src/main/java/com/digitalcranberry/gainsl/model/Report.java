@@ -29,6 +29,7 @@ public class Report implements Parcelable {
     private Uri image;
     private String orgName;
     private String reporter;
+    private String lastUpdatedBy;
 
 
     public Report() {

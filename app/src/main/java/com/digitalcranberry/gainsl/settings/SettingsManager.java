@@ -11,16 +11,20 @@ import com.digitalcranberry.gainsl.constants.Constants;
  */
 public class SettingsManager implements Constants {
     public static int getNetworkSendInterval(Context context) {
-        int networkSendInterval;
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         String updateFreq = prefs.getString(PREFS_UPDATE_FREQUENCY_MINUTES, "60");
-        if(updateFreq.equals("wifi")) {
-            networkSendInterval = 0;
-            //TODO: handle Wifi sync.
-        } else {
-            networkSendInterval = Integer.parseInt(updateFreq);
-        }
-        return networkSendInterval;
+        if(updateFreq.equals("wifi")) {updateFreq = "1";}
+        return Integer.parseInt(updateFreq);
+    }
+
+    public static String getUpdateConnectionType(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getString(PREFS_UPDATE_CONNECTION_TYPE, PREFS_UPDATE_CONNECTION_TYPE_DEFAULT);
+    }
+
+    public static String getReporter(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getString(PREFS_UPDATE_REPORTER_NAME, "reporter not set");
     }
 
 }
