@@ -29,12 +29,19 @@ public class Report implements Parcelable {
     private Uri image;
     private String orgName;
     private String reporter;
+    private String lastUpdatedBy;
 
 
     public Report() {
         //if no date explicitly stated, we'll assume it's a brand new report
         this.dateFirstCaptured = new Date();
         this.userStatus = REPORT_NEW;
+    }
+
+    public Report(String theContent) {
+        super();
+        this.content = theContent;
+        this.date = new Date();
     }
 
     public Report(String id, String content, Date dateCaptured, String sendStatus, String userStatus, Double latitude, Double longitude, Uri image) {
@@ -72,7 +79,6 @@ public class Report implements Parcelable {
         this.id = id;
     }
 
-
     public Uri getImage() {
         return image;
     }
@@ -81,7 +87,6 @@ public class Report implements Parcelable {
         this.image = image;
     }
 
-
     public String getOrgName() {
         return orgName;
     }
@@ -89,7 +94,6 @@ public class Report implements Parcelable {
     public void setOrgName(String orgName) {
         this.orgName = orgName;
     }
-
 
     public Double getLatitude() {
         return latitude;
@@ -110,11 +114,6 @@ public class Report implements Parcelable {
 
     public void setLongitude(Double longitude) {
         this.longitude = longitude;
-    }
-
-    public Report(String theContent) {
-        this.content = theContent;
-        this.date = new Date();
     }
 
     public String getContent() {
@@ -170,7 +169,7 @@ public class Report implements Parcelable {
     @Override
     public String toString() {
         return "Report: " + content + '\n' +
-                "Location=" + latitude + ", " +
+                "Location:" + latitude + ", " +
                 longitude;
     }
 
@@ -293,5 +292,9 @@ public class Report implements Parcelable {
 
     public String getUserStatus() {
         return userStatus;
+    }
+
+    public Date getLastUpdated() {
+        return lastUpdated;
     }
 }

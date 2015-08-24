@@ -28,6 +28,8 @@ import com.digitalcranberry.gainsl.model.events.map.RemoveOverlay;
 import com.digitalcranberry.gainsl.model.events.report.Created;
 import com.digitalcranberry.gainsl.model.events.report.Sent;
 import com.digitalcranberry.gainsl.model.events.report.ServerReportsReceived;
+import com.digitalcranberry.gainsl.model.events.report.UpdatedByServer;
+import com.digitalcranberry.gainsl.model.events.report.UpdatedByUser;
 
 import org.osmdroid.tileprovider.tilesource.ITileSource;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -93,7 +95,16 @@ public class MapFragment extends Fragment implements Constants {
     Eventbus event handler for newreport creation. Adds map marker.
      */
     public void onEvent(Created event){
-        Toast.makeText(getActivity(), R.string.report_captured + " " + event.report.toString(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), R.string.report_captured + " " + event.report.toString(), Toast.LENGTH_LONG).show();
+        addMapMarker(event.report);
+    }
+
+    /*
+    Eventbus event handler for report update made by user.
+    */
+
+    public void onEvent(UpdatedByUser event){
+        Toast.makeText(getActivity(), R.string.report_update_captured + " " + event.report.toString(), Toast.LENGTH_LONG).show();
         addMapMarker(event.report);
     }
 

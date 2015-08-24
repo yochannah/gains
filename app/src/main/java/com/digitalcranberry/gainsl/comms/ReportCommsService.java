@@ -10,7 +10,7 @@ import com.digitalcranberry.gainsl.caching.CacheDbConstants;
 import com.digitalcranberry.gainsl.caching.ReportCacheManager;
 import com.digitalcranberry.gainsl.model.Report;
 import com.digitalcranberry.gainsl.model.events.report.Sent;
-import com.digitalcranberry.gainsl.model.events.report.Updated;
+import com.digitalcranberry.gainsl.model.events.report.UpdatedByServer;
 import com.digitalcranberry.gainsl.model.events.report.ServerReportsReceived;
 import com.digitalcranberry.gainsl.settings.SettingsManager;
 
@@ -156,8 +156,8 @@ public class ReportCommsService extends IntentService implements Constants, Send
             EventBus.getDefault().post(new ServerReportsReceived(newReports));
         }
         if (changedReports.size() > 0) {
-            Log.i(DEBUGTAG,remoteReportsList.size() + " server reports updated.");
-            EventBus.getDefault().post(new Updated(changedReports));
+            Log.i(DEBUGTAG, remoteReportsList.size() + " server reports updated.");
+            EventBus.getDefault().post(new UpdatedByServer(changedReports));
         }
     }
 

@@ -51,17 +51,10 @@ public class ReportCacheManager implements Constants {
         values.put(CacheDbConstants.ReportEntry.COL_NAME_LONGITUDE, report.getLongitude());
         values.put(CacheDbConstants.ReportEntry.COL_NAME_SEND_STATUS, report.getSendStatus());
         values.put(CacheDbConstants.ReportEntry.COL_NAME_USER_STATUS, report.getUserStatus());
-
-        //we can't save as a Date type, so let's make it a nice timestamp.
-        Calendar c = Calendar.getInstance();
-        c.setTime(report.getDateFirstCaptured());
-        long time = c.getTimeInMillis();
-        values.put(CacheDbConstants.ReportEntry.COL_NAME_DATE_CAPTURED, time);
+        values.put(CacheDbConstants.ReportEntry.COL_NAME_DATE_CAPTURED, dateToMs(report.getDateFirstCaptured()));
 
         //last updated time is always now, because we're updating it again if we're running save.
-        c.setTime(new Date());
-        time = c.getTimeInMillis();
-        values.put(CacheDbConstants.ReportEntry.COL_NAME_LAST_UPDATED, time);
+        values.put(CacheDbConstants.ReportEntry.COL_NAME_LAST_UPDATED, dateToMs(new Date()));
 
         try {
             cacher.insert(
@@ -150,17 +143,65 @@ public class ReportCacheManager implements Constants {
             //delete from unsents
             cacheKiller.delete(CacheDbConstants.UnsentReportEntry.TABLE_NAME, selection, selectionArgs);
             //move to sent
-            save(context, rep, CacheDbConstants.SentReportEntry.TABLE_NAME);
+            saveOrUpdate(CacheDbConstants.SentReportEntry.TABLE_NAME, context, rep);
         }
 
         reportsList.clear();
         cacheKiller.close();
     }
 
+    private void update(Context context, Report report, String tableName) {
+        Log.i(DEBUGTAG, "executing update for" + report.describeContents());
+        CacheDbHelper cacheDbHelper = new CacheDbHelper(context);
+        SQLiteDatabase cacher = cacheDbHelper.getWritableDatabase();
+        String whereClause = CacheDbConstants.ReportEntry._ID  + " LIKE ?";
+        String[] selectionArgs = { String.valueOf(report.getId()) };
+
+        // Create a new map of values, where column names are the keys
+        ContentValues values = new ContentValues();
+        values.put(CacheDbConstants.ReportEntry.COL_NAME_CONTENT, report.getContent());
+        values.put(CacheDbConstants.ReportEntry.COL_NAME_LAST_UPDATED, dateToMs(report.getLastUpdated()));
+        values.put(CacheDbConstants.ReportEntry.COL_NAME_USER_STATUS, report.getUserStatus());
+
+        cacher.update(tableName, values, whereClause, selectionArgs);
+        cacher.close();
+    }
+
     public void addSentReports(List<Report> reports, Context context){
         for (Report rep : reports) {
-            save(context, rep, CacheDbConstants.SentReportEntry.TABLE_NAME);
+            saveOrUpdate(CacheDbConstants.SentReportEntry.TABLE_NAME,context, rep);
         }
     }
+
+    public boolean doesReportExist(String tableName, Context context, String reportid){
+        boolean reportExists = false;
+
+        CacheDbHelper cacheDbHelper = new CacheDbHelper(context);
+        SQLiteDatabase cacheReader = cacheDbHelper.getReadableDatabase();
+
+        String queryString = CacheDbConstants.ReportEntry._ID + " LIKE ?";
+        String[] selectionArgs = {reportid};
+
+        reportExists = (DatabaseUtils.queryNumEntries(cacheReader,tableName, queryString, selectionArgs) > 0);
+        cacheReader.close();
+
+        return reportExists;
+    }
+
+    public void saveOrUpdate(String tableName, Context context, Report report) {
+        if(doesReportExist(tableName, context, report.getId())) {
+            Log.w(DEBUGTAG, "=============++++++========UPDATING"+ report.getId());
+            update(context, report,tableName);
+        } else {
+            save(context, report, tableName);
+        }
+    }
+
+    private long dateToMs(Date date){
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        return  c.getTimeInMillis();
+    }
+
 
 }

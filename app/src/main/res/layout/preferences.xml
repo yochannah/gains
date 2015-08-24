@@ -6,6 +6,19 @@
         android:entries="@array/prefs_update_frequency_entry_values"
         android:persistent="true"
         android:entryValues="@array/prefs_update_frequency_values_minutes" />
+    <ListPreference
+        android:key="update_connection_type"
+        android:summary="@string/pref_summary_update_connection_type"
+        android:title="@string/pref_title_update_connection_type"
+        android:entries="@array/prefs_update_connection_type_values"
+        android:persistent="true"
+        android:entryValues="@array/prefs_update_connection_type_values_machine" />
+    <EditTextPreference
+        android:key="update_reporter_name"
+        android:summary="@string/pref_summary_reporter_name"
+        android:title="@string/pref_reporter_name"
+        android:persistent="true" />
+
     <Preference android:title="@string/prefs_cache_location" >
         <intent
             android:targetClass="com.digitalcranberry.gainsl.settings.CachedMapSelector"

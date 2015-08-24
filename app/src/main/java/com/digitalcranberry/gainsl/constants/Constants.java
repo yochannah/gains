@@ -16,4 +16,7 @@ public interface Constants {
     public static final String PREFS_SHOW_COMPASS = "showCompass";
 
     public static final String PREFS_UPDATE_FREQUENCY_MINUTES = "update_frequency";
+    public static final String PREFS_UPDATE_REPORTER_NAME = "update_reporter_name";
+    public static final String PREFS_UPDATE_CONNECTION_TYPE = "update_connection_type";
+    public static final String PREFS_UPDATE_CONNECTION_TYPE_DEFAULT = "any";
 }
