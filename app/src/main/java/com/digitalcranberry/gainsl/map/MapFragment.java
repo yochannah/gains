@@ -362,23 +362,35 @@ Eventbus event handler for adding and removing overlays
         mMapView.invalidate();
     }
 
+    /**
+     * This method caches tiles in a 1km square around each map marker.
+     * Note the user will only receive new markers when they have internet (or when they make a report
+     * themselves), but the addMarker method
+     * is also used to initialise markers on the map when offline (from the database)
+     * If they're using GAINSL offline, they'll probably already have the tiles cached from when
+     * they received the report, so we don't need to download the tiles again.
+     * The if/else clause suppresses errors from the OSM Bonus Pack cache class, as the cache class
+     * expects internet and throws an error when unable to download the tiles.
+     * @param marker
+     */
     private void cacheTiles(ReportOverlayItem marker) {
         if(haveNetworkConnection()) {
             TileCacheManager tcm = new TileCacheManager(mMapView);
+
+            //make a rectangle centred around the marker
             Polygon newArea = new Polygon(getActivity().getApplicationContext());
             newArea.setPoints(Polygon.pointsAsRect((GeoPoint) marker.getPoint(), 1000.0, 1000.0));
+
+            //make a bounding box from the rectangle
             ArrayList<GeoPoint> points = new ArrayList<>(newArea.getPoints());
             BoundingBoxE6 bb = BoundingBoxE6.fromGeoPoints(points);
+
+            //download the tiles
             tcm.downloadAreaAsync(this.getActivity(), bb, 8, 12);
-            Log.i(DEBUGTAG, "caching tiles for marker report" + marker.getSnippet());
+            Log.i(DEBUGTAG, "Caching tiles for marker report" + marker.getSnippet());
         } else {
-            //user will only receive new markers when they have internet, but the add marker method
-            //also used to initialise markers even when offline.
-            //if it's offline, they'll already have the tiles cached from when
-            //they received the report, so we don't need to download again
-            //this if/else clause suppresses errors from the OSM Bonus Pack cache class
-            //that would occur if we tried to download tiles offline.
-            Log.i(DEBUGTAG, "didn't cache tiles, no internet.");
+            //don't try to cache tiles if we have no internet! :)
+            Log.i(DEBUGTAG, "Didn't cache tiles, no internet.");
         }
     }
 
