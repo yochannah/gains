@@ -3,6 +3,8 @@ package com.digitalcranberry.gainsl.map;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
@@ -354,19 +356,46 @@ Eventbus event handler for adding and removing overlays
     }
 
     public void updateMapMarker(Report report) {
-        Log.i(DEBUGTAG,"Updating " + report.toString());
+        Log.i(DEBUGTAG, "Updating " + report.toString());
         removeMapMarker(report);
         addMapMarker(report);
         mMapView.invalidate();
     }
 
     private void cacheTiles(ReportOverlayItem marker) {
-        TileCacheManager tcm = new TileCacheManager(mMapView);
-        Polygon newArea = new Polygon(getActivity().getApplicationContext());
-        newArea.setPoints(Polygon.pointsAsRect((GeoPoint) marker.getPoint(), 1000.0, 1000.0));
-        ArrayList<GeoPoint> points = new ArrayList<>(newArea.getPoints());
-        BoundingBoxE6 bb = BoundingBoxE6.fromGeoPoints(points);
-        tcm.downloadAreaAsync(this.getActivity(),bb,8,12);
-        Log.i(DEBUGTAG,"caching tiles for marker report" + marker.getSnippet());
+        if(haveNetworkConnection()) {
+            TileCacheManager tcm = new TileCacheManager(mMapView);
+            Polygon newArea = new Polygon(getActivity().getApplicationContext());
+            newArea.setPoints(Polygon.pointsAsRect((GeoPoint) marker.getPoint(), 1000.0, 1000.0));
+            ArrayList<GeoPoint> points = new ArrayList<>(newArea.getPoints());
+            BoundingBoxE6 bb = BoundingBoxE6.fromGeoPoints(points);
+            tcm.downloadAreaAsync(this.getActivity(), bb, 8, 12);
+            Log.i(DEBUGTAG, "caching tiles for marker report" + marker.getSnippet());
+        } else {
+            //user will only receive new markers when they have internet, but the add marker method
+            //also used to initialise markers even when offline.
+            //if it's offline, they'll already have the tiles cached from when
+            //they received the report, so we don't need to download again
+            //this if/else clause suppresses errors from the OSM Bonus Pack cache class
+            //that would occur if we tried to download tiles offline.
+            Log.i(DEBUGTAG, "didn't cache tiles, no internet.");
+        }
+    }
+
+    private boolean haveNetworkConnection() {
+        boolean haveConnectedWifi = false;
+        boolean haveConnectedMobile = false;
+
+        ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo[] netInfo = cm.getAllNetworkInfo();
+        for (NetworkInfo ni : netInfo) {
+            if (ni.getTypeName().equalsIgnoreCase("WIFI"))
+                if (ni.isConnected())
+                    haveConnectedWifi = true;
+            if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
+                if (ni.isConnected())
+                    haveConnectedMobile = true;
+        }
+        return haveConnectedWifi || haveConnectedMobile;
     }
 }
