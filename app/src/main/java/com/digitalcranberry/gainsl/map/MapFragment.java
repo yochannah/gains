@@ -31,6 +31,7 @@ import com.digitalcranberry.gainsl.model.events.report.ServerReportsReceived;
 import com.digitalcranberry.gainsl.model.events.report.UpdatedByServer;
 import com.digitalcranberry.gainsl.model.events.report.UpdatedByUser;
 
+import org.osmdroid.bonuspack.overlays.Polygon;
 import org.osmdroid.tileprovider.tilesource.ITileSource;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.tileprovider.util.CloudmadeUtil;
@@ -164,10 +165,6 @@ Eventbus event handler for adding and removing overlays
         mResourceProxy = new ResourceProxyImpl(inflater.getContext().getApplicationContext());
         setPrefs();
         mMapView = new MapView(inflater.getContext(), 256, mResourceProxy);
-
-        //test bb.
-        BoundingBoxE6 bb = new BoundingBoxE6(-43.423, 172.728, -43.611, 172.455);
-        cacheTiles(bb);
 
         return mMapView;
     }
@@ -340,6 +337,7 @@ Eventbus event handler for adding and removing overlays
             mOverlayItems.add(marker);
             mMarkerOverlay.addItem(marker);
             mMapView.invalidate();
+            cacheTiles(marker);
             Log.i(DEBUGTAG, "Adding " + report.toString());
         } catch (Exception e) {
             e.printStackTrace();
@@ -362,9 +360,13 @@ Eventbus event handler for adding and removing overlays
         mMapView.invalidate();
     }
 
-    private void cacheTiles(BoundingBoxE6 bb) {
+    private void cacheTiles(ReportOverlayItem marker) {
         TileCacheManager tcm = new TileCacheManager(mMapView);
-        tcm.downloadAreaAsync(this.getActivity(),bb,10,10);
-        Log.i(DEBUGTAG,"caching!!");
+        Polygon newArea = new Polygon(getActivity().getApplicationContext());
+        newArea.setPoints(Polygon.pointsAsRect((GeoPoint) marker.getPoint(), 1000.0, 1000.0));
+        ArrayList<GeoPoint> points = new ArrayList<>(newArea.getPoints());
+        BoundingBoxE6 bb = BoundingBoxE6.fromGeoPoints(points);
+        tcm.downloadAreaAsync(this.getActivity(),bb,8,12);
+        Log.i(DEBUGTAG,"caching tiles for marker report" + marker.getSnippet());
     }
 }
