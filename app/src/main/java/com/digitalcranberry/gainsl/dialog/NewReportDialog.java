@@ -6,8 +6,10 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
@@ -16,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.digitalcranberry.gainsl.GeoLocator;
@@ -44,6 +47,7 @@ public class NewReportDialog extends DialogFragment {
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
     private Uri imageUri;
     private ReportCacheManager saveReport;
+    private CountDownTimer timer;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -57,6 +61,7 @@ public class NewReportDialog extends DialogFragment {
                     public void onClick(DialogInterface dialog, int id) {
                         generateReportDetails(fragView, context);
                         geo.stopListening();
+                        timer.cancel();
                         saveReport = new ReportCacheManager();
                         saveReport.save(context, report, CacheDbConstants.UnsentReportEntry.TABLE_NAME);
                         EventBus.getDefault().post(new Created(report));
@@ -71,7 +76,7 @@ public class NewReportDialog extends DialogFragment {
         //start listening for location.
         geo = new GeoLocator();
         geo.startListening(context);
-
+        timer = showLatLong(fragView);
 
 
         cameraButton = (ImageButton) fragView.findViewById(R.id.input_report_take_picture);
@@ -102,7 +107,6 @@ public class NewReportDialog extends DialogFragment {
         report.setId(UUID.randomUUID().toString());
         report.setSendStatus(ReportStatuses.REPORT_UNSENT);
         String reporter = SettingsManager.getReporter(context);
-        Log.i(DEBUGTAG, "Reporter: " + reporter);
         report.setReporter(reporter);
         report.setLastUpdatedBy(reporter);
         if(imageUri != null) {
@@ -121,7 +125,7 @@ public class NewReportDialog extends DialogFragment {
         Uri uriSavedImage = Uri.fromFile(image);
         imageUri = uriSavedImage;
         imageIntent.putExtra(MediaStore.EXTRA_OUTPUT, uriSavedImage);
-        startActivityForResult(imageIntent,CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+        startActivityForResult(imageIntent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
     }
 
     @Override
@@ -139,5 +143,25 @@ public class NewReportDialog extends DialogFragment {
         }
     }
 
+    private CountDownTimer showLatLong(View view) {
+        final View mView = view;
 
+        CountDownTimer timer = new CountDownTimer(Long.MAX_VALUE, 2500) {
+            public void onTick(long millisUntilFinished) {
+                TextView llView = (TextView) mView.findViewById(R.id.report_details_lat_long);
+                llView.setText("Getting location fix...");
+                if(geo.getCurrentLocation().getAccuracy() < 100) {
+                    Location loc = geo.getCurrentLocation();
+                    llView.setText("Lat/Long: "
+                            + loc.getLatitude() + "/" + loc.getLongitude());
+                }
+            }
+
+            public void onFinish() {
+
+            }
+        };
+        timer.start();
+        return timer;
+    }
 }
