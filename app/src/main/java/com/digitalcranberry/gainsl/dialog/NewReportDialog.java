@@ -33,6 +33,7 @@ import com.digitalcranberry.gainsl.model.events.report.Created;
 import com.digitalcranberry.gainsl.settings.SettingsManager;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
@@ -152,8 +153,9 @@ public class NewReportDialog extends DialogFragment {
                 llView.setText("Getting location fix...");
                 if(geo.getCurrentLocation().getAccuracy() < 100) {
                     Location loc = geo.getCurrentLocation();
-                    llView.setText("Lat/Long: "
-                            + loc.getLatitude() + "/" + loc.getLongitude());
+                    llView.setText("Lat: "
+                            + round(loc.getLatitude())
+                            + ", Lon:" + round(loc.getLongitude()));
                 }
             }
 
@@ -163,5 +165,9 @@ public class NewReportDialog extends DialogFragment {
         };
         timer.start();
         return timer;
+    }
+
+    private String round(Double dbl){
+        return new BigDecimal(String.valueOf(dbl)).setScale(4, BigDecimal.ROUND_HALF_UP).toString();
     }
 }
