@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -21,6 +22,7 @@ import com.digitalcranberry.gainsl.GeoLocator;
 import com.digitalcranberry.gainsl.R;
 import com.digitalcranberry.gainsl.caching.PendingReportCounter;
 import com.digitalcranberry.gainsl.constants.ReportStatuses;
+import static com.digitalcranberry.gainsl.constants.Constants.*;
 import com.digitalcranberry.gainsl.caching.CacheDbConstants;
 import com.digitalcranberry.gainsl.caching.ReportCacheManager;
 import com.digitalcranberry.gainsl.model.Report;
@@ -99,7 +101,10 @@ public class NewReportDialog extends DialogFragment {
         report.setDateFirstCaptured(new Date());
         report.setId(UUID.randomUUID().toString());
         report.setSendStatus(ReportStatuses.REPORT_UNSENT);
-        report.setLastUpdatedBy(SettingsManager.getReporter(context));
+        String reporter = SettingsManager.getReporter(context);
+        Log.i(DEBUGTAG, "Reporter: " + reporter);
+        report.setReporter(reporter);
+        report.setLastUpdatedBy(reporter);
         if(imageUri != null) {
             report.setImage(imageUri); // save uri to the report
         }

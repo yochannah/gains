@@ -4,8 +4,10 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import static com.digitalcranberry.gainsl.constants.ReportStatuses.*;
+import static com.digitalcranberry.gainsl.constants.Constants.DEBUGTAG;
 
 import com.digitalcranberry.gainsl.settings.SettingsManager;
 import com.google.gson.annotations.SerializedName;
@@ -72,12 +74,14 @@ public class Report implements Parcelable {
         //if no date explicitly stated, we'll assume it's a brand new report
         this.dateFirstCaptured = new Date();
         this.userStatus = REPORT_NEW;
+        this.orgName = "OU";
     }
 
     public Report(String theContent) {
         super();
         this.content = theContent;
         this.date = new Date();
+        this.orgName = "OU";
     }
 
     public Report(String id, String content, String sendStatus, String userStatus, Double latitude, Double longitude, Uri image, Date dateCaptured, String lastUpdatedBy, String assignee, String reporter) {
@@ -91,11 +95,15 @@ public class Report implements Parcelable {
         this.id = id;
         this.image = image;
         this.orgName = "OU";
+        this.lastUpdatedBy = lastUpdatedBy;
+        this.assignee = assignee;
+        this.reporter = reporter;
     }
 
     public Report(String id, String content, String sendStatus, String userStatus, Double latitude, Double longitude, Uri image, Date dateCaptured, Date lastUpdated, String lastUpdatedBy, String assignee, String reporter) {
         this(id, content, sendStatus, userStatus, latitude, longitude, image, dateCaptured, lastUpdatedBy, assignee, reporter);
         this.lastUpdated = lastUpdated;
+        this.orgName = "OU";
     }
 
     public Date getDateFirstCaptured() {
@@ -201,6 +209,9 @@ public class Report implements Parcelable {
         c.setTime(lastUpdated);
         time = c.getTimeInMillis();
         sb.append("&lastUpdated=" + time);
+
+        Log.i(DEBUGTAG, sb.toString());
+
         return sb.toString();
     }
 
@@ -246,6 +257,12 @@ public class Report implements Parcelable {
         if (image != null ? !image.equals(report.image) : report.image != null) return false;
         if (orgName != null ? !orgName.equals(report.orgName) : report.orgName != null)
             return false;
+        if (assignee != null ? !assignee.equals(report.assignee) : report.assignee != null)
+            return false;
+        if (lastUpdated != null ? !lastUpdated.equals(report.lastUpdated) : report.lastUpdated != null)
+            return false;
+        if (lastUpdatedBy != null ? !lastUpdatedBy.equals(report.lastUpdatedBy) : report.lastUpdatedBy != null)
+            return false;
         return !(reporter != null ? !reporter.equals(report.reporter) : report.reporter != null);
     }
 
@@ -263,6 +280,7 @@ public class Report implements Parcelable {
         result = 31 * result + (orgName != null ? orgName.hashCode() : 0);
         result = 31 * result + (assignee != null ? assignee.hashCode() : 0);
         result = 31 * result + (lastUpdatedBy != null ? lastUpdatedBy.hashCode() : 0);
+        result = 31 * result + (lastUpdated != null ? lastUpdated.hashCode() : 0);
         result = 31 * result + (reporter != null ? reporter.hashCode() : 0);
         return result;
     }

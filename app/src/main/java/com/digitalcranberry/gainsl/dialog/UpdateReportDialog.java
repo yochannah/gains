@@ -14,12 +14,14 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.digitalcranberry.gainsl.R;
+import static com.digitalcranberry.gainsl.constants.Constants.DEBUGTAG;
 import com.digitalcranberry.gainsl.caching.CacheDbConstants;
 import com.digitalcranberry.gainsl.caching.PendingReportCounter;
 import com.digitalcranberry.gainsl.caching.ReportCacheManager;
 import com.digitalcranberry.gainsl.constants.ReportStatuses;
 import com.digitalcranberry.gainsl.model.Report;
 import com.digitalcranberry.gainsl.model.events.report.UpdatedByUser;
+import com.digitalcranberry.gainsl.settings.SettingsManager;
 
 import de.greenrobot.event.EventBus;
 
@@ -68,9 +70,12 @@ public class UpdateReportDialog extends DialogFragment {
 
     private void updateReport(View view, Context context) {
         Spinner status = (Spinner) view.findViewById(R.id.status_spinner);
-        report.setSendStatus(status.getSelectedItem().toString());
+        report.setUserStatus(status.getSelectedItem().toString());
+        report.setLastUpdatedBy(SettingsManager.getReporter(context));
         EditText content = (EditText) view.findViewById(R.id.input_report_description_update);
         report.setContent(content.getText().toString());
+
+        Log.i(DEBUGTAG, "UPDATING: " + report.toQueryParam());
 
         saveReport = new ReportCacheManager();
         saveReport.save(context, report, CacheDbConstants.UnsentReportEntry.TABLE_NAME);
