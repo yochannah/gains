@@ -10,6 +10,7 @@
         android:layout_height="40dp"
         android:text="@string/loadinglocation"
         android:textColor="#000"
+        android:background="@drawable/border_top"
         android:padding="10dp"
         android:layout_alignParentTop="true"
         android:id="@+id/report_details_lat_long"/>

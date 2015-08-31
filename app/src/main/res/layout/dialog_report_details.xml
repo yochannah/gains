@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="200dp"
     android:gravity="right"
     android:id="@+id/dialog_report_details">
@@ -8,8 +9,21 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="100dp"
+        android:layout_below="@+id/report_details_title"
         style="@style/Base.TextAppearance.AppCompat.Light.Widget.PopupMenu.Large"
         android:padding="10dp"
         android:id="@+id/report_details_content"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:paddingTop="20dp"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/border_top"
+        android:text="@string/report_details_title"
+        style="@style/Base.TextAppearance.AppCompat.Light.Widget.PopupMenu.Large"
+        android:padding="10dp"
+        android:id="@+id/report_details_title"/>
+
 
 </RelativeLayout>

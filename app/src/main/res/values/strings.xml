@@ -78,5 +78,6 @@
     <string name="report_update_captured">Update captured and will be sent at next opportunity.</string>
     <string name="hint_update_report">Type an update here. You can also change the status of the report below.</string>
     <string name="loadinglocation">loading location details...</string>
+    <string name="report_details_title">Report details:</string>
 
 </resources>

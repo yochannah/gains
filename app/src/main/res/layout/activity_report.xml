@@ -11,9 +11,9 @@
         android:id="@+id/statusbar"
         android:drawableLeft="@drawable/ic_action_about"
         android:layout_width="fill_parent"
-        android:textColor="@color/red"
+        android:textColor="#000"
         android:layout_alignParentTop="true"
-        android:background="@color/translucent_white"
+        android:background="@drawable/border_top"
         android:gravity="center_vertical"
         android:layout_height="40dp" />
 
