@@ -63,9 +63,8 @@ public class ReportCommsService extends IntentService implements Constants, Send
                 //clear out successfully sent reports.
                 cacheManager.moveToSentDb(sentReports, context);
 
-                //send any new ones, if we can see the intertubes.
+                //send any new ones, if we can see the internet.
                 cachedReports = cacheManager.getReports(context, CacheDbConstants.UnsentReportEntry.TABLE_NAME);
-
                 if (NetworkStatus.isConnected(context)) {
                     sendAllReports(cachedReports);
                 } else {
@@ -124,12 +123,13 @@ public class ReportCommsService extends IntentService implements Constants, Send
     }
 
     /**
-     * Checks which reports are new to this phone, and returns only those reports
+     * Checks which reports are new to this phone, and sends event notifications
+     * telling listeners to add new/changed reports to the map, and also to store them
+     * in the SQLite internal phone storage for offline use.
      * @param remoteReportsList response from remote server
      */
     @Override
     public void serverReports(List<Report> remoteReportsList) {
-        //TODO: Add to list
         List<Report> localReports = getAllReports();
         List<Report> newReports = new ArrayList<>();
         List<Report> changedReports = new ArrayList<>();
@@ -151,10 +151,17 @@ public class ReportCommsService extends IntentService implements Constants, Send
         //purge existing reports from the new list
         newReports.removeAll(localReports);
 
+        //send notifications to listeners that new reports have been received
+        //from the server
         if(remoteReportsList.size() > 0) {
             Log.i(DEBUGTAG, remoteReportsList.size() + " server reports received.");
+            //Eventbus will pass messages to the DB and Map
             EventBus.getDefault().post(new ServerReportsReceived(newReports));
         }
+
+        //changed reports need to be handled differently to new reports.
+        //they'll already have a marker, and just need their status/comments
+        //updated.
         if (changedReports.size() > 0) {
             Log.i(DEBUGTAG, remoteReportsList.size() + " server reports updated.");
             EventBus.getDefault().post(new UpdatedByServer(changedReports));
@@ -164,7 +171,7 @@ public class ReportCommsService extends IntentService implements Constants, Send
     @Override
     protected void onHandleIntent(Intent intent) {
 
-        Log.d(DEBUGTAG,"Activated ReportsCommsService");
+        Log.d(DEBUGTAG, "Activated ReportsCommsService");
         activateReportMonitor();
     }
 
@@ -174,4 +181,6 @@ public class ReportCommsService extends IntentService implements Constants, Send
         reports.addAll(cachedReports);
         return reports;
     }
+
+
 }

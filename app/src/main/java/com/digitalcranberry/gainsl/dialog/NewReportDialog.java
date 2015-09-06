@@ -109,6 +109,7 @@ public class NewReportDialog extends DialogFragment {
         report.setSendStatus(ReportStatuses.REPORT_UNSENT);
         String reporter = SettingsManager.getReporter(context);
         report.setReporter(reporter);
+        report.setLastUpdated(new Date());
         report.setLastUpdatedBy(reporter);
         if(imageUri != null) {
             report.setImage(imageUri); // save uri to the report

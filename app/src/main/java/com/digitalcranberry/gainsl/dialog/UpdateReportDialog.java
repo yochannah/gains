@@ -23,6 +23,8 @@ import com.digitalcranberry.gainsl.model.Report;
 import com.digitalcranberry.gainsl.model.events.report.UpdatedByUser;
 import com.digitalcranberry.gainsl.settings.SettingsManager;
 
+import java.util.Date;
+
 import de.greenrobot.event.EventBus;
 
 public class UpdateReportDialog extends DialogFragment {
@@ -72,6 +74,7 @@ public class UpdateReportDialog extends DialogFragment {
         Spinner status = (Spinner) view.findViewById(R.id.status_spinner);
         report.setUserStatus(status.getSelectedItem().toString());
         report.setLastUpdatedBy(SettingsManager.getReporter(context));
+        report.setLastUpdated(new Date());
         EditText content = (EditText) view.findViewById(R.id.input_report_description_update);
         report.setContent(content.getText().toString());
 
